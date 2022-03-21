@@ -1,19 +1,25 @@
 import logo from './logo.svg';
 import './App.css';
-import Roulette66percent from './patterns/roulette.66percent';
+import Baccarat from './lib/game.Baccarat'
 
-const NUMBER_OF_PLAYERS = 10;
+let baccarat = new Baccarat()
 
-for (var i = 0; i < NUMBER_OF_PLAYER; i++) {
+/////////////////////////////////////////////////////////////////
 
-  new Roulette66percent().play()
+// import Roulette66percent from './patterns/roulette.66percent';
 
-  //////////////////////////////////
-  const player = new Player()
-  csv += player.playGames().reduce((resultStr, val, j) => {
-    return resultStr + `\nPlayer ${i}, ${j+1}, ${val}`
-  }, '')
-}
+// const NUMBER_OF_PLAYERS = 10;
+
+// for (var i = 0; i < NUMBER_OF_PLAYER; i++) {
+
+//   new Roulette66percent().play()
+
+//   //////////////////////////////////
+//   const player = new Player()
+//   csv += player.playGames().reduce((resultStr, val, j) => {
+//     return resultStr + `\nPlayer ${i}, ${j+1}, ${val}`
+//   }, '')
+// }
 
 /////////////////////////////////////////////////////////////////
 
