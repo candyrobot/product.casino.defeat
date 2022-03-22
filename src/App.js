@@ -8,7 +8,7 @@ let totalPlayerWins = 0
 let totalBankerWins = 0
 let csv = 'Player,Game Number,Amount'
 let totalResults = []
-const NUMBER_OF_PLAYER = 2
+const NUMBER_OF_PLAYER = 100
 let players = [new Chibisuke()]
 
 while (players.length <= NUMBER_OF_PLAYER) {
@@ -24,12 +24,7 @@ while (players.length <= NUMBER_OF_PLAYER) {
 	csv += data.results.reduce((prev, v, i) => {
 		if (v == 'TIE') return prev;
 		let player = players[players.length - 1]
-
-		if (players.length == 1)
-			player.setValue(v == 'PLAYER' ? -player.getBetValue() : player.getBetValue())
-		else
-			player.setValue(v == 'BANKER' ? -player.getBetValue() : player.getBetValue())
-
+		player.setValue(v == 'PLAYER' ? -player.getBetValue() : player.getBetValue())
 		let csv = prev + `\nPlayer ${players.length}, ${player.amounts.length}, ${player.amount}`
 		if (player.amount > 0 && player.amount < player.INITIAL_AMOUNT * 2);
 		else {
@@ -43,31 +38,21 @@ while (players.length <= NUMBER_OF_PLAYER) {
 
 console.log(csv)
 
-// console.log(totalPlayerWins, totalBankerWins)
-// 50.68?
-// 2947/(2878 + 2947): 0.5059227468
-// 2974/(2796 + 2974): 0.5154246101
-// 0.5181427343
-// 0.5015684908
-// 0.501489399
-// 2853 2877
-// 2873 2831
 
 /////////////////////////////////////////////////////////////////
 
-// import Roulette66percent from './patterns/roulette.66percent';
+// max_num = 100
+// players = []
+// baccarat = null
 
-// const NUMBER_OF_PLAYERS = 10;
-
-// for (var i = 0; i < NUMBER_OF_PLAYER; i++) {
-
-//   new Roulette66percent().play()
-
-//   //////////////////////////////////
-//   const player = new Player()
-//   csv += player.playGames().reduce((resultStr, val, j) => {
-//     return resultStr + `\nPlayer ${i}, ${j+1}, ${val}`
-//   }, '')
+// while (players.length <= max_num) {
+// 	baccarat = new Baccarat()
+// 	players[players - 1].resetDebt() // 戦略: シューが新しくなったらリセット
+// 	while (baccarat is exist) {
+// 		csv += ''
+// 		if (players[players - 1].xxx)
+// 			players.push(player)
+// 	}
 // }
 
 /////////////////////////////////////////////////////////////////
