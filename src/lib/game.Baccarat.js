@@ -50,11 +50,16 @@ class Baccarat {
 			return this.judge(playerNum, bankerNum)
 		}
 	}
+	testGame() {
+		this.dealCard(); this.dealCard(); this.dealCard(); this.dealCard();
+		// 勝率55%
+		return Math.random() < 55 / 100 ? 'BANKER' : 'PLAYER'
+	}
 	playGames(doWhenPlayed) {
 		do {
 			let result = this.playGame()
 			doWhenPlayed(result, this.results)
-			this.results.push(this.playGame())
+			this.results.push(result)
 		} while (this.playingLimitNum < this.playingCards.length)
 		return this
 	}
