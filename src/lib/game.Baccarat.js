@@ -2,7 +2,7 @@ import PlayingCards from './PlayingCards'
 
 class Baccarat {
 	constructor() {
-		this.playingCards = new PlayingCards(8).shuffle()
+		this.playingCards = new PlayingCards(8).shuffle().get()
 		// console.log(this.playingCards)
 		this.usedCards = []
 		this.playingLimitNum = 104 // Math.random 70~130
@@ -45,12 +45,20 @@ class Baccarat {
 			return this.judge(playerNum, bankerNum)
 		}
 	}
-	playGames() {
+	playGames(doWhenPlayerWin = () => {}, doWhenBankerWin = () => {}, doWhenTie = () => {}, ) {
 		do {
-			this.results.push(this.playGame())
+			let result = this.playGame()
+			if (result == 'PLAYER')
+				doWhenPlayerWin()
+			else if (result == 'BANKER')
+				doWhenBankerWin()
+			else
+				doWhenTie()
+
+			this.results.push(result)
 		} while (this.playingLimitNum < this.playingCards.length)
 	}
-	getResult() {
+	getResults() {
 		let playerWins = this.results.filter((v) => v == 'PLAYER').length
 		let bankerWins = this.results.filter((v) => v == 'BANKER').length
 		return { results: this.results, playerWins, bankerWins }

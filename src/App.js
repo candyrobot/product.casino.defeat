@@ -1,17 +1,25 @@
 import logo from './logo.svg';
 import './App.css';
 import Baccarat from './lib/game.Baccarat';
+import Chibisuke from './lib/method.Chibisuke';
+
+let chibisuke = new Chibisuke()
 
 let playerWins = 0
 let bankerWins = 0
 
 for (var i = 0; i < 100; i++) {
   let baccarat = new Baccarat()
-  baccarat.playGames()
-  let r = baccarat.getResult()
-  playerWins += r.playerWins
-  bankerWins += r.bankerWins
-  console.log(r.playerWins, r.bankerWins)
+  baccarat.playGames(() => {
+    chibisuke.setValue(-betValue)
+  }, () => {
+    chibisuke.setValue(+betValue)
+  })
+
+  let results = baccarat.getResults()
+  playerWins += results.playerWins
+  bankerWins += results.bankerWins
+  console.log(results.playerWins, results.bankerWins)
 }
 
 console.log(playerWins, bankerWins)
