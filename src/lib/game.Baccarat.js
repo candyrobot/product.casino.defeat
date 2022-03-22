@@ -24,7 +24,7 @@ class Baccarat {
 		// console.log(playerNum, bankerNum)
 		if (playerNum >= 8 || bankerNum >= 8)
 			return this.judge(playerNum, bankerNum)
-		else if (playerNum >= 6 && bankerNum == 7)
+		else if (playerNum >= 6 && bankerNum >= 6)
 			return this.judge(playerNum, bankerNum)
 		else if (playerNum <= 5) {
 			let dealtNum = this.dealCard()

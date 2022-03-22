@@ -13,7 +13,6 @@ let players = [new Chibisuke()]
 
 while (players.length <= NUMBER_OF_PLAYER) {
 	baccarat = new Baccarat().playGames()
-	players[players.length - 1].resetDebt() // 戦略: シューが新しくなったらリセット
 	console.warn(players[players.length - 1].amount, players)
 
 	let data = baccarat.getResults()
