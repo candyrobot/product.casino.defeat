@@ -8,7 +8,7 @@ let totalPlayerWins = 0
 let totalBankerWins = 0
 let csv = 'Player,Game Number,Amount'
 let totalResults = []
-const NUMBER_OF_PLAYER = 100 // 同義: NUMBER_OF_PLAYER
+const NUMBER_OF_PLAYER = 2
 let players = [new Chibisuke()]
 
 while (players.length <= NUMBER_OF_PLAYER) {
@@ -24,7 +24,12 @@ while (players.length <= NUMBER_OF_PLAYER) {
 	csv += data.results.reduce((prev, v, i) => {
 		if (v == 'TIE') return prev;
 		let player = players[players.length - 1]
-		player.setValue(v == 'PLAYER' ? -player.getBetValue() : player.getBetValue())
+
+		if (players.length == 1)
+			player.setValue(v == 'PLAYER' ? -player.getBetValue() : player.getBetValue())
+		else
+			player.setValue(v == 'BANKER' ? -player.getBetValue() : player.getBetValue())
+
 		let csv = prev + `\nPlayer ${players.length}, ${player.amounts.length}, ${player.amount}`
 		if (player.amount > 0 && player.amount < player.INITIAL_AMOUNT * 2);
 		else {
