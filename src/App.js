@@ -15,6 +15,7 @@ for (var i = 0; i < 100; i++) {
   playerWins += results.playerWins
   bankerWins += results.bankerWins
   console.log(results)
+  document.write(baccarat.draw(results.scoreboard))
 }
 
 console.log(playerWins, bankerWins)

@@ -65,6 +65,11 @@ class Baccarat {
 		}, [])
 		return { results: this.results, playerWins, bankerWins, scoreboard }
 	}
+	draw(scoreboard) {
+		return scoreboard.reduce((prev, v) => {
+			return v.reduce((prev, v) => `<span style="color: ${v == 'PLAYER' ? 'blue' : 'red'}">◯</span>` + prev, '') + '<br>' + prev
+		}, '<hr>')
+	}
 	judge(playerNum, bankerNum) {
 		if (playerNum == bankerNum)
 			return 'TIE'
