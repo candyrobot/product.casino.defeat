@@ -3,16 +3,19 @@ import './App.css';
 import Baccarat from './lib/game.Baccarat';
 import Chibisuke from './lib/method.Chibisuke';
 
-let baccarat = new Baccarat()
-let chibisuke = new Chibisuke()
+let baccarat = null
 let totalPlayerWins = 0
 let totalBankerWins = 0
 let csv = 'Player,Game Number,Amount'
 let totalResults = []
+const NUMBER_OF_PLAYER = 100 // 同義: NUMBER_OF_PLAYER
+let players = [new Chibisuke()]
 
-for (var i = 0; i < 200; i++) {
-	let baccarat = new Baccarat().playGames()
-	chibisuke.resetDebt()
+while (players.length <= NUMBER_OF_PLAYER) {
+	baccarat = new Baccarat().playGames()
+	players[players.length - 1].resetDebt() // 戦略: シューが新しくなったらリセット
+	console.warn(players[players.length - 1].amount, players)
+
 	let data = baccarat.getResults()
 	totalPlayerWins += data.playerWins
 	totalBankerWins += data.bankerWins
@@ -21,12 +24,14 @@ for (var i = 0; i < 200; i++) {
 
 	csv += data.results.reduce((prev, v, i) => {
 		if (v == 'TIE') return prev;
-		if (i % 1200 == 0) {
-			chibisuke = new Chibisuke()
-			console.log('reset')
+		let player = players[players.length - 1]
+		player.setValue(v == 'PLAYER' ? -player.getBetValue() : player.getBetValue())
+		let csv = prev + `\nPlayer ${players.length}, ${player.amounts.length}, ${player.amount}`
+		if (player.amount > 0 && player.amount < player.INITIAL_AMOUNT * 2);
+		else {
+			players.push(new Chibisuke())
 		}
-		chibisuke.setValue(v == 'PLAYER' ? -chibisuke.getBetValue() : chibisuke.getBetValue())  
-		return prev + `\nPlayer ${Math.floor(i / 1200)}, ${(i % 1200) + 1}, ${chibisuke.amount}`
+		return csv
 	}, '')
 
 	totalResults = totalResults.concat(data.results)

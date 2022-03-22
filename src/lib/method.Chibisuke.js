@@ -37,7 +37,7 @@ class Chibisuke {
 		if (this.debt < 0) {
 		}
 		else {
-			this.resetSideAmount()
+			this.resetDebt()
 		}
 		if (value < 0) {
 			this.betValue += this.INITIAL_BET_VALUE
