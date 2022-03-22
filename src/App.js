@@ -1,8 +1,26 @@
 import logo from './logo.svg';
 import './App.css';
-import Baccarat from './lib/game.Baccarat'
+import Baccarat from './lib/game.Baccarat';
 
-let baccarat = new Baccarat()
+let playerWins = 0
+let bankerWins = 0
+
+for (var i = 0; i < 100; i++) {
+  let baccarat = new Baccarat()
+  baccarat.playGames()
+  let r = baccarat.getResult()
+  playerWins += r.playerWins
+  bankerWins += r.bankerWins
+  console.log(r.playerWins, r.bankerWins)
+}
+
+console.log(playerWins, bankerWins)
+// 50.68?
+// 2947/(2878 + 2947): 0.5059227468
+// 2974/(2796 + 2974): 0.5154246101
+// 0.5181427343
+// 0.5015684908
+// 0.501489399
 
 /////////////////////////////////////////////////////////////////
 

@@ -3,10 +3,10 @@ import PlayingCards from './PlayingCards'
 class Baccarat {
 	constructor() {
 		this.playingCards = new PlayingCards(8).shuffle()
-		console.log(this.playingCards)
-		this.playerNum = 0
-		this.bankerNum = 0
+		// console.log(this.playingCards)
 		this.usedCards = []
+		this.playingLimitNum = 104 // Math.random 70~130
+		this.results = []
 	}
 	disCard() {
 	}
@@ -21,12 +21,13 @@ class Baccarat {
 	playGame() {
 		let playerNum = get1thDigit(this.dealCard() + this.dealCard())
 		let bankerNum = get1thDigit(this.dealCard() + this.dealCard())
+		// console.log(playerNum, bankerNum)
 		if (playerNum >= 8 || bankerNum >= 8)
 			return this.judge(playerNum, bankerNum)
 		else if (playerNum >= 6 && bankerNum == 7)
 			return this.judge(playerNum, bankerNum)
 		else if (playerNum <= 5) {
-			dealtNum = this.dealCard()
+			let dealtNum = this.dealCard()
 			playerNum = get1thDigit(playerNum + dealtNum)
 			if (
 				bankerNum <= 2 ||
@@ -36,10 +37,23 @@ class Baccarat {
 				bankerNum == 6 && [6,7].find((n) => n == dealtNum)
 			)
 				bankerNum = get1thDigit(bankerNum + this.dealCard())
-			else
-				console.warn('例外発生')
 			return this.judge(playerNum, bankerNum)
 		}
+		else {
+			if (playerNum > bankerNum)
+				bankerNum = get1thDigit(bankerNum + this.dealCard())
+			return this.judge(playerNum, bankerNum)
+		}
+	}
+	playGames() {
+		do {
+			this.results.push(this.playGame())
+		} while (this.playingLimitNum < this.playingCards.length)
+	}
+	getResult() {
+		let playerWins = this.results.filter((v) => v == 'PLAYER').length
+		let bankerWins = this.results.filter((v) => v == 'BANKER').length
+		return { results: this.results, playerWins, bankerWins }
 	}
 	judge(playerNum, bankerNum) {
 		if (playerNum == bankerNum)
@@ -47,7 +61,6 @@ class Baccarat {
 		else
 			return playerNum > bankerNum ? 'PLAYER' : 'BANKER'
 	}
-
 }
 
 
