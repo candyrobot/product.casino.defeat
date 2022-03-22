@@ -4,71 +4,33 @@ import Baccarat from './lib/game.Baccarat';
 import Chibisuke from './lib/method.Chibisuke';
 
 let baccarat = new Baccarat()
+let chibisuke = new Chibisuke()
 let totalPlayerWins = 0
 let totalBankerWins = 0
 let csv = 'Player,Game Number,Amount'
-let todalResults = []
-
-Chibisuke.try(() => {
-	baccarat.playGame({
-		doWhenRefreshed: () => {
-
-		}
-	})
-})
-
-
-
-
-
-////
-
-// INFO: ダブルアップするか破産すると止まるクラス
-class DoubleUpper {
-	constructor() {
-		this.INITIAL_BET_VALUE = 1
-		this.INITIAL_AMOUNT = 500
-		this.betValue = this.INITIAL_BET_VALUE
-		this.amount = this.INITIAL_AMOUNT
-		this.baccarat = new Baccarat()
-	}
-	playGames() {
-		do {
-
-		} while (this.amount > 0 || this.amount < this.INITIAL_AMOUNT * 2)
-	}
-}
-
-for (var i = 0; i < 100; i++) {
-	csv += new DoubleUpper().getCSV()
-}
-
-Baccarat // シューがなくなると次を用意する
-
-
-//////////////////////
+let totalResults = []
 
 for (var i = 0; i < 200; i++) {
 	let baccarat = new Baccarat().playGames()
+	chibisuke.resetDebt()
 	let data = baccarat.getResults()
 	totalPlayerWins += data.playerWins
 	totalBankerWins += data.bankerWins
 	console.log(data)
 	document.write(baccarat.draw(data.scoreboard))
-	todalResults = todalResults.concat(data.results)
-	doubleUpper.do(data.results)
-}
 
-let chibisuke = null
-csv += todalResults.reduce((prev, v, i) => {
-	if (v == 'TIE') return prev;
-	if (i % 1200 == 0) {
-		chibisuke = new Chibisuke()
-		console.log('reset')
-	}
-	chibisuke.setValue(v == 'PLAYER' ? -chibisuke.getBetValue() : chibisuke.getBetValue())  
-	return prev + `\nPlayer ${Math.floor(i / 1200)}, ${(i % 1200) + 1}, ${chibisuke.amount}`
-}, '')
+	csv += data.results.reduce((prev, v, i) => {
+		if (v == 'TIE') return prev;
+		if (i % 1200 == 0) {
+			chibisuke = new Chibisuke()
+			console.log('reset')
+		}
+		chibisuke.setValue(v == 'PLAYER' ? -chibisuke.getBetValue() : chibisuke.getBetValue())  
+		return prev + `\nPlayer ${Math.floor(i / 1200)}, ${(i % 1200) + 1}, ${chibisuke.amount}`
+	}, '')
+
+	totalResults = totalResults.concat(data.results)
+}
 
 console.log(csv)
 

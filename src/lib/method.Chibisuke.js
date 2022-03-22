@@ -8,7 +8,7 @@ class Chibisuke {
 		this.amounts = [] // [int]
 		this.amounts.push(this.INITIAL_AMOUNT)
 		// ;
-		this.sideAmount = 0
+		this.debt = 0
 		this.results = [] // [int]
 	}
 	playGames(doSomething = () => {}) {
@@ -25,21 +25,24 @@ class Chibisuke {
 	getResults() {
 		return this.results
 	}
+	resetDebt() {
+		this.debt = 0
+		this.betValue = this.INITIAL_BET_VALUE
+	}
 	// TODO: doWhenSettled 決着がついた時
 	setValue(value) {
 		this.amount += value
 		this.amounts.push(this.amount)
-		this.sideAmount += value
-		if (this.sideAmount < 0) {
+		this.debt += value
+		if (this.debt < 0) {
 		}
 		else {
-			this.sideAmount = 0
-			this.betValue = this.INITIAL_BET_VALUE
+			this.resetSideAmount()
 		}
 		if (value < 0) {
 			this.betValue += this.INITIAL_BET_VALUE
 		}
-		this.results.push({ value, sideAmount: this.sideAmount })
+		this.results.push({ value, debt: this.debt })
 	}
 }
 
