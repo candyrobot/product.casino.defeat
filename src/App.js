@@ -10,16 +10,11 @@ let bankerWins = 0
 
 for (var i = 0; i < 100; i++) {
   let baccarat = new Baccarat()
-  baccarat.playGames(() => {
-    chibisuke.setValue(-betValue)
-  }, () => {
-    chibisuke.setValue(+betValue)
-  })
-
+  baccarat.playGames()
   let results = baccarat.getResults()
   playerWins += results.playerWins
   bankerWins += results.bankerWins
-  console.log(results.playerWins, results.bankerWins)
+  console.log(results)
 }
 
 console.log(playerWins, bankerWins)

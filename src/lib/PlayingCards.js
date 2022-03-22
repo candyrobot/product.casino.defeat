@@ -17,6 +17,7 @@ class PlayingCards {
 	}
 	shuffle() {
 		this.cards = shuffle(this.cards)
+		return this
 	}
 }
 

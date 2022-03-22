@@ -45,23 +45,25 @@ class Baccarat {
 			return this.judge(playerNum, bankerNum)
 		}
 	}
-	playGames(doWhenPlayerWin = () => {}, doWhenBankerWin = () => {}, doWhenTie = () => {}, ) {
+	playGames() {
 		do {
-			let result = this.playGame()
-			if (result == 'PLAYER')
-				doWhenPlayerWin()
-			else if (result == 'BANKER')
-				doWhenBankerWin()
-			else
-				doWhenTie()
-
-			this.results.push(result)
+			this.results.push(this.playGame())
 		} while (this.playingLimitNum < this.playingCards.length)
 	}
 	getResults() {
 		let playerWins = this.results.filter((v) => v == 'PLAYER').length
 		let bankerWins = this.results.filter((v) => v == 'BANKER').length
-		return { results: this.results, playerWins, bankerWins }
+		let scoreboard = this.results.reduce((prev, v) => {
+			if (v == 'TIE')
+				return prev
+			let lastCol = prev[prev.length - 1]
+			if (lastCol == undefined || lastCol[lastCol.length - 1] != v)
+				prev.push([v])
+			else
+				lastCol.push(v)
+			return prev
+		}, [])
+		return { results: this.results, playerWins, bankerWins, scoreboard }
 	}
 	judge(playerNum, bankerNum) {
 		if (playerNum == bankerNum)
