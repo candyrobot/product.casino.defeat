@@ -12,8 +12,17 @@ const NUMBER_OF_PLAYER = 100
 let players = [new Chibisuke()]
 
 while (players.length <= NUMBER_OF_PLAYER) {
-	baccarat = new Baccarat().playGames()
 	console.warn(players[players.length - 1].amount, players)
+	baccarat = new Baccarat().playGames((result, results) => {
+		if (result == 'TIE' || results.isPlayerStreak(3)) return;
+		let player = players[players.length - 1]
+		player.setValue(result == 'PLAYER' ? -player.getBetValue() : player.getBetValue())
+		csv += `\nPlayer ${players.length}, ${player.amounts.length}, ${player.amount}`
+		if (player.amount > 0 && player.amount < player.INITIAL_AMOUNT * 2);
+		else {
+			players.push(new Chibisuke())
+		}
+	})
 
 	let data = baccarat.getResults()
 	totalPlayerWins += data.playerWins
@@ -21,23 +30,10 @@ while (players.length <= NUMBER_OF_PLAYER) {
 	console.log(data)
 	document.write(baccarat.draw(data.scoreboard))
 
-	csv += data.results.reduce((prev, v, i) => {
-		if (v == 'TIE') return prev;
-		let player = players[players.length - 1]
-		player.setValue(v == 'PLAYER' ? -player.getBetValue() : player.getBetValue())
-		let csv = prev + `\nPlayer ${players.length}, ${player.amounts.length}, ${player.amount}`
-		if (player.amount > 0 && player.amount < player.INITIAL_AMOUNT * 2);
-		else {
-			players.push(new Chibisuke())
-		}
-		return csv
-	}, '')
-
 	totalResults = totalResults.concat(data.results)
 }
 
 console.log(csv)
-
 
 /////////////////////////////////////////////////////////////////
 

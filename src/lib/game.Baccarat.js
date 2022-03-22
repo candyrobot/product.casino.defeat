@@ -7,6 +7,11 @@ class Baccarat {
 		this.usedCards = []
 		this.playingLimitNum = 104 // Math.random 70~130
 		this.results = []
+		// INFO: Playerがn連勝だったらtrue
+		this.results.isPlayerStreak = function(n) {
+			let arr = this.filter((v) => v != 'TIE')
+			return !arr.slice(-n).find((v) => v == 'BANKER')
+		}
 	}
 	disCard() {
 	}
@@ -45,8 +50,10 @@ class Baccarat {
 			return this.judge(playerNum, bankerNum)
 		}
 	}
-	playGames() {
+	playGames(doWhenPlayed) {
 		do {
+			let result = this.playGame()
+			doWhenPlayed(result, this.results)
 			this.results.push(this.playGame())
 		} while (this.playingLimitNum < this.playingCards.length)
 		return this
