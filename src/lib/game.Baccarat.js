@@ -49,6 +49,7 @@ class Baccarat {
 		do {
 			this.results.push(this.playGame())
 		} while (this.playingLimitNum < this.playingCards.length)
+		return this
 	}
 	getResults() {
 		let playerWins = this.results.filter((v) => v == 'PLAYER').length
