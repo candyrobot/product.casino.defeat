@@ -11,6 +11,11 @@ class Chibisuke {
 		this.sideAmount = 0
 		this.results = [] // [int]
 	}
+	playGames(doSomething = () => {}) {
+		do {
+			doSomething()
+		} while (this.amount > 0 || this.amount < this.INITIAL_AMOUNT * 2) // ダブルアップするか破産すると止まる
+	}
 	getBetValue() {
 		return this.betValue
 	}
@@ -20,6 +25,7 @@ class Chibisuke {
 	getResults() {
 		return this.results
 	}
+	// TODO: doWhenSettled 決着がついた時
 	setValue(value) {
 		this.amount += value
 		this.amounts.push(this.amount)
