@@ -35,6 +35,7 @@ while (players.length <= NUMBER_OF_PLAYER) {
 
 	totalResults = totalResults.concat(data.results)
 }
+console.log('最低値', players[0].amounts.reduce((prev, v)=> prev < v ? prev : v, 500))
 
 // console.log(csv)
 console.log(`${bankruptcyNum} / ${NUMBER_OF_PLAYER} 破産確率 ${bankruptcyNum/NUMBER_OF_PLAYER*100}%`)

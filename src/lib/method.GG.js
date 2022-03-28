@@ -28,7 +28,7 @@ class GG {
 	}
 	_isUnusualBet() {
 		let arr = this._getGameHistory()
-		return arr[arr.length - 1] == 'WIN' && arr[arr.length - 2] == 'LOSE'
+		return arr[arr.length - 1] == 'WIN' && arr[arr.length - 2] == 'LOSE' && arr[arr.length - 3] == 'LOSE'
 	}
 	_getGameHistory() {
 		return this.amounts.map((v, i) => {
