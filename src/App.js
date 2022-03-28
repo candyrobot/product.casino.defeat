@@ -1,15 +1,15 @@
 import logo from './logo.svg';
 import './App.css';
 import Baccarat from './lib/game.Baccarat';
-import Chibisuke from './lib/method.Chibisuke';
+import GG from './lib/method.GG';
 
 let baccarat = null
 let totalPlayerWins = 0
 let totalBankerWins = 0
 let csv = 'Player,Game Number,Amount'
 let totalResults = []
-const NUMBER_OF_PLAYER = 500
-let players = [new Chibisuke()]
+const NUMBER_OF_PLAYER = 100
+let players = [new GG()]
 let bankruptcyNum = 0
 
 while (players.length <= NUMBER_OF_PLAYER) {
@@ -23,7 +23,7 @@ while (players.length <= NUMBER_OF_PLAYER) {
 		if (player.amount > 0 && player.amount < player.INITIAL_AMOUNT * 2);
 		else {
 			if (player.amount <= 0) bankruptcyNum++;
-			players.push(new Chibisuke())
+			players.push(new GG())
 		}
 	})
 
