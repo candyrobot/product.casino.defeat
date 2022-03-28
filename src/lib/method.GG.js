@@ -12,8 +12,9 @@ class GG {
 		// return this.
 	}
 	getBetValue() {
-		if (this._getGameHistory() == 'WIN')
-			return this._splitWith2WinningStreak().getLastArray().filter((v) => v == 'LOSE').length
+		console.log(this._getGameHistory().getLast())
+		if (this._getGameHistory().getLast() == 'WIN')
+			return this._splitWith2WinningStreak().getLastSet().filter((v) => v == 'LOSE').length
 		return this.betValue
 	}
 	setValue(value) {
@@ -21,17 +22,21 @@ class GG {
 		this.amounts.push(this.amount)
 	}
 	_splitWith2WinningStreak() {
-		let arr = this._getGameHistory().toStoring().split('WIN,WIN,')
+		let arr = this._getGameHistory().toString().split('WIN,WIN,')
 		return {
-			getLastArray: ()=> arr[arr.length - 1].split(',')
+			getLastSet: ()=> arr[arr.length - 1].split(',')
 		}
 	}
 	_getGameHistory() {
-		return this.amounts.map((v, i) => {
-			let diff = v - this.amounts[-i]
+		let arr = this.amounts.map((v, i) => {
+			let diff = v - this.amounts[i - 1]
 			if (diff == 0) return 'TIE'
 			return diff > 0 ? 'WIN' : 'LOSE'
 		})
+		arr.getLast = function() {
+			return arr[arr.length - 1]
+		}
+		return arr
 	}
 }
 
