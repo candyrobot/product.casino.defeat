@@ -12,8 +12,7 @@ class GG {
 		// return this.
 	}
 	getBetValue() {
-		console.log(this._getGameHistory().getLast())
-		if (this._getGameHistory().getLast() == 'WIN')
+		if (this._isUnusualBet())
 			return this._splitWith2WinningStreak().getLastSet().filter((v) => v == 'LOSE').length
 		return this.betValue
 	}
@@ -27,16 +26,16 @@ class GG {
 			getLastSet: ()=> arr[arr.length - 1].split(',')
 		}
 	}
+	_isUnusualBet() {
+		let arr = this._getGameHistory()
+		return arr[arr.length - 1] == 'WIN' && arr[arr.length - 2] == 'LOSE'
+	}
 	_getGameHistory() {
-		let arr = this.amounts.map((v, i) => {
+		return this.amounts.map((v, i) => {
 			let diff = v - this.amounts[i - 1]
 			if (diff == 0) return 'TIE'
 			return diff > 0 ? 'WIN' : 'LOSE'
 		})
-		arr.getLast = function() {
-			return arr[arr.length - 1]
-		}
-		return arr
 	}
 }
 
