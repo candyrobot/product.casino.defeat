@@ -19,6 +19,7 @@ while (players.length <= NUMBER_OF_PLAYER) {
 		
 		let player = players[players.length - 1]
 		player.setValue(result == 'PLAYER' ? -player.getBetValue() : player.getBetValue())
+		console.log(`Player ${players.length}, ${player.amounts.length}, ${player.amount}`)
 		csv += `\nPlayer ${players.length}, ${player.amounts.length}, ${player.amount}`
 		if (player.amount > 0 && player.amount < player.INITIAL_AMOUNT * 2);
 		else {
