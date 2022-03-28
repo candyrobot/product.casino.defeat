@@ -12,21 +12,22 @@ class GG {
 		// return this.
 	}
 	getBetValue() {
+		if (this.amounts.#mapGameHistory(this.amounts.length - 1) == 'WIN')
+			return this.splitWith2WinningStreak().getLastArray().filter((v) => v == 'LOSE').length
 		return this.betValue
 	}
-	getHistory() {
+	splitWith2WinningStreak() {
+		let arr = this.amounts.#mapGameHistory().toStoring().split('WIN,WIN,')
+		return {
+			getLastArray: ()=> arr[arr.length - 1].split(',')
+		}
+	}
+	#mapGameHistory() {
 		return this.amounts.map((v, i) => {
 			let diff = v - this.amounts[-i]
 			if (diff == 0) return 'TIE'
 			return diff > 0 ? 'WIN' : 'LOSE'
 		})
-	}
-	getLoseCount(array) {
-		this.array.filter((v) => v == 'LOSE').length
-	}
-	splitWith2WinningStreak() {
-		let arr = this.amounts.getHistory().toStoring().split('WIN,WIN,')
-		return arr[arr.length - 1].split(',')
 	}
 }
 
