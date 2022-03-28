@@ -8,15 +8,19 @@ class GG {
 		this.amounts.push(this.INITIAL_AMOUNT)
 	}
 	getBetPosition() {
-		// this.splitWith2WinningStreak()
+		// this.#splitWith2WinningStreak()
 		// return this.
 	}
 	getBetValue() {
 		if (this.amounts.#mapGameHistory(this.amounts.length - 1) == 'WIN')
-			return this.splitWith2WinningStreak().getLastArray().filter((v) => v == 'LOSE').length
+			return this.#splitWith2WinningStreak().getLastArray().filter((v) => v == 'LOSE').length
 		return this.betValue
 	}
-	splitWith2WinningStreak() {
+	setValue(value) {
+		this.amount += value
+		this.amounts.push(this.amount)
+	}
+	#splitWith2WinningStreak() {
 		let arr = this.amounts.#mapGameHistory().toStoring().split('WIN,WIN,')
 		return {
 			getLastArray: ()=> arr[arr.length - 1].split(',')
