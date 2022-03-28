@@ -1,6 +1,7 @@
 import Chibisuke from './method.Chibisuke';
 import Baccarat from './game.Baccarat';
 
+// INFO: バカラに依存したクラス
 class ChibisukeBac extends Chibisuke {
 	constructor() {
 		super()
