@@ -8,7 +8,7 @@ let totalPlayerWins = 0
 let totalBankerWins = 0
 let csv = 'Player,Game Number,Amount'
 let totalResults = []
-const NUMBER_OF_PLAYER = 100
+const NUMBER_OF_PLAYER = 1
 let players = [new GG()]
 let bankruptcyNum = 0
 
