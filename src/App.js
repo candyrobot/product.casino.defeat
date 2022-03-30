@@ -20,7 +20,7 @@ while (numberOfGame <= NUMBER_OF_GAME) {
 		if (result == 'TIE') return;
 		
 		let player = players[players.length - 1]
-		if (Math.random() < .5) {
+		if (false) {
 			player.setValue(result == 'PLAYER' ? player.getBetValue() : -player.getBetValue())
 			if (result == 'PLAYER') winningCount++;
 			console.log(`${numberOfGame} BET: P`, result == 'PLAYER')
