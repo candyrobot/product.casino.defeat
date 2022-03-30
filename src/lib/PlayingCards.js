@@ -10,10 +10,10 @@ class PlayingCards {
 	}
 	createDeck() {
 		// TODO: スートを定義する { num: 1, suit: 'A' }
-		this.cards.push(1,2,3,4,5,6,7,8,9,10,11,12,13)
-		this.cards.push(1,2,3,4,5,6,7,8,9,10,11,12,13)
-		this.cards.push(1,2,3,4,5,6,7,8,9,10,11,12,13)
-		this.cards.push(1,2,3,4,5,6,7,8,9,10,11,12,13)
+		this.cards.push(1,2,3,4) // ,5,6,7,8,9,10,11,12,13
+		this.cards.push(1,2,3,4) // ,5,6,7,8,9,10,11,12,13
+		this.cards.push(1,2,3,4) // ,5,6,7,8,9,10,11,12,13
+		this.cards.push(1,2,3,4) // ,5,6,7,8,9,10,11,12,13
 	}
 	shuffle() {
 		this.cards = shuffle(this.cards)
