@@ -20,7 +20,7 @@ while (numberOfGame <= NUMBER_OF_GAME) {
 		if (result == 'TIE') return;
 		
 		let player = players[players.length - 1]
-		if (false) {
+		if (true) {
 			player.setValue(result == 'PLAYER' ? player.getBetValue() : -player.getBetValue())
 			if (result == 'PLAYER') winningCount++;
 			console.log(`${numberOfGame} BET: P`, result == 'PLAYER')
@@ -43,7 +43,9 @@ while (numberOfGame <= NUMBER_OF_GAME) {
 	let data = baccarat.getResults()
 	totalPlayerWins += data.playerWins
 	totalBankerWins += data.bankerWins
-	// document.write(baccarat.draw(data.scoreboard))
+	setTimeout(()=> {
+		document.write(baccarat.draw(data.scoreboard))
+	}, 1000)
 
 	totalResults = totalResults.concat(data.results)
 }
