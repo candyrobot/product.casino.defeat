@@ -10,9 +10,9 @@ class GGRen {
 			a: [1,3,2,2,4,4],
 			b: [1,3,2,4,2,4,4]
 		}
-		this.currentScores = [] // [{ betValue, result },,,}]
+		this.currentScores = [] // [{ betValue, result: 'W' 'T' 'L' },,,}]
 		this.currentScores.getIncome = function() {}
-		// INFO: 'WWLWWWLLLWLLWWW' という形へ
+		// INFO: 'WWLWWWLLLWLLWWW' という連結文字列へ
 		this.currentScores.getString = function() {
 			return this.map((v) => v.result)
 			.filter((v) => v != 'T')
@@ -20,6 +20,8 @@ class GGRen {
 		}
 	}
 	getBetValue() {
+		// this._splitWith2WinningStreak().getLastSet()
+
 		if (this.currentScores.getIncome() >= 3)
 			return this._reset().betValue
 
@@ -64,9 +66,15 @@ class GGRen {
 		// this._splitWith2WinningStreak()
 		// return this.
 	}
-	setValue(value) {
-		this.amount += value
+	setValue(betValue) {
+		this.amount += betValue
 		this.amounts.push(this.amount)
+		if (betValue === 0)
+			this.currentScores.push({ betValue, result: 'T' })
+		else
+			this.currentScores.push({
+				betValue, result: betValue > 0 ? 'W' : 'L'
+			})
 	}
 
 
@@ -95,10 +103,6 @@ class GGRen {
 		return {
 			getLastSet: ()=> arr[arr.length - 1].split(',')
 		}
-	}
-	_isUnusualBet() {
-		let arr = this._getGameHistory()
-		return arr[arr.length - 1] == 'W' && arr[arr.length - 2] == 'L' && arr[arr.length - 3] == 'L'
 	}
 	_getGameHistory() {
 		return this.amounts.map((v, i) => {
