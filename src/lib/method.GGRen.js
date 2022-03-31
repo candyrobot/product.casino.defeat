@@ -10,16 +10,7 @@ class GGRen {
 			a: [1,3,2,2,4,4],
 			b: [1,3,2,4,2,4,4]
 		}
-		// INFO: isWin ではなく result: 'W' 'T' 'L' にしようかと思ったけど、'T' があると三項演算子が使えないし、'T' 使う場面がないので不採用
-		this.currentScores = [] // [{ betValue, isWin },,,}]
-		this.currentScores.getIncome = function() {
-			return this.reduce((p, v) => v.isWin ? p += v.betValue : p -= v.betValue, 0)
-		}
-		// INFO: 'WWLWWWLLLWLLWWW' という連結文字列へ
-		this.currentScores.getString = function() {
-			return this.map((v) => v.isWin ? 'W' : 'L')
-			.toString().replaceAll(',', '')
-		}
+		this._resetCurrentScores()
 	}
 	getBetValue() {
 		// this._splitWith2WinningStreak().getLastSet()
@@ -28,11 +19,11 @@ class GGRen {
 		let str = this.currentScores.getString()
 
 		switch (str) {
-			case: ''
-			case: 'L'
-			case: 'W'
-			case: 'WL'
-			case: 'WW'
+			case '':
+			case 'L':
+			case 'W':
+			case 'WL':
+			case 'WW':
 				return this.INITIAL_SCORES.a[len]
 		}
 		// 以降、正規表現で"最初がWWLならa"と書くことができる
@@ -65,26 +56,26 @@ class GGRen {
 		let str = this.currentScores.getString()
 
 		if (len >= 3 && this.currentScores.getIncome() >= 3)
-			return this._reset()
+			return this._resetCurrentScores()
 
 		if (new RegExp('^WWWW$').test(str))
-			return this._reset()
+			return this._resetCurrentScores()
 
 		// INFO: 歯止め:
 
 		// INFO: 3連勝したらreset
 		if (new RegExp('^WW.+WWW$').test(str))
-			return this._reset()
+			return this._resetCurrentScores()
 		// INFO: 2連勝1敗2連勝したらreset
 		if (new RegExp('^WW.+WWLWW$').test(str))
-			return this._reset()
+			return this._resetCurrentScores()
 		// ;
 
 		switch (str) {
-			case: 'L'
-				return this._reset()
-			case: 'WL'
-				return this._reset()
+			case 'L':
+				return this._resetCurrentScores()
+			case 'WL':
+				return this._resetCurrentScores()
 		}
 
 		console.warn('例外発生2', this.currentScores)
@@ -105,10 +96,17 @@ class GGRen {
 		else
 			return lastValue
 	}
-	_reset() {
-		this.currentScores = [{
-			betValue: this.INITIAL_SCORES.a[0]
-		}]
+	_resetCurrentScores() {
+		// INFO: isWin ではなく result: 'W' 'T' 'L' にしようかと思ったけど、'T' があると三項演算子が使えないし、'T' 使う場面がないので不採用
+		this.currentScores = [] // [{ betValue, isWin },,,}]
+		this.currentScores.getIncome = function() {
+			return this.reduce((p, v) => v.isWin ? p += v.betValue : p -= v.betValue, 0)
+		}
+		// INFO: 'WWLWWWLLLWLLWWW' という連結文字列へ
+		this.currentScores.getString = function() {
+			return this.map((v) => v.isWin ? 'W' : 'L')
+			.toString().replaceAll(',', '')
+		}
 	}
 	_splitWith2WinningStreak() {
 		let arr = this._getGameHistory().toString().split('WIN,WIN,')
@@ -125,4 +123,4 @@ class GGRen {
 	}
 }
 
-export default GG;
+export default GGRen;
