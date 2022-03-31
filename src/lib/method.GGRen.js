@@ -16,11 +16,24 @@ class GGRen {
 			return this.reduce((prev, v) => prev > v ? prev : v, 0)
 		}
 	}
+	// TODO: WをつかうのかWINから変換するんか
+	// TODO: 正規表現の完成 `^WW .... WWW$` 
 	getBetInfo() {
 		if (this.currentScores.getIncome() >= 3)
 			return this.reset().betValue
+
 		let len = this.currentScores.length
-		let str = this.currentScores.map().toString()
+		let str = this.currentScores.map((v) => v.result)
+			.filter((v) => v != 'TIE').toString()
+
+		// INFO: 歯止め:
+
+		// INFO: 3連勝したらreset
+		if (new RegExp('^WW .... WWW$').test(str))
+			return this.reset().betValue
+
+		// ;
+
 		switch (str) {
 			case: 'L'
 				return this.reset().betValue
@@ -33,7 +46,11 @@ class GGRen {
 		}
 		// 以降、正規表現で"最初がWWLならa"と書くことができる
 		// さらに、INITIAL_SCORESの要素が undefined になったらアルゴリズムを発動すると書ける
-		new RegExp('^WWL').test(str)
+		if (new RegExp('^WWL').test(str)) {
+			this.INITIAL_SCORES.a[len] === undefined ?
+		} else {
+			this.INITIAL_SCORES.b[len] === undefined ?
+		}
 
 		console.warn('例外発生', this.currentScores)
 	}
@@ -43,22 +60,7 @@ class GGRen {
 		}]
 		return this.currentScores[0]
 	}
-	getBetInfo() {
-		if (this.currentScores.length == 0)
-			return this.INITIAL_SCORES.a[0]
-		else if (this.currentScores.length == 1)
-			return this.INITIAL_SCORES.a[1]
-		else if (this.currentScores.length == 2)
-			return this.INITIAL_SCORES.a[2]
-		else if (this.currentScores.length == 3) {
-			if (this.currentScores.find((v) => v.result == 'LOSE'))
-				return this.INITIAL_SCORES.a[3]
-			else
-				return this.INITIAL_SCORES.b[3]
-		}
-	}
 	getBetPosition() {
-		return 1
 		// this._splitWith2WinningStreak()
 		// return this.
 	}
