@@ -17,7 +17,7 @@ class GGRen {
 		}
 	}
 	// TODO: WをつかうのかWINから変換するんか
-	getBetInfo() {
+	getBetValue() {
 		if (this.currentScores.getIncome() >= 3)
 			return this._reset().betValue
 
@@ -63,46 +63,6 @@ class GGRen {
 		// this._splitWith2WinningStreak()
 		// return this.
 	}
-	getBetValue() {
-		if debt >= 3
-			new
-		''
-			this.INITIAL_SCORES[0]
-		'W'
-			this.INITIAL_SCORES[1]
-		'WW'
-			this.INITIAL_SCORES[3]
-		'WWW'
-			this.INITIAL_SCORES[4]
-		'WWWW'
-			new
-		('WWL...'(5) || 'WWWL...'(6) ) && (新高値で2連敗 or 累計2回負け)
-			+= 2
-		('WWL...'(5) || 'WWWL...'(6) ) && (新高値で累計1勝 or 初めに勝ち)
-			-= 1
-
-		'WL'
-			new
-		'WWLW'
-			new
-			これ以外にない。
-		'WWLL'
-			4 // [1,3,2,2,4]基礎譜面WW版続行
-		'WWLLW'
-			new
-			これ以外にない。
-		'WWLLL'
-			4 // 正確には+= 0。 上記の'WWL...'(5)に当てはまるが、後半に当てはまらないので 4 += 0
-		'WWWL'
-			2 // [1,3,2,4,2,4]基礎譜面WWW版続行
-		'WW(W)L...WWW'
-			new
-		'WW(W)L...WWLWW'
-			new
-		// "新高値で2敗すれば次は+=2, 新高値で累積1勝すれば次は-=1"
-		// "新高値" ではなく "同額"
-		// return this.INITIAL_SCORES[0]
-	}
 	setValue(value) {
 		this.amount += value
 		this.amounts.push(this.amount)
@@ -110,7 +70,11 @@ class GGRen {
 
 
 	_getBetGoingThroughAlgorithm() {
-		return 1
+		// 同じ数字をもつscoreだけfilter
+		// さいご2連敗 += 2
+		// 累計1勝: -= 1
+		// else: += 0
+		return 0
 	}
 	_reset() {
 		this.currentScores = [{
