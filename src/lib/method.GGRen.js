@@ -12,8 +12,14 @@ class GGRen {
 		}
 		this.currentScores = [] // [{ betValue, result },,,}]
 		this.currentScores.getIncome = function() {}
+		// INFO: 'WWLWWWLLLWLLWWW' という形へ
 		this.currentScores.getString = function() {
-			return 'WLWLWWW'
+			return this.map((v) => v.result)
+			.filter((v) => v != 'TIE')
+			.map((v) => {
+				if (v === 'WIN') return 'W'
+				if (v === 'LOSE') return 'L'
+			}).toString().replaceAll(',', '')
 		}
 	}
 	// TODO: WをつかうのかWINから変換するんか
@@ -22,8 +28,7 @@ class GGRen {
 			return this._reset().betValue
 
 		let len = this.currentScores.length
-		let str = this.currentScores.map((v) => v.result)
-			.filter((v) => v != 'TIE').toString()
+		let str = this.currentScores.getString()
 
 		if (new RegExp('^WWWW$').test(str))
 			return this._reset().betValue
@@ -77,7 +82,7 @@ class GGRen {
 		if (new RegExp('LL$').test(scores.getString()))
 			return lastValue + 2
 		// 累計1勝: -= 1
-		else if ()
+		else if (this.currentScores.reduce((p, v) => v.result, 0) >= 1)
 			return lastValue - 1
 		// else: += 0
 		else
