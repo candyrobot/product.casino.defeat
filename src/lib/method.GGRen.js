@@ -17,7 +17,6 @@ class GGRen {
 		}
 	}
 	// TODO: WをつかうのかWINから変換するんか
-	// TODO: 正規表現の完成 `^WW .... WWW$` 
 	getBetInfo() {
 		if (this.currentScores.getIncome() >= 3)
 			return this.reset().betValue
@@ -26,10 +25,13 @@ class GGRen {
 		let str = this.currentScores.map((v) => v.result)
 			.filter((v) => v != 'TIE').toString()
 
+		if (new RegExp('^WWWW$').test(str))
+			return this.reset().betValue
+
 		// INFO: 歯止め:
 
 		// INFO: 3連勝したらreset
-		if (new RegExp('^WW .... WWW$').test(str))
+		if (new RegExp('^WW.+WWW$').test(str))
 			return this.reset().betValue
 
 		// ;
