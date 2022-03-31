@@ -10,12 +10,12 @@ class GGRen {
 			a: [1,3,2,2,4,4],
 			b: [1,3,2,4,2,4,4]
 		}
-		this.currentScores = [] // [{ betValue, result: 'W' 'T' 'L' },,,}]
+		// INFO: isWin ではなく result: 'W' 'T' 'L' にしようかと思ったけど、'T' があると三項演算子が使えないし、'T' 使う場面がないので不採用
+		this.currentScores = [] // [{ betValue, isWin },,,}]
 		this.currentScores.getIncome = function() {}
 		// INFO: 'WWLWWWLLLWLLWWW' という連結文字列へ
 		this.currentScores.getString = function() {
-			return this.map((v) => v.result)
-			.filter((v) => v != 'T')
+			return this.map((v) => v.isWin ? 'W' : 'L')
 			.toString().replaceAll(',', '')
 		}
 	}
@@ -86,7 +86,7 @@ class GGRen {
 		if (new RegExp('LL$').test(scores.getString()))
 			return lastValue + 2
 		// 累計1勝: -= 1
-		else if (this.currentScores.reduce((p, v) => v.result, 0) >= 1)
+		else if (this.currentScores.reduce((p, v) => v.isWin ? p++ : p--, 0) >= 1)
 			return lastValue - 1
 		// else: += 0
 		else
@@ -99,7 +99,7 @@ class GGRen {
 		return this.currentScores[0]
 	}
 	_splitWith2WinningStreak() {
-		let arr = this._getGameHistory().toString().split('W,W,')
+		let arr = this._getGameHistory().toString().split('WIN,WIN,')
 		return {
 			getLastSet: ()=> arr[arr.length - 1].split(',')
 		}
@@ -107,8 +107,8 @@ class GGRen {
 	_getGameHistory() {
 		return this.amounts.map((v, i) => {
 			let diff = v - this.amounts[i - 1]
-			if (diff == 0) return 'T'
-			return diff > 0 ? 'W' : 'L'
+			if (diff == 0) return 'TIE'
+			return diff > 0 ? 'WIN' : 'LOSE'
 		})
 	}
 }
