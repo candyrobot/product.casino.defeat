@@ -27,29 +27,11 @@ class GGRen {
 		let len = this.currentScores.length
 		let str = this.currentScores.getString()
 
-		if (len >= 3 && this.currentScores.getIncome() >= 3)
-			return this._reset().betValue
-
-		if (new RegExp('^WWWW$').test(str))
-			return this._reset().betValue
-
-		// INFO: 歯止め:
-
-		// INFO: 3連勝したらreset
-		if (new RegExp('^WW.+WWW$').test(str))
-			return this._reset().betValue
-		// INFO: 2連勝1敗2連勝したらreset
-		if (new RegExp('^WW.+WWLWW$').test(str))
-			return this._reset().betValue
-		// ;
-
 		switch (str) {
+			case: ''
 			case: 'L'
-				return this._reset().betValue
 			case: 'W'
-				return this.INITIAL_SCORES.a[len]
 			case: 'WL'
-				return this._reset().betValue
 			case: 'WW'
 				return this.INITIAL_SCORES.a[len]
 		}
@@ -62,7 +44,7 @@ class GGRen {
 			return this.INITIAL_SCORES.b[len] || this._getBetGoingThroughAlgorithm()
 		}
 
-		console.warn('例外発生', this.currentScores)
+		console.warn('例外発生1', this.currentScores)
 	}
 	getBetPosition() {
 		// this._splitWith2WinningStreak()
@@ -71,12 +53,41 @@ class GGRen {
 	setValue(betValue) {
 		this.amount += betValue
 		this.amounts.push(this.amount)
+
 		if (betValue === 0)
 			this.currentScores.push({ betValue, result: 'T' })
 		else
 			this.currentScores.push({
 				betValue, result: betValue > 0 ? 'W' : 'L'
 			})
+
+		let len = this.currentScores.length
+		let str = this.currentScores.getString()
+
+		if (len >= 3 && this.currentScores.getIncome() >= 3)
+			return this._reset()
+
+		if (new RegExp('^WWWW$').test(str))
+			return this._reset()
+
+		// INFO: 歯止め:
+
+		// INFO: 3連勝したらreset
+		if (new RegExp('^WW.+WWW$').test(str))
+			return this._reset()
+		// INFO: 2連勝1敗2連勝したらreset
+		if (new RegExp('^WW.+WWLWW$').test(str))
+			return this._reset()
+		// ;
+
+		switch (str) {
+			case: 'L'
+				return this._reset()
+			case: 'WL'
+				return this._reset()
+		}
+
+		console.warn('例外発生2', this.currentScores)
 	}
 
 
@@ -98,7 +109,6 @@ class GGRen {
 		this.currentScores = [{
 			betValue: this.INITIAL_SCORES.a[0]
 		}]
-		return this.currentScores[0]
 	}
 	_splitWith2WinningStreak() {
 		let arr = this._getGameHistory().toString().split('WIN,WIN,')
