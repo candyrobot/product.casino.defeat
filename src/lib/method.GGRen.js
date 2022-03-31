@@ -22,11 +22,11 @@ class GGRen {
 	getBetValue() {
 		// this._splitWith2WinningStreak().getLastSet()
 
-		if (this.currentScores.getIncome() >= 3)
-			return this._reset().betValue
-
 		let len = this.currentScores.length
 		let str = this.currentScores.getString()
+
+		if (len >= 3 && this.currentScores.getIncome() >= 3)
+			return this._reset().betValue
 
 		if (new RegExp('^WWWW$').test(str))
 			return this._reset().betValue
