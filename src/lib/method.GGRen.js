@@ -19,50 +19,45 @@ class GGRen {
 	// TODO: WをつかうのかWINから変換するんか
 	getBetInfo() {
 		if (this.currentScores.getIncome() >= 3)
-			return this.reset().betValue
+			return this._reset().betValue
 
 		let len = this.currentScores.length
 		let str = this.currentScores.map((v) => v.result)
 			.filter((v) => v != 'TIE').toString()
 
 		if (new RegExp('^WWWW$').test(str))
-			return this.reset().betValue
+			return this._reset().betValue
 
 		// INFO: 歯止め:
 
 		// INFO: 3連勝したらreset
 		if (new RegExp('^WW.+WWW$').test(str))
-			return this.reset().betValue
+			return this._reset().betValue
 		// INFO: 2連勝1敗2連勝したらreset
 		if (new RegExp('^WW.+WWLWW$').test(str))
-			return this.reset().betValue
+			return this._reset().betValue
 		// ;
 
 		switch (str) {
 			case: 'L'
-				return this.reset().betValue
+				return this._reset().betValue
 			case: 'W'
 				return this.INITIAL_SCORES.a[len]
 			case: 'WL'
-				return this.reset().betValue
+				return this._reset().betValue
 			case: 'WW'
 				return this.INITIAL_SCORES.a[len]
 		}
 		// 以降、正規表現で"最初がWWLならa"と書くことができる
 		// さらに、INITIAL_SCORESの要素が undefined になったらアルゴリズムを発動すると書ける
 		if (new RegExp('^WWL').test(str)) {
-			this.INITIAL_SCORES.a[len] === undefined ?
-		} else {
-			this.INITIAL_SCORES.b[len] === undefined ?
+			return this.INITIAL_SCORES.a[len] || this._getBetGoingThroughAlgorithm()
+		}
+		if (new RegExp('^WWW').test(str)) {
+			return this.INITIAL_SCORES.b[len] || this._getBetGoingThroughAlgorithm()
 		}
 
 		console.warn('例外発生', this.currentScores)
-	}
-	reset() {
-		this.currentScores = [{
-			betValue: this.INITIAL_SCORES.a[0]
-		}]
-		return this.currentScores[0]
 	}
 	getBetPosition() {
 		// this._splitWith2WinningStreak()
@@ -114,7 +109,15 @@ class GGRen {
 	}
 
 
-
+	_getBetGoingThroughAlgorithm() {
+		return 1
+	}
+	_reset() {
+		this.currentScores = [{
+			betValue: this.INITIAL_SCORES.a[0]
+		}]
+		return this.currentScores[0]
+	}
 	_splitWith2WinningStreak() {
 		let arr = this._getGameHistory().toString().split('WIN,WIN,')
 		return {
