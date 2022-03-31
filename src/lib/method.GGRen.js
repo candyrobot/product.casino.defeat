@@ -33,7 +33,9 @@ class GGRen {
 		// INFO: 3連勝したらreset
 		if (new RegExp('^WW.+WWW$').test(str))
 			return this.reset().betValue
-
+		// INFO: 2連勝1敗2連勝したらreset
+		if (new RegExp('^WW.+WWLWW$').test(str))
+			return this.reset().betValue
 		// ;
 
 		switch (str) {
