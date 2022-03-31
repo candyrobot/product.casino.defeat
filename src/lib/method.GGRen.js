@@ -15,14 +15,10 @@ class GGRen {
 		// INFO: 'WWLWWWLLLWLLWWW' という形へ
 		this.currentScores.getString = function() {
 			return this.map((v) => v.result)
-			.filter((v) => v != 'TIE')
-			.map((v) => {
-				if (v === 'WIN') return 'W'
-				if (v === 'LOSE') return 'L'
-			}).toString().replaceAll(',', '')
+			.filter((v) => v != 'T')
+			.toString().replaceAll(',', '')
 		}
 	}
-	// TODO: WをつかうのかWINから変換するんか
 	getBetValue() {
 		if (this.currentScores.getIncome() >= 3)
 			return this._reset().betValue
@@ -95,20 +91,20 @@ class GGRen {
 		return this.currentScores[0]
 	}
 	_splitWith2WinningStreak() {
-		let arr = this._getGameHistory().toString().split('WIN,WIN,')
+		let arr = this._getGameHistory().toString().split('W,W,')
 		return {
 			getLastSet: ()=> arr[arr.length - 1].split(',')
 		}
 	}
 	_isUnusualBet() {
 		let arr = this._getGameHistory()
-		return arr[arr.length - 1] == 'WIN' && arr[arr.length - 2] == 'LOSE' && arr[arr.length - 3] == 'LOSE'
+		return arr[arr.length - 1] == 'W' && arr[arr.length - 2] == 'L' && arr[arr.length - 3] == 'L'
 	}
 	_getGameHistory() {
 		return this.amounts.map((v, i) => {
 			let diff = v - this.amounts[i - 1]
-			if (diff == 0) return 'TIE'
-			return diff > 0 ? 'WIN' : 'LOSE'
+			if (diff == 0) return 'T'
+			return diff > 0 ? 'W' : 'L'
 		})
 	}
 }
