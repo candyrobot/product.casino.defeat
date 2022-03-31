@@ -12,7 +12,9 @@ class GGRen {
 		}
 		// INFO: isWin ではなく result: 'W' 'T' 'L' にしようかと思ったけど、'T' があると三項演算子が使えないし、'T' 使う場面がないので不採用
 		this.currentScores = [] // [{ betValue, isWin },,,}]
-		this.currentScores.getIncome = function() {}
+		this.currentScores.getIncome = function() {
+			return this.reduce((p, v) => v.isWin ? p += v.betValue : p -= v.betValue, 0)
+		}
 		// INFO: 'WWLWWWLLLWLLWWW' という連結文字列へ
 		this.currentScores.getString = function() {
 			return this.map((v) => v.isWin ? 'W' : 'L')
