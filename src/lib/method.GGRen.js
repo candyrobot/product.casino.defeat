@@ -17,31 +17,23 @@ class GGRen {
 		}
 	}
 	getBetInfo() {
-		let len = this.currentScores.length
 		if (this.currentScores.getIncome() >= 3)
 			return this.reset().betValue
-		'L'
-			return this.reset().betValue
-		'W'
-			return this.INITIAL_SCORES.a[len]
-		'WL'
-			return this.reset().betValue
-		'WW'
-			return this.INITIAL_SCORES.a[len]
+		let len = this.currentScores.length
+		let str = this.currentScores.map().toString()
+		switch (str) {
+			case: 'L'
+				return this.reset().betValue
+			case: 'W'
+				return this.INITIAL_SCORES.a[len]
+			case: 'WL'
+				return this.reset().betValue
+			case: 'WW'
+				return this.INITIAL_SCORES.a[len]
+		}
 		// 以降、正規表現で"最初がWWLならa"と書くことができる
 		// さらに、INITIAL_SCORESの要素が undefined になったらアルゴリズムを発動すると書ける
-		'WWL'
-			return this.INITIAL_SCORES.a[len]
-		'WWW'
-			return this.INITIAL_SCORES.b[len]
-		'WWLL'
-			return this.INITIAL_SCORES.a[len]
-		'WWLW'
-			return this.INITIAL_SCORES.a[len]
-		'WWWL'
-			return this.INITIAL_SCORES.b[len]
-		'WWWW'
-			return this.INITIAL_SCORES.b[len]
+		new RegExp('^WWL').test(str)
 
 		console.warn('例外発生', this.currentScores)
 	}
