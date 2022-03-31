@@ -6,15 +6,67 @@ class GGRen {
 		this.amount = this.INITIAL_AMOUNT
 		this.amounts = [] // [int]
 		this.amounts.push(this.INITIAL_AMOUNT)
-		this.INITIAL_SCORES = [1,3,2,4]
-		// this.scores = this.INITIAL_SCORES
-		this.currentSet = [] // [1,3,2,4,4...]
-		this.currentSet.getDebt = function() {}
-		this.currentSet.getHeighestValue = function() {
+		this.INITIAL_SCORES = {
+			a: [1,3,2,2,4,4],
+			b: [1,3,2,4,2,4,4]
+		}
+		this.currentScores = [] // [{ betValue, result },,,}]
+		this.currentScores.getIncome = function() {}
+		this.currentScores.getHeighestValue = function() {
 			return this.reduce((prev, v) => prev > v ? prev : v, 0)
 		}
 	}
+	getBetInfo() {
+		let len = this.currentScores.length
+		if (this.currentScores.getIncome() >= 3)
+			return this.reset().betValue
+		'L'
+			return this.reset().betValue
+		'W'
+			return this.INITIAL_SCORES.a[len]
+		'WL'
+			return this.reset().betValue
+		'WW'
+			return this.INITIAL_SCORES.a[len]
+		// 以降、正規表現で"最初がWWLならa"と書くことができる
+		// さらに、INITIAL_SCORESの要素が undefined になったらアルゴリズムを発動すると書ける
+		'WWL'
+			return this.INITIAL_SCORES.a[len]
+		'WWW'
+			return this.INITIAL_SCORES.b[len]
+		'WWLL'
+			return this.INITIAL_SCORES.a[len]
+		'WWLW'
+			return this.INITIAL_SCORES.a[len]
+		'WWWL'
+			return this.INITIAL_SCORES.b[len]
+		'WWWW'
+			return this.INITIAL_SCORES.b[len]
+
+		console.warn('例外発生', this.currentScores)
+	}
+	reset() {
+		this.currentScores = [{
+			betValue: this.INITIAL_SCORES.a[0]
+		}]
+		return this.currentScores[0]
+	}
+	getBetInfo() {
+		if (this.currentScores.length == 0)
+			return this.INITIAL_SCORES.a[0]
+		else if (this.currentScores.length == 1)
+			return this.INITIAL_SCORES.a[1]
+		else if (this.currentScores.length == 2)
+			return this.INITIAL_SCORES.a[2]
+		else if (this.currentScores.length == 3) {
+			if (this.currentScores.find((v) => v.result == 'LOSE'))
+				return this.INITIAL_SCORES.a[3]
+			else
+				return this.INITIAL_SCORES.b[3]
+		}
+	}
 	getBetPosition() {
+		return 1
 		// this._splitWith2WinningStreak()
 		// return this.
 	}
