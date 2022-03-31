@@ -12,8 +12,8 @@ class GGRen {
 		}
 		this.currentScores = [] // [{ betValue, result },,,}]
 		this.currentScores.getIncome = function() {}
-		this.currentScores.getHeighestValue = function() {
-			return this.reduce((prev, v) => prev > v ? prev : v, 0)
+		this.currentScores.getString = function() {
+			return 'WLWLWWW'
 		}
 	}
 	// TODO: WをつかうのかWINから変換するんか
@@ -70,11 +70,18 @@ class GGRen {
 
 
 	_getBetGoingThroughAlgorithm() {
-		// 同じ数字をもつscoreだけfilter
-		// さいご2連敗 += 2
+		let lastValue = this.currentScores[this.currentScores - 1].betValue
+		// INFO: 同じ数字をもつscoreだけfilter
+		let scores = this.currentScores.filter((v) => v.betValue === lastValue)
+		// INFO: さいご2連敗: += 2
+		if (new RegExp('LL$').test(scores.getString()))
+			return lastValue + 2
 		// 累計1勝: -= 1
+		else if ()
+			return lastValue - 1
 		// else: += 0
-		return 0
+		else
+			return lastValue
 	}
 	_reset() {
 		this.currentScores = [{
