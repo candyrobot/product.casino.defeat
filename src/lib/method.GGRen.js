@@ -101,7 +101,6 @@ class GGRen {
 		let lastValue = this.currentScores[this.currentScores.length - 1].betValue
 		// INFO: 同じ数字をもつscoreだけfilter
 		let scores = this.currentScores.filter((v) => v.betValue === lastValue)
-		debugger
 
 		// INFO: さいご2連敗: += 2
 		if (new RegExp('LL$').test(scores.getString()))
