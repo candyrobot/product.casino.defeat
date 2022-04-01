@@ -18,7 +18,7 @@ while (players.length <= NUMBER_OF_PLAYER) {
 		// if (result == 'TIE') return;
 		
 		let player = players[players.length - 1]
-		player.setValue(result == 'BANKER' ? player.getBetValue() : -player.getBetValue())
+		player.putScore(result == 'BANKER' ? player.getBetValue() : -player.getBetValue())
 
 		console.log(`Player ${players.length}, ${player.amounts.length}, ${player.amount}`)
 		csv += `\nPlayer ${players.length}, ${player.amounts.length}, ${player.amount}`

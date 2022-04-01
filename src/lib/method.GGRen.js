@@ -1,3 +1,16 @@
+// INFO: GGRenだけのための拡張。本来はクラスにすべき:
+Array.prototype.getIncome = function() {
+	return this.reduce((p, v) => v.isWin ? p += v.betValue : p -= v.betValue, 0)
+}
+
+// INFO: 'WWLWWWLLLWLLWWW' という連結文字列へ
+Array.prototype.getString = function() {
+	return this.map((v) => v.isWin ? 'W' : 'L')
+	.toString().replaceAll(',', '')
+}
+
+//;
+
 class GGRen {
 	constructor() {
 		this.INITIAL_BET_VALUE = 1
@@ -10,7 +23,9 @@ class GGRen {
 			a: [1,3,2,2,4,4],
 			b: [1,3,2,4,2,4,4]
 		}
-		this._resetCurrentScores()
+		// INFO: expect [{ betValue, isWin },,,}]
+		// isWin ではなく result: 'W' 'T' 'L' にしようかと思ったけど、'T' があると三項演算子が使えないし、'T' 使う場面がないので不採用
+		this.currentScores = []
 	}
 	getBetValue() {
 		// this._splitWith2WinningStreak().getLastSet()
@@ -41,51 +56,53 @@ class GGRen {
 		// this._splitWith2WinningStreak()
 		// return this.
 	}
-	setValue(betValue) {
-		this.amount += betValue
+	putScore(income) {
+		this.amount += income
 		this.amounts.push(this.amount)
 
-		if (betValue === 0)
-			this.currentScores.push({ betValue, result: 'T' })
-		else
-			this.currentScores.push({
-				betValue, result: betValue > 0 ? 'W' : 'L'
-			})
+		// INFO: TIE
+		if (income === 0)
+			return
+
+		this.currentScores.push({
+			betValue: Math.abs(income), isWin: income > 0
+		})
 
 		let len = this.currentScores.length
 		let str = this.currentScores.getString()
+		
+		console.log(str, this.currentScores)
 
-		if (len >= 3 && this.currentScores.getIncome() >= 3)
-			return this._resetCurrentScores()
+		if (len >= 4 && this.currentScores.getIncome() >= 3)
+			return this.currentScores = []
 
 		if (new RegExp('^WWWW$').test(str))
-			return this._resetCurrentScores()
+			return this.currentScores = []
 
 		// INFO: 歯止め:
 
 		// INFO: 3連勝したらreset
 		if (new RegExp('^WW.+WWW$').test(str))
-			return this._resetCurrentScores()
+			return this.currentScores = []
 		// INFO: 2連勝1敗2連勝したらreset
 		if (new RegExp('^WW.+WWLWW$').test(str))
-			return this._resetCurrentScores()
+			return this.currentScores = []
 		// ;
 
 		switch (str) {
 			case 'L':
-				return this._resetCurrentScores()
+				return this.currentScores = []
 			case 'WL':
-				return this._resetCurrentScores()
+				return this.currentScores = []
 		}
-
-		console.warn('例外発生2', this.currentScores)
 	}
 
-
 	_getBetGoingThroughAlgorithm() {
-		let lastValue = this.currentScores[this.currentScores - 1].betValue
+		let lastValue = this.currentScores[this.currentScores.length - 1].betValue
 		// INFO: 同じ数字をもつscoreだけfilter
 		let scores = this.currentScores.filter((v) => v.betValue === lastValue)
+		debugger
+
 		// INFO: さいご2連敗: += 2
 		if (new RegExp('LL$').test(scores.getString()))
 			return lastValue + 2
@@ -95,18 +112,6 @@ class GGRen {
 		// else: += 0
 		else
 			return lastValue
-	}
-	_resetCurrentScores() {
-		// INFO: isWin ではなく result: 'W' 'T' 'L' にしようかと思ったけど、'T' があると三項演算子が使えないし、'T' 使う場面がないので不採用
-		this.currentScores = [] // [{ betValue, isWin },,,}]
-		this.currentScores.getIncome = function() {
-			return this.reduce((p, v) => v.isWin ? p += v.betValue : p -= v.betValue, 0)
-		}
-		// INFO: 'WWLWWWLLLWLLWWW' という連結文字列へ
-		this.currentScores.getString = function() {
-			return this.map((v) => v.isWin ? 'W' : 'L')
-			.toString().replaceAll(',', '')
-		}
 	}
 	_splitWith2WinningStreak() {
 		let arr = this._getGameHistory().toString().split('WIN,WIN,')
