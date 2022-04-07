@@ -5,6 +5,12 @@ class Baccarat {
 		this.playingCards = new PlayingCards(8).shuffle().get()
 		// console.log(this.playingCards)
 		this.usedCards = []
+		this.usedCards.getLowCards = function() {
+			return this.filter((v) => [1,2,3,4].find((n) => n === v ) )
+		}
+		this.usedCards.getHighCards = function() {
+			return this.filter((v) => [6,7,8,9].find((n) => n === v ) )
+		}
 		this.playingLimitNum = 104 // Math.random 70~130
 		this.results = [] // string 'PLAYER' 'TIE' 'BANKER'
 		// INFO: Playerがn連勝だったらtrue

@@ -14,21 +14,39 @@ let players = [new Chibisuke()]
 let bankruptcyNum = 0
 let winningCount = 0
 
+// INFO: for counting
+function getPosition(usedCards) {
+	let lowCards = usedCards.getLowCards()
+	let highCards = usedCards.getHighCards()
+	if (lowCards.length - highCards.length >= 18) {
+		console.log('low:hight', lowCards.length, highCards.length)
+		return 'PLAYER'
+	} else if (highCards.length - lowCards.length >= 18) {
+		console.log('low:hight', lowCards.length, highCards.length)
+		return 'BANKER'
+	} else
+		return 'LOOK'
+}
+
 while (numberOfGame <= NUMBER_OF_GAME) {
-	baccarat = new Baccarat().playGames((result, results) => {
-		// if (result == 'TIE' || results.isPlayerStreak(3)) return;
+	baccarat = new Baccarat().playGames((result, history, usedCards) => {
+		// if (result == 'TIE' || history.isPlayerStreak(3)) return;
 		if (result == 'TIE') return;
 		
+		let position = getPosition(usedCards)
+		if (position === 'LOOK') return;
+		
 		let player = players[players.length - 1]
-		if (true) {
+		if (position === 'PLAYER') {
 			player.setValue(result == 'PLAYER' ? player.getBetValue() : -player.getBetValue())
 			if (result == 'PLAYER') winningCount++;
 			console.log(`${numberOfGame} BET: P`, result == 'PLAYER')
-		} else {
+		} else if (position === 'BANKER') {
 			player.setValue(result == 'BANKER' ? player.getBetValue() : -player.getBetValue())
 			if (result == 'BANKER') winningCount++;
 			console.log(`${numberOfGame} BET: B`, result == 'BANKER')
-		}
+		} else
+			console.warn('例外発生')
 		
 		csv += `\nPlayer ${players.length}, ${player.amounts.length}, ${player.amount}`
 		
