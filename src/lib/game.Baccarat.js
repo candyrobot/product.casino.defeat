@@ -6,7 +6,7 @@ class Baccarat {
 		// console.log(this.playingCards)
 		this.usedCards = []
 		this.playingLimitNum = 104 // Math.random 70~130
-		this.results = []
+		this.results = [] // string 'PLAYER' 'TIE' 'BANKER'
 		// INFO: Playerがn連勝だったらtrue
 		this.results.isPlayerStreak = function(n) {
 			let arr = this.filter((v) => v != 'TIE')
@@ -58,7 +58,7 @@ class Baccarat {
 	playGames(doWhenPlayed) {
 		do {
 			let result = this.playGame()
-			doWhenPlayed(result, this.results)
+			doWhenPlayed(result, this.results, this.usedCards)
 			this.results.push(result)
 		} while (this.playingLimitNum < this.playingCards.length)
 		return this
