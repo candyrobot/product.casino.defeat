@@ -16,13 +16,14 @@ let winningCount = 0
 
 // INFO: for counting
 function getPosition(usedCards) {
-	let lowCards = usedCards.getLowCards()
-	let highCards = usedCards.getHighCards()
-	if (lowCards.length - highCards.length >= 18) {
-		console.log('low:hight', lowCards.length, highCards.length)
+	let usedLowCards = usedCards.getLowCards()
+	let usedHighCards = usedCards.getHighCards()
+	let unUserdDeckNum = (8 * 52 - usedCards.length) / 52
+	if ((usedHighCards.length - usedLowCards.length) / unUserdDeckNum >= 6) {
+		console.log('low:hight', usedLowCards.length, usedHighCards.length)
 		return 'PLAYER'
-	} else if (highCards.length - lowCards.length >= 18) {
-		console.log('low:hight', lowCards.length, highCards.length)
+	} else if ((usedLowCards.length - usedHighCards.length) / unUserdDeckNum >= 6) {
+		console.log('low:hight', usedLowCards.length, usedHighCards.length)
 		return 'BANKER'
 	} else
 		return 'LOOK'
@@ -61,9 +62,9 @@ while (numberOfGame <= NUMBER_OF_GAME) {
 	let data = baccarat.getResults()
 	totalPlayerWins += data.playerWins
 	totalBankerWins += data.bankerWins
-	setTimeout(()=> {
-		document.write(baccarat.draw(data.scoreboard))
-	}, 1000)
+	// setTimeout(()=> {
+	// 	document.write(baccarat.draw(data.scoreboard))
+	// }, 1000)
 
 	totalResults = totalResults.concat(data.results)
 }
