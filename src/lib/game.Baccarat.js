@@ -3,14 +3,7 @@ import PlayingCards from './PlayingCards'
 class Baccarat {
 	constructor() {
 		this.playingCards = new PlayingCards(8).shuffle().get()
-		// console.log(this.playingCards)
 		this.usedCards = []
-		this.usedCards.getLowCards = function() {
-			return this.filter((v) => [1,2,3,4].find((n) => n === v ) )
-		}
-		this.usedCards.getHighCards = function() {
-			return this.filter((v) => [6,7,8,9].find((n) => n === v ) )
-		}
 		this.playingLimitNum = 104 // Math.random 70~130
 		this.results = [] // string 'PLAYER' 'TIE' 'BANKER'
 		// INFO: Playerがn連勝だったらtrue
@@ -18,15 +11,38 @@ class Baccarat {
 			let arr = this.filter((v) => v != 'TIE')
 			return !arr.slice(-n).find((v) => v == 'BANKER')
 		}
+		this.counting = 0
 	}
 	disCard() {
 	}
 	burnCard() {
 	}
+	_setCountWithNoasArk(n) {
+		switch (true) {
+			case [1,2,3].find((v) => v === n) !== undefined:
+				this.counting += 1
+				break
+			case [4].find((v) => v === n) !== undefined:
+				this.counting += 2
+				break
+			case [5,7,8].find((v) => v === n) !== undefined:
+				this.counting -= 1
+				break
+			case [6].find((v) => v === n) !== undefined:
+				this.counting -= 2
+				break
+		}
+	}
+	getCount() {
+		return this.counting
+	}
 	dealCard() {
 		let n = this.playingCards.shift()
 		n = n >= 10 ? 0 : n
 		this.usedCards.push(n)
+
+		this._setCountWithNoasArk(n)
+
 		return n
 	}
 	playGame() {
