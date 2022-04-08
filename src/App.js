@@ -31,10 +31,10 @@ function getPosition(usedCards) {
 
 while (numberOfGame <= NUMBER_OF_GAME) {
 	baccarat = new Baccarat().playGames((result, history, usedCards) => {
-		// if (result == 'TIE' || history.isPlayerStreak(3)) return;
+		if (result == 'TIE' || history.isPlayerStreak(3)) return;
 		if (result == 'TIE') return;
 		
-		let position = getPosition(usedCards)
+		let position = 'BANKER' // getPosition(usedCards)
 		if (position === 'LOOK') return;
 		
 		let player = players[players.length - 1]
@@ -43,7 +43,7 @@ while (numberOfGame <= NUMBER_OF_GAME) {
 			if (result == 'PLAYER') winningCount++;
 			console.log(`${numberOfGame} BET: P`, result == 'PLAYER')
 		} else if (position === 'BANKER') {
-			player.setValue(result == 'BANKER' ? player.getBetValue() : -player.getBetValue())
+			player.setValue(result == 'BANKER' ? player.getBetValue() * .95 : -player.getBetValue())
 			if (result == 'BANKER') winningCount++;
 			console.log(`${numberOfGame} BET: B`, result == 'BANKER')
 		} else
@@ -62,9 +62,9 @@ while (numberOfGame <= NUMBER_OF_GAME) {
 	let data = baccarat.getResults()
 	totalPlayerWins += data.playerWins
 	totalBankerWins += data.bankerWins
-	// setTimeout(()=> {
-	// 	document.write(baccarat.draw(data.scoreboard))
-	// }, 1000)
+	setTimeout(()=> {
+		document.write(baccarat.draw(data.scoreboard))
+	}, 1000)
 
 	totalResults = totalResults.concat(data.results)
 }
