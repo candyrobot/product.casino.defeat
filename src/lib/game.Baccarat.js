@@ -72,7 +72,9 @@ class Baccarat {
 	getResults() {
 		let playerWins = this.results.filter((v) => v == 'PLAYER').length
 		let bankerWins = this.results.filter((v) => v == 'BANKER').length
-		let scoreboard = this.results.reduce((prev, v) => {
+		let scoreboard = this.results
+		// .filter((v, i) => !(i % 4))
+		.reduce((prev, v) => {
 			if (v == 'TIE')
 				return prev
 			let lastCol = prev[prev.length - 1]
