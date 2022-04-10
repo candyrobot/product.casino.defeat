@@ -10,6 +10,7 @@ class PlayingCards {
 	}
 	createDeck() {
 		// TODO: スートを定義する { num: 1, suit: 'A' }
+		// INFO: すべて同じ数字にすると全てTIEになるので無限ループする
 		this.cards.push(1,2,3,4,5,6,7,8,9,10,11,12,13)
 		this.cards.push(1,2,3,4,5,6,7,8,9,10,11,12,13)
 		this.cards.push(1,2,3,4,5,6,7,8,9,10,11,12,13)

@@ -27,9 +27,9 @@ function getPosition() {
 
 while (numberOfGame <= NUMBER_OF_GAME) {
 	baccarat = new Baccarat()
-	baccarat.playGames((result, history, usedCards) => {
-		if (result == 'TIE' || history.isPlayerStreak(3)) return;
-		// if (result == 'TIE') return;
+	baccarat.playGames((result, history) => {
+		// if (result == 'TIE' || history.isPlayerStreak(3)) return;
+		if (result == 'TIE') return;
 		
 		let position = getPosition(usedCards)
 		if (position === 'LOOK') return;
