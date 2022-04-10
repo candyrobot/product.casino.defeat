@@ -31,7 +31,7 @@ while (numberOfGame <= NUMBER_OF_GAME) {
 		// if (result == 'TIE' || history.isPlayerStreak(3)) return;
 		if (result == 'TIE') return;
 		
-		let position = getPosition(usedCards)
+		let position = Math.random() < .5 ? 'BANKER' : 'PLAYER' // getPosition()
 		if (position === 'LOOK') return;
 		
 		let player = players[players.length - 1]
