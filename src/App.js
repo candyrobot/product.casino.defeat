@@ -25,13 +25,24 @@ function getPosition() {
 		return 'LOOK'
 }
 
+// class PatternAnalyzer {}
+function foretell(history) {
+	// history.
+	switch (true) {
+		case /PPB$/.test(str):
+			return 'BANKER'
+			break;
+	}
+}
+
 while (numberOfGame <= NUMBER_OF_GAME) {
 	baccarat = new Baccarat()
 	baccarat.playGames((result, history) => {
 		// if (result == 'TIE' || history.isPlayerStreak(3)) return;
 		if (result == 'TIE') return;
 		
-		let position = Math.random() < .5 ? 'BANKER' : 'PLAYER' // getPosition()
+		// let position = Math.random() < .5 ? 'BANKER' : 'PLAYER' // getPosition()
+		let position = foretell(history)
 		if (position === 'LOOK') return;
 		
 		let player = players[players.length - 1]
