@@ -27,12 +27,26 @@ function getPosition() {
 
 // class PatternAnalyzer {}
 function foretell(history) {
-	// history.
+	let str = history.filter((v) => v !== 'TIE').map((v) => {
+		if (v === 'BANKER')
+			return 'B'
+		else if (v === 'PLAYER')
+			return 'P'
+		else
+			debugger
+	}).toString().replaceAll(',', '')
+	console.log('str', str)
 	switch (true) {
 		case /PPB$/.test(str):
 			return 'BANKER'
-			break;
+			break
+		case /BBP$/.test(str):
+			return 'PLAYER'
+			break
+		default:
+			return 'LOOK'
 	}
+	debugger
 }
 
 while (numberOfGame <= NUMBER_OF_GAME) {
@@ -70,9 +84,9 @@ while (numberOfGame <= NUMBER_OF_GAME) {
 	let data = baccarat.getResults()
 	totalPlayerWins += data.playerWins
 	totalBankerWins += data.bankerWins
-	// setTimeout(()=> {
-	// 	document.write(baccarat.draw(data.scoreboard))
-	// }, 1000)
+	setTimeout(()=> {
+		document.write(baccarat.draw(data.scoreboard))
+	}, 1000)
 
 	totalResults = totalResults.concat(data.results)
 }
