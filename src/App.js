@@ -86,9 +86,10 @@ while (numberOfGame < NUMBER_OF_GAME) {
 	let data = baccarat.getResults()
 	totalPlayerWins += data.playerWins
 	totalBankerWins += data.bankerWins
-	setTimeout(()=> {
-		document.write(baccarat.draw(data.scoreboard))
-	}, 1000)
+	// INFO: なんか無限ループなることあるから外に出してあげたほうがいいかも
+	// setTimeout(()=> {
+	// 	document.write(baccarat.draw(data.scoreboard))
+	// }, 1000)
 
 	totalResults = totalResults.concat(data.results)
 }
