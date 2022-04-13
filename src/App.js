@@ -49,9 +49,11 @@ function foretell(history) {
 	debugger
 }
 
-while (numberOfGame <= NUMBER_OF_GAME) {
+while (numberOfGame < NUMBER_OF_GAME) {
 	baccarat = new Baccarat()
 	baccarat.playGames((result, history) => {
+		if (numberOfGame >= NUMBER_OF_GAME) return;
+
 		// if (result == 'TIE' || history.isPlayerStreak(3)) return;
 		if (result == 'TIE') return;
 		
