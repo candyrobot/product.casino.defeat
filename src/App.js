@@ -37,12 +37,30 @@ function foretell(history) {
 	}).toString().replaceAll(',', '')
 	console.log('str', str)
 	switch (true) {
-		case /PPB$/.test(str):
+		// case /BBB$/.test(str):
+		// 	return 'BANKER'
+		// 	break
+		case /PBBPP$/.test(str):
 			return 'BANKER'
 			break
-		case /BBP$/.test(str):
-			return 'PLAYER'
-			break
+		// case /PPB$/.test(str):
+		// 	return 'BANKER'
+		// 	break
+		// case /BBP$/.test(str):
+		// 	return 'PLAYER'
+		// 	break
+		// case /PPP$/.test(str):
+		// 	return 'BANKER'
+		// 	break
+		// case /BBB$/.test(str):
+		// 	return 'PLAYER'
+		// 	break
+		// case /PBP$/.test(str):
+		// 	return 'BANKER'
+		// 	break
+		// case /BPB$/.test(str):
+		// 	return 'PLAYER'
+		// 	break
 		default:
 			return 'LOOK'
 	}
