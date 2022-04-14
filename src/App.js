@@ -40,9 +40,15 @@ function foretell(history) {
 		// case /BBB$/.test(str):
 		// 	return 'BANKER'
 		// 	break
-		case /PBBPP$/.test(str):
-			return 'BANKER'
+		// case /PPPPPP$/.test(str):
+		// 	return 'BANKER'
+		// 	break
+		case /BBBBBB$/.test(str):
+			return 'PLAYER'
 			break
+		// case /PBBPP$/.test(str):
+		// 	return 'BANKER'
+		// 	break
 		// case /PPB$/.test(str):
 		// 	return 'BANKER'
 		// 	break
