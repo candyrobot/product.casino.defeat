@@ -8,23 +8,36 @@ let totalPlayerWins = 0
 let totalBankerWins = 0
 let csv = 'Player,Game Number,Amount'
 let totalResults = []
-const NUMBER_OF_PLAYER = 500
+const NUMBER_OF_GAME = 10000
+let numberOfGame = 0
 let players = [new Chibisuke()]
 let bankruptcyNum = 0
+let winningCount = 0
 
-while (players.length <= NUMBER_OF_PLAYER) {
+while (numberOfGame <= NUMBER_OF_GAME) {
 	baccarat = new Baccarat().playGames((result, results) => {
-		if (result == 'TIE' || results.isPlayerStreak(3)) return;
-		// if (result == 'TIE') return;
+		// if (result == 'TIE' || results.isPlayerStreak(3)) return;
+		if (result == 'TIE') return;
 		
 		let player = players[players.length - 1]
-		player.setValue(result == 'PLAYER' ? -player.getBetValue() : player.getBetValue())
+		if (Math.random() < .5) {
+			player.setValue(result == 'PLAYER' ? player.getBetValue() : -player.getBetValue())
+			if (result == 'PLAYER') winningCount++;
+			console.log(`${numberOfGame} BET: P`, result == 'PLAYER')
+		} else {
+			player.setValue(result == 'BANKER' ? player.getBetValue() : -player.getBetValue())
+			if (result == 'BANKER') winningCount++;
+			console.log(`${numberOfGame} BET: B`, result == 'BANKER')
+		}
+		
 		csv += `\nPlayer ${players.length}, ${player.amounts.length}, ${player.amount}`
+		
 		if (player.amount > 0 && player.amount < player.INITIAL_AMOUNT * 2);
 		else {
 			if (player.amount <= 0) bankruptcyNum++;
 			players.push(new Chibisuke())
 		}
+		numberOfGame++
 	})
 
 	let data = baccarat.getResults()
@@ -36,7 +49,8 @@ while (players.length <= NUMBER_OF_PLAYER) {
 }
 
 // console.log(csv)
-console.log(`${bankruptcyNum} / ${NUMBER_OF_PLAYER} 破産確率 ${bankruptcyNum/NUMBER_OF_PLAYER*100}%`)
+console.log(`勝率 ${winningCount / NUMBER_OF_GAME * 100}%`)
+console.log(`${bankruptcyNum} / ${players.length} 破産確率 ${bankruptcyNum/players.length*100}%`)
 
 /////////////////////////////////////////////////////////////////
 
