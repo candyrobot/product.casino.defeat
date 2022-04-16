@@ -3,6 +3,33 @@ import './App.css';
 import Baccarat from './lib/game.Baccarat';
 import Chibisuke from './lib/method.Chibisuke';
 
+
+// ベッティングシステム
+
+
+let bj = new Blackjack()
+
+let income = bj.play(betValue)
+income // undefined: end of shoe
+income number // 0以上。 blackjack, サレンダーも表現する
+
+// dealer.setBet(1)
+// let dealing = dealer.deal()
+
+// dealing.playerCards
+// dealing.dealerCard
+
+// dealer
+
+
+
+
+
+
+
+
+
+
 let baccarat = null
 let totalPlayerWins = 0
 let totalBankerWins = 0
