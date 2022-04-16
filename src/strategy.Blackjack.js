@@ -31,12 +31,13 @@ class StrategyBlackjack {
 		}
 	}
 	getAction(playerCards, dealerCard) {
-		let playerNumber = playerCards.reduce((p, v) => p + v, 0)
-		if (this.checkCards(playerCards) === 'Pair' && playerCards[0] === 2)
-			let d = { 2: 'S', 3: 'H' }
-			d[dealerCard]
-
-
+		let playerSumNum = playerCards.reduce((p, v) => p + v, 0)
+		if (this.checkCards(playerCards) === 'Pair')
+			return this.strategyPair[playerSumNum][dealerCard]
+		else if (this.checkCards(playerCards) === 'IncludedA')
+			return this.strategySoft[playerSumNum][dealerCard]
+		else
+			return this.strategy[playerSumNum][dealerCard]
 	}
 	// @return string 'Pair' 'IncludedA'
 	checkCards(playerCards) {
