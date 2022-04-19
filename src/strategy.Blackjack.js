@@ -30,6 +30,9 @@ class StrategyBlackjack {
 			17: { 2:'H',3:'H',4:'H',5:'H',6:'H',7:'H',8:'H',9:'H',10:'H',1:'H' },
 		}
 	}
+	/**
+	 * @return {string} 'H' 'S' 'P'
+	 */
 	getAction(playerCards, dealerCard) {
 		let playerSumNum = playerCards.reduce((p, v) => p + v, 0)
 		if (this.checkCards(playerCards) === 'Pair')
