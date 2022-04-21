@@ -1,7 +1,7 @@
 import PlayingCards from './PlayingCards'
 import StrategyBlackjack from './strategy.Blackjack'
 
-// TODO: 52 * 8 - 52 * 2 になったら Blackjack.play()がundefindを返す
+// TODO: Doubledownフラグをstatesやresultsにいれてあげる必要がある
 // TODO: カウンティングするんだったら
 	// - usedCardsに含まれてしまうからdealInitのときはdealerは1枚しか引いてはないけない
 	// - それか
@@ -32,33 +32,37 @@ class PlayerHands {
 	play() {
 		let cards = this.hands[this.playingIndex]
 
-		if (cards[0] === 1 && cards[1] === 10 || cards[0] === 10 && cards[1] === 1)
+		if (cards[0] === 1 && cards[1] === 10 || cards[0] === 10 && cards[1] === 1) {
 			this.states.push('Blackjack')
 			return this._nextHand()
+		}
 
 		let action = this.strategyBlackjack.getAction(cards, this.dealerCard)
+		console.log('index,P,D,Action', this.playingIndex, cards, this.dealerCard, action)
 
 		switch (action) {
 			case 'H':
 				cards.push(playingCards.dealCard())
 				if (this._isBust(cards)) {
-					this.states.push('Lose')
+					this.states.push('Bust')
 					return this._nextHand()
 				} else
 					return this.play()
 			case 'S':
 				let sum = cards.reduce((p, v) => p + (v === 1 ? 11 : v), 0)
 				if (sum > 21)
-					console.warn('例外発生. 21を超えたらAを1として扱う処理を追記')
+					sum = cards.reduce((p, v) => p + v, 0)
 				this.states.push(sum)
 				return this._nextHand()
 			case 'P':
 				let splitedIndex = this.hands.length
-				this.hands[splitedIndex][cards.shift()] // split.
+				this.hands[splitedIndex] = [cards.shift()] // split.
 				
 				cards.push(playingCards.dealCard())
 				this.hands[splitedIndex].push(playingCards.dealCard())
 				return this.play()
+			case 'D':
+				console.warn('未記入')
 		}
 
 		console.warn('例外発生')
@@ -87,7 +91,10 @@ class DealerHand {
 		this.cards = dealerCards
 	}
 	play() {
-		while (this.cards.reduce((p, v) => p + (v === 1 ? 11 : v), 0) <= 16)
+		while (
+			this.cards.reduce((p, v) => p + (v === 1 ? 11 : v), 0) <= 16 ||
+			this.cards.reduce((p, v) => p + (v === 1 ? 11 : v), 0) > 21 && this.cards.reduce((p, v) => p + v, 0) <= 16
+		)
 			this.cards.push(playingCards.dealCard())
 	}
 	hasBlackjack() {
@@ -137,11 +144,13 @@ class Blackjack {
 		// INFO: ハンドをプレイ。ディーラもハンドをプレイ。
 
 		let states = new PlayerHands(playerCards, dealerCards[0]).play() // ['Blackjack', 18, 21, 'Bust']
+		console.log('states', states)
 
 		let dealer = new DealerHand(dealerCards)
 		dealer.play()
+		console.log('dealer', dealer)
 
-		let results = [] // ['Blackjack', 'Lose', 'Win', 'Lose']
+		let results = [] // ['Blackjack', 'Lose', 'Win', 'Lose', 'Push']
 
 		// Q: handがナイス21、ディーラーが10,1のbackjackなら？
 		if (dealer.hasBlackjack())
@@ -157,6 +166,7 @@ class Blackjack {
 			})
 		else
 			results = states.map((v) => {
+				console.log(333, v, dealer.sum())
 				if (v === 'Bust')
 					return 'Lose'
 				else if (typeof v === 'number')
@@ -169,6 +179,7 @@ class Blackjack {
 				else
 					return v // expected 'Blackjack'
 			})
+		console.log('dealer.hasBlackjack', dealer.hasBlackjack(), 'dealer.hasBust', dealer.hasBust(), 'results', results)
 
 
 		// INFO: 結果に基づき収支を集計
@@ -178,12 +189,14 @@ class Blackjack {
 		income = results.reduce((p, v) => {
 			if (v === 'Blackjack')
 				return n * 1.5 + p
-			else if ('Win')
+			else if (v === 'Win')
 				return n + p
-			else if ('Lose')
+			else if (v === 'Lose')
+				return -n + p
+			else if (v === 'Push')
 				return 0 + p
 			else
-				console.warn('例外発生')
+				console.warn('例外発生', v)
 		}, 0)
 
 		return {
