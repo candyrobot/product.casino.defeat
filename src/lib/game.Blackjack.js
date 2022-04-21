@@ -67,7 +67,17 @@ class PlayerHands {
 				this.hands[splitedIndex].push(playingCards.dealCard())
 				return this.play()
 			case 'D':
-				console.warn('未記入')
+				cards.push(playingCards.dealCard())
+				console.log('Double:', cards)
+				if (this._isBust(cards)) {
+					this.states.push({ isDouble: true, player: 'Bust' })
+				} else {
+					let sum = cards.reduce((p, v) => p + (v === 1 ? 11 : v), 0)
+					if (sum > 21)
+						sum = cards.reduce((p, v) => p + v, 0)
+					this.states.push({ isDouble: true, player: sum })
+				}
+				return this._nextHand()
 		}
 
 		console.warn('例外発生')
@@ -199,7 +209,7 @@ class Blackjack {
 					console.warn('例外発生')
 				return v
 			})
-		console.log('dealer.hasBlackjack:', dealer.hasBlackjack(), 'dealer.hasBust:', dealer.hasBust(), 'results:', results)
+		console.log('dealer.hasBlackjack:', dealer.hasBlackjack(), 'dealer.hasBust:', dealer.hasBust())
 
 
 		// INFO: 結果に基づき収支を集計
