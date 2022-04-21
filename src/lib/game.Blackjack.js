@@ -92,7 +92,8 @@ class DealerHand {
 	}
 	hasBlackjack() {
 		return this.cards.length === 2 &&
-			cards[0] === 1 && cards[1] === 10 || cards[0] === 10 && cards[1] === 1
+			this.cards[0] === 1  && this.cards[1] === 10 ||
+			this.cards[0] === 10 && this.cards[1] === 1
 	}
 	hasBust() {
 		// INFO: Aは1扱い
@@ -112,7 +113,7 @@ class Blackjack {
 	constructor() {}
 	/**
 	 * @param {number} n - betValue
-	 * @return {object | undefined} - undefined: end of shoe
+	 * @return {object | undefined} - undefined: end of shoe, 0以上: blackjack、サレンダーも表現する
 	 *   { income: number, results: Array ['Win' 'Lose' 'Blackjack' 'Push'] }
 	 */
 	play(n) {
@@ -211,5 +212,4 @@ class Blackjack {
 	// }
 }
 
-
-
+export default Blackjack

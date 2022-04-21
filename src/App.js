@@ -1,25 +1,15 @@
 import logo from './logo.svg';
 import './App.css';
-import Baccarat from './lib/game.Baccarat';
+import Blackjack from './lib/game.Blackjack';
 import Chibisuke from './lib/method.Chibisuke';
 
 
 // ベッティングシステム
+let betValue = 2
 
+let data = new Blackjack().play(betValue)
 
-let bj = new Blackjack()
-
-let income = bj.play(betValue)
-income // undefined: end of shoe
-income number // 0以上。 blackjack, サレンダーも表現する
-
-// dealer.setBet(1)
-// let dealing = dealer.deal()
-
-// dealing.playerCards
-// dealing.dealerCard
-
-// dealer
+console.log(data)
 
 
 
@@ -28,56 +18,54 @@ income number // 0以上。 blackjack, サレンダーも表現する
 
 
 
+// let baccarat = null
+// let totalPlayerWins = 0
+// let totalBankerWins = 0
+// let csv = 'Player,Game Number,Amount'
+// let totalResults = []
+// const NUMBER_OF_GAME = 10000
+// let numberOfGame = 0
+// let players = [new Chibisuke()]
+// let bankruptcyNum = 0
+// let winningCount = 0
 
-
-let baccarat = null
-let totalPlayerWins = 0
-let totalBankerWins = 0
-let csv = 'Player,Game Number,Amount'
-let totalResults = []
-const NUMBER_OF_GAME = 10000
-let numberOfGame = 0
-let players = [new Chibisuke()]
-let bankruptcyNum = 0
-let winningCount = 0
-
-while (numberOfGame <= NUMBER_OF_GAME) {
-	baccarat = new Baccarat().playGames((result, results) => {
-		// if (result == 'TIE' || results.isPlayerStreak(3)) return;
-		if (result == 'TIE') return;
+// while (numberOfGame <= NUMBER_OF_GAME) {
+// 	baccarat = new Baccarat().playGames((result, results) => {
+// 		// if (result == 'TIE' || results.isPlayerStreak(3)) return;
+// 		if (result == 'TIE') return;
 		
-		let player = players[players.length - 1]
-		if (Math.random() < .5) {
-			player.setValue(result == 'PLAYER' ? player.getBetValue() : -player.getBetValue())
-			if (result == 'PLAYER') winningCount++;
-			console.log(`${numberOfGame} BET: P`, result == 'PLAYER')
-		} else {
-			player.setValue(result == 'BANKER' ? player.getBetValue() : -player.getBetValue())
-			if (result == 'BANKER') winningCount++;
-			console.log(`${numberOfGame} BET: B`, result == 'BANKER')
-		}
+// 		let player = players[players.length - 1]
+// 		if (Math.random() < .5) {
+// 			player.setValue(result == 'PLAYER' ? player.getBetValue() : -player.getBetValue())
+// 			if (result == 'PLAYER') winningCount++;
+// 			console.log(`${numberOfGame} BET: P`, result == 'PLAYER')
+// 		} else {
+// 			player.setValue(result == 'BANKER' ? player.getBetValue() : -player.getBetValue())
+// 			if (result == 'BANKER') winningCount++;
+// 			console.log(`${numberOfGame} BET: B`, result == 'BANKER')
+// 		}
 		
-		csv += `\nPlayer ${players.length}, ${player.amounts.length}, ${player.amount}`
+// 		csv += `\nPlayer ${players.length}, ${player.amounts.length}, ${player.amount}`
 		
-		if (player.amount > 0 && player.amount < player.INITIAL_AMOUNT * 2);
-		else {
-			if (player.amount <= 0) bankruptcyNum++;
-			players.push(new Chibisuke())
-		}
-		numberOfGame++
-	})
+// 		if (player.amount > 0 && player.amount < player.INITIAL_AMOUNT * 2);
+// 		else {
+// 			if (player.amount <= 0) bankruptcyNum++;
+// 			players.push(new Chibisuke())
+// 		}
+// 		numberOfGame++
+// 	})
 
-	let data = baccarat.getResults()
-	totalPlayerWins += data.playerWins
-	totalBankerWins += data.bankerWins
-	// document.write(baccarat.draw(data.scoreboard))
+// 	let data = baccarat.getResults()
+// 	totalPlayerWins += data.playerWins
+// 	totalBankerWins += data.bankerWins
+// 	// document.write(baccarat.draw(data.scoreboard))
 
-	totalResults = totalResults.concat(data.results)
-}
+// 	totalResults = totalResults.concat(data.results)
+// }
 
-// console.log(csv)
-console.log(`勝率 ${winningCount / NUMBER_OF_GAME * 100}%`)
-console.log(`${bankruptcyNum} / ${players.length} 破産確率 ${bankruptcyNum/players.length*100}%`)
+// // console.log(csv)
+// console.log(`勝率 ${winningCount / NUMBER_OF_GAME * 100}%`)
+// console.log(`${bankruptcyNum} / ${players.length} 破産確率 ${bankruptcyNum/players.length*100}%`)
 
 /////////////////////////////////////////////////////////////////
 

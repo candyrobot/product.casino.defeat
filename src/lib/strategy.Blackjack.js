@@ -41,12 +41,12 @@ class StrategyBlackjack {
 		else if (this.checkCards(playerCards) === 'IncludedA') {
 			// INFO: strategySoftは1を11と扱うので+10しておく
 			sum = sum += 10
-			sum = sum <== 17 ? 17 : sum
-			sum = sum >== 19 ? 19 : sum
+			sum = sum <= 17 ? 17 : sum
+			sum = sum >= 19 ? 19 : sum
 			return this.strategySoft[sum][dealerCard]
 		} else {
-			sum = sum <== 8 ? 8 : sum
-			sum = sum >== 17 ? 17 : sum
+			sum = sum <= 8 ? 8 : sum
+			sum = sum >= 17 ? 17 : sum
 			return this.strategy[sum][dealerCard]
 		}
 	}
@@ -61,6 +61,8 @@ class StrategyBlackjack {
 	}
 }
 
-dependsOnA() {
+function dependsOnA() {
 	return 'D'
 }
+
+export default StrategyBlackjack

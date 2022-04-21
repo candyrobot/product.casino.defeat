@@ -22,7 +22,7 @@ class PlayingCards {
 		return this
 	}
 	dealCard() {
-		let n = this.playingCards.shift()
+		let n = this.cards.shift()
 		this.usedCards.push(n)
 		return n
 	}
