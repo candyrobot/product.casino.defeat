@@ -1,7 +1,6 @@
 import PlayingCards from './PlayingCards'
 import StrategyBlackjack from './strategy.Blackjack'
 
-// TODO: Doubledownフラグをstatesやresultsにいれてあげる必要がある
 // TODO: カウンティングするんだったら
 	// - usedCardsに含まれてしまうからdealInitのときはdealerは1枚しか引いてはないけない
 	// - それか
@@ -193,7 +192,7 @@ class Blackjack {
 			})
 		else
 			results = states.map((v) => {
-				console.log(333, v, dealer.sum())
+				console.log('compare:', v, dealer.sum())
 				if (v.player === 'Bust')
 					v.player = 'Lose'
 				else if (typeof v.player === 'number')
@@ -246,13 +245,7 @@ class Blackjack {
 	/**
 	 * @return {boolean}
 	 */
-	// _isBust(handCards) {}
-	// _isBlackjack() {}
 	_isInsurance() { return false }
-	// x: @param string 'S', 'H', 'P'(split), 'D'
-	// setAction(action) {
-
-	// }
 }
 
 export default Blackjack
