@@ -12,6 +12,7 @@ class StrategyBlackjack {
 			20: { 2:'S',3:'S',4:'S',5:'S',6:'S',7:'S',8:'S',9:'S',10:'S',1:'S' }, // 10:10
 			2: { 2:'P',3:'P',4:'P',5:'P',6:'P',7:'P',8:'P',9:'P',10:'P',1:'H' }, // A:A
 		}
+		// WARN: PlayerCards内の1を11として使ってください
 		this.strategySoft = {
 			17: { 2:'H',3:'H',4:'H',5:'H',6:'H',7:'H',8:'H',9:'H',10:'H',1:'H' }, // ~S17
 			18: { 2:'S',3:'S',4:'S',5:'S',6:'S',7:'S',8:'S',9:'H',10:'H',1:'S' }, // S18
@@ -34,18 +35,29 @@ class StrategyBlackjack {
 	 * @return {string} 'H' 'S' 'P'
 	 */
 	getAction(playerCards, dealerCard) {
-		let playerSumNum = playerCards.reduce((p, v) => p + v, 0)
+		let sum = playerCards.reduce((p, v) => p + v, 0)
 		if (this.checkCards(playerCards) === 'Pair')
-			return this.strategyPair[playerSumNum][dealerCard]
-		else if (this.checkCards(playerCards) === 'IncludedA')
-			return this.strategySoft[playerSumNum][dealerCard]
-		else
-			return this.strategy[playerSumNum][dealerCard]
+			return this.strategyPair[sum][dealerCard]
+		else if (this.checkCards(playerCards) === 'IncludedA') {
+			// INFO: strategySoftは1を11と扱うので+10しておく
+			sum = sum += 10
+			sum = sum <== 17 ? 17 : sum
+			sum = sum >== 19 ? 19 : sum
+			return this.strategySoft[sum][dealerCard]
+		} else {
+			sum = sum <== 8 ? 8 : sum
+			sum = sum >== 17 ? 17 : sum
+			return this.strategy[sum][dealerCard]
+		}
 	}
-	// @return string 'Pair' 'IncludedA'
+	/**
+	 * @return {string} 'Pair' 'IncludedA'
+	 */
 	checkCards(playerCards) {
 		if (playerCards.length === 2 && playerCards[0] === playerCards[1])
 			return 'Pair'
+		else if (playerCards.find((v) => v === 1))
+			return 'IncludedA'
 	}
 }
 
