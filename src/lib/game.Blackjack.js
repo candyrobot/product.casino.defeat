@@ -137,7 +137,7 @@ class Blackjack {
 
 		let states = new PlayerHands(playerCards, dealerCards[0]).play() // ['Blackjack', 18, 21, 'Bust']
 
-		let dealer = new DealerHand(dealerCards[0])
+		let dealer = new DealerHand(dealerCards)
 		dealer.play()
 
 		let results = [] // ['Blackjack', 'Lose', 'Win', 'Lose']
