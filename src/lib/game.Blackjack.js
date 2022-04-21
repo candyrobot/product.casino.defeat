@@ -31,6 +31,7 @@ class PlayerHands {
 	 */
 	play() {
 		let cards = this.hands[this.playingIndex]
+		console.log('i,P,D:', this.playingIndex, cards, this.dealerCard)
 
 		if (cards[0] === 1 && cards[1] === 10 || cards[0] === 10 && cards[1] === 1) {
 			this.states.push('Blackjack')
@@ -38,12 +39,13 @@ class PlayerHands {
 		}
 
 		let action = this.strategyBlackjack.getAction(cards, this.dealerCard)
-		console.log('index,P,D,Action', this.playingIndex, cards, this.dealerCard, action)
+		console.log('Action:', action)
 
 		switch (action) {
 			case 'H':
 				cards.push(playingCards.dealCard())
 				if (this._isBust(cards)) {
+					console.log('Bust:', cards)
 					this.states.push('Bust')
 					return this._nextHand()
 				} else
@@ -144,11 +146,11 @@ class Blackjack {
 		// INFO: ハンドをプレイ。ディーラもハンドをプレイ。
 
 		let states = new PlayerHands(playerCards, dealerCards[0]).play() // ['Blackjack', 18, 21, 'Bust']
-		console.log('states', states)
+		console.log('states:', states)
 
 		let dealer = new DealerHand(dealerCards)
 		dealer.play()
-		console.log('dealer', dealer)
+		console.log('dealer:', dealer)
 
 		let results = [] // ['Blackjack', 'Lose', 'Win', 'Lose', 'Push']
 
@@ -179,7 +181,7 @@ class Blackjack {
 				else
 					return v // expected 'Blackjack'
 			})
-		console.log('dealer.hasBlackjack', dealer.hasBlackjack(), 'dealer.hasBust', dealer.hasBust(), 'results', results)
+		console.log('dealer.hasBlackjack:', dealer.hasBlackjack(), 'dealer.hasBust:', dealer.hasBust(), 'results:', results)
 
 
 		// INFO: 結果に基づき収支を集計
