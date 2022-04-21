@@ -1,6 +1,17 @@
 import PlayingCards from './PlayingCards'
 import StrategyBlackjack from './strategy.Blackjack'
 
+class PlayerHands {
+	constructor() {
+		this.hands = []
+	}
+	hasBlackjack() {}
+	hasBust() {}
+	split(hands) {}
+	hit() {}
+	stand() {}
+}
+
 // INFO: 1shoeだけ担当する。
 class Blackjack {
 	constructor() {
@@ -16,16 +27,75 @@ class Blackjack {
 	play(n) {
 		let { playerCards, dealerCards } = this._dealInit()
 		let isInsurance = false
+
 		if (dealerCards[0] === 1) {
 			isInsurance = this._isInsurance()
 			if (dealerCards[1] === 10)
 				return isInsurance ?
 					{ results: ['Lose'], income: 0 } :
 					{ results: ['Lose'], income: -n }
-			else
-				if (isInsurance)
-					console.log('TODO: 総incomeからinsurance分をマイナスする -=n/2')
+			else if (isInsurance)
+				console.log('TODO: 総incomeからinsurance分をマイナスする -=n/2')
 		}
+
+
+		// INFO: ハンドをプレイ。ディーラもハンドをプレイ。
+
+		let states = new PlayerHands(playerCards).play() // ['Blackjack', 18, 21, 'Bust']
+
+		let dealer = new Dealer()
+		dealer.play()
+
+		let results = [] // ['Blackjack', 'Lose', 'Win', 'Lose']
+
+		// Q: handがナイス21、ディーラーが10,1のbackjackなら？
+		if (dealer.hasBlackjack())
+			results = states.map((v) => v === 'Blackjack' ? 'Blackjack' : 'Lose')
+		else if(dealer.hasBust())
+			results = states.map((v) => {
+				if (v === 'Bust')
+					return 'Lose'
+				else if (typeof v === 'number')
+					return 'Win'
+				else
+					return v // expected 'Blackjack'
+			})
+		else
+			results = states.map((v) => {
+				if (v === 'Bust')
+					return 'Lose'
+				else if (typeof v === 'number')
+					if (v === dealer.sum())
+						return 'Push'
+					else if (v > dealer.sum())
+						return 'Win'
+					else
+						return 'Lose'
+				else
+					return v // expected 'Blackjack'
+			})
+
+
+		// INFO: 結果に基づき収支を集計
+
+		let income = 0
+
+		income = results.reduce((p, v) => {
+			if (v === 'Blackjack')
+				return n * 1.5 + p
+			else if ('Win')
+				return n + p
+			else if ('Lose')
+				return 0 + p
+			else
+				console.warn('例外発生')
+		}, 0)
+
+		return {
+			results,
+			income
+		}
+
 		if (playerCards[0] === 1 && playerCards[1] === 10 || playerCards[0] === 10 && playerCards[1] === 1)
 			return { results: ['Blackjack'], income: n * 1.5 }
 		let playerHands = [playerCards]
