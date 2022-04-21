@@ -1,26 +1,87 @@
 import PlayingCards from './PlayingCards'
 import StrategyBlackjack from './strategy.Blackjack'
 
-class PlayerHands {
-	constructor() {
-		this.hands = []
+// TODO: 52 * 8 - 52 * 2 になったら Blackjack.play()がundefindを返す
+
+class PlayingCardsForBJ extends PlayingCards {
+	constructor(deckNumber) {
+		super(deckNumber)
+		this.cards = this.cards.map((n) => n >= 10 ? 10 : n)
 	}
-	hasBlackjack() {}
-	hasBust() {}
-	split(hands) {}
-	hit() {}
-	stand() {}
 }
+
+let playingCards = new PlayingCardsForBJ(8).shuffle()
+
+
+class PlayerHands {
+	constructor(playerCards, dealerCard) {
+		this.hands = [playerCards]
+		this.playingIndex = 0
+		this.states = []
+		this.dealerCard = dealerCard
+		this.strategyBlackjack = new StrategyBlackjack()
+	}
+	/**
+	 * @return {Array} ['Blackjack', 18, 21, 'Bust']
+	 */
+	play() {
+		let cards = this.hands[this.playingIndex]
+
+		if (cards[0] === 1 && cards[1] === 10 || cards[0] === 10 && cards[1] === 1)
+			this.states.push('Blackjack')
+			return this._nextHand()
+
+		let action = this.strategyBlackjack.getAction(cards, this.dealerCard)
+
+		switch (action) {
+			case 'H':
+				cards.push(playingCards.dealCard())
+				if (this._isBust(cards)) {
+					this.states.push('Lose')
+					return this._nextHand()
+				} else
+					return this.play()
+			case 'S':
+				let sum = cards.reduce((p, v) => p + (v === 1 ? 11 : v), 0)
+				if (sum > 21)
+					console.warn('例外発生. 21を超えたらAを1として扱う処理を追記')
+				this.states.push(sum)
+				return this._nextHand()
+			case 'P':
+				let splitedIndex = this.hands.length
+				this.hands[splitedIndex][cards.shift()] // split.
+				
+				cards.push(playingCards.dealCard())
+				this.hands[splitedIndex].push(playingCards.dealCard())
+				return this.play()
+		}
+
+		console.warn('例外発生')
+	}
+	/** INFO: 次のハンドがなければ statesを返す
+	 * @return {Array} states
+	 */
+	_nextHand() {
+		this.playingIndex++
+		return this.hands[this.playingIndex] === undefined ? this.states : this.play()
+	}
+	// _isBlackjack() {}
+	_isBust(cards) {
+		// INFO: Aは1扱い
+		return cards.reduce((p, v) => p + v, 0) > 21
+	}
+	// _split() {}
+	// _hit() {}
+	// _stand() {}
+}
+
+class DealerHand {}
 
 // INFO: 1shoeだけ担当する。
 class Blackjack {
-	constructor() {
-		this.playingCards = new PlayingCards(8).shuffle().get()
-		this.strategyBlackjack = new StrategyBlackjack()
-		this.usedCards = []
-	}
+	constructor() {}
 	/**
-	 * @param {number} betValue
+	 * @param {number} n - betValue
 	 * @return {object | undefined} - undefined: end of shoe
 	 *   { income: number, results: Array ['Win' 'Lose' 'Blackjack' 'Push'] }
 	 */
@@ -41,9 +102,9 @@ class Blackjack {
 
 		// INFO: ハンドをプレイ。ディーラもハンドをプレイ。
 
-		let states = new PlayerHands(playerCards).play() // ['Blackjack', 18, 21, 'Bust']
+		let states = new PlayerHands(playerCards, dealerCards[0]).play() // ['Blackjack', 18, 21, 'Bust']
 
-		let dealer = new Dealer()
+		let dealer = new DealerHand()
 		dealer.play()
 
 		let results = [] // ['Blackjack', 'Lose', 'Win', 'Lose']
@@ -96,10 +157,10 @@ class Blackjack {
 			income
 		}
 
-		if (playerCards[0] === 1 && playerCards[1] === 10 || playerCards[0] === 10 && playerCards[1] === 1)
-			return { results: ['Blackjack'], income: n * 1.5 }
-		let playerHands = [playerCards]
-		this._playHand(playerHands, dealerCards, 0)
+		// if (playerCards[0] === 1 && playerCards[1] === 10 || playerCards[0] === 10 && playerCards[1] === 1)
+		// 	return { results: ['Blackjack'], income: n * 1.5 }
+		// let playerHands = [playerCards]
+		// this._playHand(playerHands, dealerCards, 0)
 	}
 	/** INFO: ひとつのハンド分
 	 * @param {Array} playerHands
@@ -107,42 +168,43 @@ class Blackjack {
 	 * @param {number} i - playerHands{Array} の index
 	 * @return {Array} results ['Win' 'Lose' 'Blackjack' 'Push']
 	 */
-	_playHand(playerHands, dealerCards, i) {
-		let action = this.strategyBlackjack.getAction(playerHands[i], dealerCards[0])
-		switch (action) {
-			case 'H':
-				playerHands[i].push(this._dealCard())
-				if (this._isBust(playerHands[i]))
-					'Lose'
-					this._nextOrEnd(playerHands, dealerCards, i)
-				else
-					this._playHand(playerHands, dealerCards, i)
-				break
-			case 'S':
-				this._nextOrEnd(playerHands, dealerCards, i)
-				break
-			case 'P':
-				let splitedIndex = playerHands.length
-				playerHands[splitedIndex].push(playerHands[i].shift())
+	// _playHand(playerHands, dealerCards, i) {
+	// 	let action = this.strategyBlackjack.getAction(playerHands[i], dealerCards[0])
+	// 	switch (action) {
+	// 		case 'H':
+	// 			playerHands[i].push(this._dealCard())
+	// 			if (this._isBust(playerHands[i]))
+	// 				'Lose'
+	// 				this._nextOrEnd(playerHands, dealerCards, i)
+	// 			else
+	// 				this._playHand(playerHands, dealerCards, i)
+	// 			break
+	// 		case 'S':
+	// 			this._nextOrEnd(playerHands, dealerCards, i)
+	// 			break
+	// 		case 'P':
+	// 			let splitedIndex = playerHands.length
+	// 			playerHands[splitedIndex].push(playerHands[i].shift())
 				
-				playerHands[i].push(this._dealCard())
-				this._playHand(playerHands, dealerCards, i)
+	// 			playerHands[i].push(this._dealCard())
+	// 			this._playHand(playerHands, dealerCards, i)
 
-				playerHands[splitedIndex].push(this._dealCard())
-				this._playHand(playerHands, dealerCards, splitedIndex)
-				break
-		}
-	}
-	_nextOrEnd(playerHands, dealerCards, i) {
-		if (playerHands[i+1] === undefined)
-			return playerHands.reduce((p, handCards) => {
-				let result = this._battleToDealer(handCards, dealerCards)
-				return p + this._collectIncome(result)
-			}, 0)
-		else
-			// next hand.
-			this._playHand(playerHands, dealerCards, i+1)
-	}
+	// 			playerHands[splitedIndex].push(this._dealCard())
+	// 			this._playHand(playerHands, dealerCards, splitedIndex)
+	// 			break
+	// 	}
+	// }
+	// x:
+	// _nextOrEnd(playerHands, dealerCards, i) {
+	// 	if (playerHands[i+1] === undefined)
+	// 		return playerHands.reduce((p, handCards) => {
+	// 			let result = this._battleToDealer(handCards, dealerCards)
+	// 			return p + this._collectIncome(result)
+	// 		}, 0)
+	// 	else
+	// 		// next hand.
+	// 		this._playHand(playerHands, dealerCards, i+1)
+	// }
 	/** TODO: 1を11とする処理
 	 * @return {string} - 'Win' 'Lose' 'Push' 'BlackJack'
 	 * // TODO: ↓
@@ -170,17 +232,11 @@ class Blackjack {
 	_dealInit() {
 
 	}
-	_dealCard() {
-		let n = this.playingCards.shift()
-		n = n >= 10 ? 10 : n
-		this.usedCards.push(n)
-		return n
-	}
 	/**
 	 * @return {boolean}
 	 */
-	_isBust(handCards) {}
-	_isBlackjack() {}
+	// _isBust(handCards) {}
+	// _isBlackjack() {}
 	_isInsurance() { return false }
 	// x: @param string 'S', 'H', 'P'(split), 'D'
 	// setAction(action) {
