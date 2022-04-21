@@ -2,7 +2,11 @@ import PlayingCards from './PlayingCards'
 import StrategyBlackjack from './strategy.Blackjack'
 
 // TODO: 52 * 8 - 52 * 2 になったら Blackjack.play()がundefindを返す
-// TODO: カウンティングするんだったら usedCardsに含まれてしまうからdealInitのときはdealerは1枚しか引いてはないけない
+// TODO: カウンティングするんだったら
+	// - usedCardsに含まれてしまうからdealInitのときはdealerは1枚しか引いてはないけない
+	// - それか
+	// 	- PlayerHandsでカウント
+	// 	- DealerHandでもカウント
 
 class PlayingCardsForBJ extends PlayingCards {
 	constructor(deckNumber) {
@@ -112,6 +116,9 @@ class Blackjack {
 	 *   { income: number, results: Array ['Win' 'Lose' 'Blackjack' 'Push'] }
 	 */
 	play(n) {
+		if (playingCards.get().length < 52 * 2)
+			return undefined // end of shoe
+
 		let { playerCards, dealerCards } = this._dealInit()
 		let isInsurance = false
 
@@ -130,7 +137,7 @@ class Blackjack {
 
 		let states = new PlayerHands(playerCards, dealerCards[0]).play() // ['Blackjack', 18, 21, 'Bust']
 
-		let dealer = new DealerHand()
+		let dealer = new DealerHand(dealerCards[0])
 		dealer.play()
 
 		let results = [] // ['Blackjack', 'Lose', 'Win', 'Lose']
