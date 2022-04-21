@@ -36,9 +36,9 @@ class StrategyBlackjack {
 	 */
 	getAction(playerCards, dealerCard) {
 		let sum = playerCards.reduce((p, v) => p + v, 0)
-		if (this.checkCards(playerCards) === 'Pair')
+		if (this.checkCards(playerCards) === 'Pair') {
 			return this.strategyPair[sum][dealerCard]
-		else if (
+		} else if (
 			this.checkCards(playerCards) === 'IncludedA' &&
 			playerCards.reduce((p, v) => p + (v === 1 ? 11 : v), 0) <= 21
 		) {
@@ -71,23 +71,29 @@ function doExc(pCards, dCard) {
 	// INFO: 1を1として扱う
 	let pSum = pCards.reduce((p, v) => p + v, 0)
 
-	if (pCards.length === 2)
-		if ((dCard === 4 || dCard === 6) && pSum === 12)
+	if (pSum === 12 && (dCard === 4 || dCard === 6))
+		if (pCards.length === 2)
 			return pCards[0] === 10 && pCards[1] === 2 || pCards[0] === 2 && pCards[1] === 10 ?
 				'H' : 'S'
-		else if (dCard === 3 && pSum === 12)
+		else
+			return 'S'
+	else if (pSum === 12 && dCard === 3)
+		if (pCards.length === 2)
 			return pCards.find((v) => v === 7 || v === 8) ?
 				'S' : 'H'
-	else if (pCards.length === 3)
-		if (dCard === 3 && pSum === 12)
-			return pCards.length >= 3 ?
-				'S' : 'H'
-		else if (dCard === 10 && pSum === 15)
+		else if (pCards.length >= 3)
+			return 'S'
+		else
+			return 'H'
+	else if (pSum === 15 && dCard === 10)
+		if (pCards.length >= 3)
 			return pCards.filter((v) => v === 5 || v === 6).length >= 2 ?
 				'S' : 'H'
-		else if (dCard === 10 && pSum === 16)
-			return pCards.length >= 3 ?
-				'S' : 'H'
+		else
+			return 'H'
+	else if (pSum === 16 && dCard === 10)
+		return pCards.length >= 3 ?
+			'S' : 'H'
 	else
 		console.warn('例外発生', pCards, dCard)
 }

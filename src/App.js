@@ -6,11 +6,15 @@ import Chibisuke from './lib/method.Chibisuke';
 
 // ベッティングシステム
 let betValue = 2
+let amount = 500
 
-let data = new Blackjack().play(betValue)
 
-console.log(data)
+for (var i = 0; i < 1000; i++) {
+	let data = new Blackjack().play(betValue)
+	console.log(data)
 
+	console.log('amount:', amount += data.income)
+}
 
 
 

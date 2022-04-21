@@ -13,7 +13,7 @@ class PlayingCardsForBJ extends PlayingCards {
 		this.cards = this.cards.map((n) => n >= 10 ? 10 : n)
 	}
 }
-let playingCards = new PlayingCardsForBJ(8).shuffle()
+let playingCards = null
 
 
 // TODO: 単数形にしてHandクラスからextendsしたい
@@ -79,7 +79,7 @@ class PlayerHands {
 				return this._nextHand()
 		}
 
-		console.warn('例外発生')
+		console.warn('例外発生', action)
 	}
 	/** INFO: 次のハンドがなければ statesを返す
 	 * @return {Array} states
@@ -131,7 +131,9 @@ class DealerHand {
 
 
 class Blackjack {
-	constructor() {}
+	constructor() {
+		playingCards = new PlayingCardsForBJ(8).shuffle()
+	}
 	/**
 	 * @param {number} n - betValue
 	 * @return {object | undefined} - undefined: end of shoe
