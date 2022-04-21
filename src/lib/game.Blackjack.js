@@ -22,19 +22,22 @@ class PlayerHands {
 	constructor(playerCards, dealerCard) {
 		this.hands = [playerCards]
 		this.playingIndex = 0
+		/**
+		 * @structure {status} - [{ isDouble: boolean, player: 'Blackjack', 18, 21, 'Bust' }]
+		 */
 		this.states = []
 		this.dealerCard = dealerCard
 		this.strategyBlackjack = new StrategyBlackjack()
 	}
 	/**
-	 * @return {Array} ['Blackjack', 18, 21, 'Bust']
+	 * @return {status}
 	 */
 	play() {
 		let cards = this.hands[this.playingIndex]
 		console.log('i,P,D:', this.playingIndex, cards, this.dealerCard)
 
 		if (cards[0] === 1 && cards[1] === 10 || cards[0] === 10 && cards[1] === 1) {
-			this.states.push('Blackjack')
+			this.states.push({ player: 'Blackjack' })
 			return this._nextHand()
 		}
 
@@ -46,7 +49,7 @@ class PlayerHands {
 				cards.push(playingCards.dealCard())
 				if (this._isBust(cards)) {
 					console.log('Bust:', cards)
-					this.states.push('Bust')
+					this.states.push({ player: 'Bust' })
 					return this._nextHand()
 				} else
 					return this.play()
@@ -54,7 +57,7 @@ class PlayerHands {
 				let sum = cards.reduce((p, v) => p + (v === 1 ? 11 : v), 0)
 				if (sum > 21)
 					sum = cards.reduce((p, v) => p + v, 0)
-				this.states.push(sum)
+				this.states.push({ player: sum })
 				return this._nextHand()
 			case 'P':
 				let splitedIndex = this.hands.length
@@ -122,8 +125,8 @@ class Blackjack {
 	constructor() {}
 	/**
 	 * @param {number} n - betValue
-	 * @return {object | undefined} - undefined: end of shoe, 0以上: blackjack、サレンダーも表現する
-	 *   { income: number, results: Array ['Win' 'Lose' 'Blackjack' 'Push'] }
+	 * @return {object | undefined} - undefined: end of shoe
+	 *   @structure { income: {number}, results: {results} }
 	 */
 	play(n) {
 		if (playingCards.get().length < 52 * 2)
@@ -145,41 +148,56 @@ class Blackjack {
 
 		// INFO: ハンドをプレイ。ディーラもハンドをプレイ。
 
-		let states = new PlayerHands(playerCards, dealerCards[0]).play() // ['Blackjack', 18, 21, 'Bust']
+		/**
+		 * @structure {status}
+		 */
+		let states = new PlayerHands(playerCards, dealerCards[0]).play()
 		console.log('states:', states)
 
 		let dealer = new DealerHand(dealerCards)
 		dealer.play()
 		console.log('dealer:', dealer)
 
-		let results = [] // ['Blackjack', 'Lose', 'Win', 'Lose', 'Push']
+		/**
+		 * @structure {results} - [{ isDouble: boolean, player: 'Blackjack', 'Lose', 'Win', 'Lose', 'Push' }]
+		 */
+		let results = []
 
 		// Q: handがナイス21、ディーラーが10,1のbackjackなら？
 		if (dealer.hasBlackjack())
-			results = states.map((v) => v === 'Blackjack' ? 'Blackjack' : 'Lose')
+			results = states.map((v) => {
+				v.player = v.player === 'Blackjack' ? 'Blackjack' : 'Lose'
+				return v
+			})
 		else if(dealer.hasBust())
 			results = states.map((v) => {
-				if (v === 'Bust')
-					return 'Lose'
-				else if (typeof v === 'number')
-					return 'Win'
+				if (v.player === 'Bust')
+					v.player = 'Lose'
+				else if (typeof v.player === 'number')
+					v.player = 'Win'
+				else if (v.player === 'Blackjack')
+					v.player = v.player
 				else
-					return v // expected 'Blackjack'
+					console.warn('例外発生')
+				return v
 			})
 		else
 			results = states.map((v) => {
 				console.log(333, v, dealer.sum())
-				if (v === 'Bust')
-					return 'Lose'
-				else if (typeof v === 'number')
-					if (v === dealer.sum())
-						return 'Push'
-					else if (v > dealer.sum())
-						return 'Win'
+				if (v.player === 'Bust')
+					v.player = 'Lose'
+				else if (typeof v.player === 'number')
+					if (v.player === dealer.sum())
+						v.player = 'Push'
+					else if (v.player > dealer.sum())
+						v.player = 'Win'
 					else
-						return 'Lose'
+						v.player = 'Lose'
+				else if (v.player === 'Blackjack')
+					v.player = v.player
 				else
-					return v // expected 'Blackjack'
+					console.warn('例外発生')
+				return v
 			})
 		console.log('dealer.hasBlackjack:', dealer.hasBlackjack(), 'dealer.hasBust:', dealer.hasBust(), 'results:', results)
 
@@ -189,13 +207,13 @@ class Blackjack {
 		let income = 0
 
 		income = results.reduce((p, v) => {
-			if (v === 'Blackjack')
+			if (v.player === 'Blackjack')
 				return n * 1.5 + p
-			else if (v === 'Win')
-				return n + p
-			else if (v === 'Lose')
-				return -n + p
-			else if (v === 'Push')
+			else if (v.player === 'Win')
+				return n + n * !!v.isDouble + p
+			else if (v.player === 'Lose')
+				return -n -n * !!v.isDouble + p
+			else if (v.player === 'Push')
 				return 0 + p
 			else
 				console.warn('例外発生', v)
