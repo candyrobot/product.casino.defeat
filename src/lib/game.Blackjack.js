@@ -189,77 +189,8 @@ class Blackjack {
 			results,
 			income
 		}
-
-		// if (playerCards[0] === 1 && playerCards[1] === 10 || playerCards[0] === 10 && playerCards[1] === 1)
-		// 	return { results: ['Blackjack'], income: n * 1.5 }
-		// let playerHands = [playerCards]
-		// this._playHand(playerHands, dealerCards, 0)
 	}
-	/** INFO: ひとつのハンド分
-	 * @param {Array} playerHands
-	 * @param {Array} dealerCards
-	 * @param {number} i - playerHands{Array} の index
-	 * @return {Array} results ['Win' 'Lose' 'Blackjack' 'Push']
-	 */
-	// _playHand(playerHands, dealerCards, i) {
-	// 	let action = this.strategyBlackjack.getAction(playerHands[i], dealerCards[0])
-	// 	switch (action) {
-	// 		case 'H':
-	// 			playerHands[i].push(this._dealCard())
-	// 			if (this._isBust(playerHands[i]))
-	// 				'Lose'
-	// 				this._nextOrEnd(playerHands, dealerCards, i)
-	// 			else
-	// 				this._playHand(playerHands, dealerCards, i)
-	// 			break
-	// 		case 'S':
-	// 			this._nextOrEnd(playerHands, dealerCards, i)
-	// 			break
-	// 		case 'P':
-	// 			let splitedIndex = playerHands.length
-	// 			playerHands[splitedIndex].push(playerHands[i].shift())
-				
-	// 			playerHands[i].push(this._dealCard())
-	// 			this._playHand(playerHands, dealerCards, i)
-
-	// 			playerHands[splitedIndex].push(this._dealCard())
-	// 			this._playHand(playerHands, dealerCards, splitedIndex)
-	// 			break
-	// 	}
-	// }
-	// x:
-	// _nextOrEnd(playerHands, dealerCards, i) {
-	// 	if (playerHands[i+1] === undefined)
-	// 		return playerHands.reduce((p, handCards) => {
-	// 			let result = this._battleToDealer(handCards, dealerCards)
-	// 			return p + this._collectIncome(result)
-	// 		}, 0)
-	// 	else
-	// 		// next hand.
-	// 		this._playHand(playerHands, dealerCards, i+1)
-	// }
-	/** TODO: 1を11とする処理
-	 * @return {string} - 'Win' 'Lose' 'Push' 'BlackJack'
-	 * // TODO: ↓
-	 * @return {object} - { result: 'Win' 'Lose' 'Push', isBlackjack: boolean }
-	 */
-	_battleToDealer(handCards, dealerCards) {
-		if (dealerCards[0] === 10 && dealerCards[1] === 1)
-			// TODO: ある条件下でpushなのかloseなのか調べる
-			return 'BlackJack'
-		while (dealerCards.reduce((p, v) => p + v, 0) <= 16) {
-			dealerCards.push(this._dealCard())
-		}
-		if (this._isBust(dealerCards))
-			return 'Win'
-		else if (dealerCards.reduce((p, v) => p + v, 0) === handCards.reduce((p, v) => p + v, 0))
-			return 'Push'
-		else if (dealerCards.reduce((p, v) => p + v, 0) > handCards.reduce((p, v) => p + v, 0))
-			return 'Lose'
-		else
-			return 'Win'
-	}
-	/** INFO: プレイヤーに2枚, ディーラー1枚
+	/** INFO: プレイヤーに2枚, ディーラー2枚
 	 * @return { playerCards: Array, dealerCards: Array }
 	 */
 	_dealInit() {
