@@ -2,6 +2,7 @@ import PlayingCards from './PlayingCards'
 import StrategyBlackjack from './strategy.Blackjack'
 
 // TODO: 52 * 8 - 52 * 2 になったら Blackjack.play()がundefindを返す
+// TODO: カウンティングするんだったら usedCardsに含まれてしまうからdealInitのときはdealerは1枚しか引いてはないけない
 
 class PlayingCardsForBJ extends PlayingCards {
 	constructor(deckNumber) {
@@ -9,10 +10,10 @@ class PlayingCardsForBJ extends PlayingCards {
 		this.cards = this.cards.map((n) => n >= 10 ? 10 : n)
 	}
 }
-
 let playingCards = new PlayingCardsForBJ(8).shuffle()
 
 
+// TODO: 単数形にしてHandクラスからextendsしたい
 class PlayerHands {
 	constructor(playerCards, dealerCard) {
 		this.hands = [playerCards]
@@ -75,9 +76,34 @@ class PlayerHands {
 	// _stand() {}
 }
 
-class DealerHand {}
 
-// INFO: 1shoeだけ担当する。
+// TODO: Handからextendsしたい
+class DealerHand {
+	constructor(dealerCards) {
+		this.cards = dealerCards
+	}
+	play() {
+		while (this.cards.reduce((p, v) => p + (v === 1 ? 11 : v), 0) <= 16)
+			this.cards.push(playingCards.dealCard())
+	}
+	hasBlackjack() {
+		return this.cards.length === 2 &&
+			cards[0] === 1 && cards[1] === 10 || cards[0] === 10 && cards[1] === 1
+	}
+	hasBust() {
+		// INFO: Aは1扱い
+		return this.cards.reduce((p, v) => p + v, 0) > 21
+	}
+	sum() {
+		let sum = this.cards.reduce((p, v) => p + (v === 1 ? 11 : v), 0)
+		if (sum > 21)
+			return this.cards.reduce((p, v) => p + v, 0)
+		else
+			return sum
+	}
+}
+
+
 class Blackjack {
 	constructor() {}
 	/**
@@ -230,7 +256,10 @@ class Blackjack {
 	 * @return { playerCards: Array, dealerCards: Array }
 	 */
 	_dealInit() {
-
+		return {
+			playerCards: [playingCards.dealCard(), playingCards.dealCard()],
+			dealerCards: [playingCards.dealCard(), playingCards.dealCard()],
+		}
 	}
 	/**
 	 * @return {boolean}
