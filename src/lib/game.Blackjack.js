@@ -1,16 +1,33 @@
 import PlayingCards from './PlayingCards'
 import StrategyBlackjack from './strategy.Blackjack'
 
-// TODO: カウンティングするんだったら
-	// - usedCardsに含まれてしまうからdealInitのときはdealerは1枚しか引いてはないけない
-	// - それか
-	// 	- PlayerHandsでカウント
-	// 	- DealerHandでもカウント
 
 class PlayingCardsForBJ extends PlayingCards {
 	constructor(deckNumber) {
 		super(deckNumber)
 		this.cards = this.cards.map((n) => n >= 10 ? 10 : n)
+		this.counting = 0
+	}
+	/**
+	 * @param {number} n - observed number
+	 */
+	count(n) {
+		if ([2,3,4,5,6].find((v) => v === n))
+			this.counting++
+		else if ([1,10].find((v) => v === n))
+			this.counting--
+	}
+	getCount() {
+		return this.counting
+	}
+	/**
+	 * @param {boolean} isCounting - falseを渡すとカウンティングしない
+	 */
+	dealCard(isCounting = true) {
+		let n = super.dealCard()
+		if (isCounting)
+			this.count(n)
+		return n
 	}
 }
 let playingCards = null
@@ -22,7 +39,7 @@ class PlayerHands {
 		this.hands = [playerCards]
 		this.playingIndex = 0
 		/**
-		 * @structure {status} - [{ isDouble: boolean, player: 'Blackjack', 18, 21, 'Bust' }]
+		 * @structure {status} - [{ isDouble: boolean, player: 'Blackjack' 18 21 'Bust' }]
 		 */
 		this.states = []
 		this.dealerCard = dealerCard
@@ -33,7 +50,7 @@ class PlayerHands {
 	 */
 	play() {
 		let cards = this.hands[this.playingIndex]
-		console.log('i,P,D:', this.playingIndex, cards, this.dealerCard)
+		// console.log('i,P,D:', this.playingIndex, cards, this.dealerCard)
 
 		if (cards[0] === 1 && cards[1] === 10 || cards[0] === 10 && cards[1] === 1) {
 			this.states.push({ player: 'Blackjack' })
@@ -46,7 +63,7 @@ class PlayerHands {
 			action = 'H'
 		else
 			action = this.strategyBlackjack.getAction(cards, this.dealerCard)
-		console.log('Action:', action)
+		// console.log('Action:', action)
 
 		switch (action) {
 			case 'H':
@@ -142,22 +159,23 @@ class Blackjack {
 	/**
 	 * @param {number} n - betValue
 	 * @return {object | undefined} - undefined: end of shoe
-	 *   @structure { income: {number}, results: {results} }
+	 *   @structure { income: {number}, results: {results}, playingCards }
 	 */
 	play(n) {
 		if (playingCards.get().length < 52 * 2)
-			return undefined // end of shoe
+			return 'EndOfShoe' // end of shoe
 
 		let { playerCards, dealerCards } = this._dealInit()
 		let isInsurance = false
 
 		if (dealerCards[0] === 1) {
 			isInsurance = this._isInsurance()
-			if (dealerCards[1] === 10)
+			if (dealerCards[1] === 10) {
+				playingCards.count(dealerCards[1])
 				return isInsurance ?
-					{ results: ['Lose'], income: 0 } :
-					{ results: ['Lose'], income: -n }
-			else if (isInsurance)
+					{ results: ['Lose'], income: 0, playingCards } :
+					{ results: ['Lose'], income: -n, playingCards }
+			} else if (isInsurance)
 				console.log('TODO: 総incomeからinsurance分をマイナスする -=n/2')
 		}
 
@@ -168,14 +186,14 @@ class Blackjack {
 		 * @structure {status}
 		 */
 		let states = new PlayerHands(playerCards, dealerCards[0]).play()
-		console.log('states:', states)
+		// console.log('states:', states)
 
 		let dealer = new DealerHand(dealerCards)
 		dealer.play()
-		console.log('dealer:', dealer)
+		// console.log('dealer:', dealer)
 
 		/**
-		 * @structure {results} - [{ isDouble: boolean, player: 'Blackjack', 'Lose', 'Win', 'Lose', 'Push' }]
+		 * @structure {results} - [{ isDouble: boolean, player: 'Blackjack' 'Lose' 'Win' 'Lose' 'Push' }]
 		 */
 		let results = []
 
@@ -199,7 +217,7 @@ class Blackjack {
 			})
 		else
 			results = states.map((v) => {
-				console.log('compare:', v, dealer.sum())
+				// console.log('compare:', v, dealer.sum())
 				if (v.player === 'Bust')
 					v.player = 'Lose'
 				else if (typeof v.player === 'number')
@@ -215,7 +233,7 @@ class Blackjack {
 					console.warn('例外発生')
 				return v
 			})
-		console.log('dealer.hasBlackjack:', dealer.hasBlackjack(), 'dealer.hasBust:', dealer.hasBust())
+		// console.log('dealer.hasBlackjack:', dealer.hasBlackjack(), 'dealer.hasBust:', dealer.hasBust())
 
 
 		// INFO: 結果に基づき収支を集計
@@ -236,6 +254,7 @@ class Blackjack {
 		}, 0)
 
 		return {
+			playingCards,
 			results,
 			income
 		}
@@ -246,7 +265,7 @@ class Blackjack {
 	_dealInit() {
 		return {
 			playerCards: [playingCards.dealCard(), playingCards.dealCard()],
-			dealerCards: [playingCards.dealCard(), playingCards.dealCard()],
+			dealerCards: [playingCards.dealCard(), playingCards.dealCard(false)],
 		}
 	}
 	/**

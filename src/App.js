@@ -3,17 +3,36 @@ import './App.css';
 import Blackjack from './lib/game.Blackjack';
 import Chibisuke from './lib/method.Chibisuke';
 
+let blackjack = new Blackjack()
 
 // ベッティングシステム
-let betValue = 2
+let minBetValue = 1
+let maxBetValue = 10
 let amount = 500
-
+let trueCount = 0
 
 for (var i = 0; i < 10000; i++) {
-	let data = new Blackjack().play(betValue)
-	console.log(data)
+	let n = trueCount >= 3 ? maxBetValue : minBetValue
 
-	console.log('amount:', amount += data.income)
+	let data = blackjack.play(n)
+
+	if (data === 'EndOfShoe') {
+		console.warn('shoe change')
+		blackjack = new Blackjack()
+		trueCount = 0
+		n = minBetValue
+		data = blackjack.play(n)
+	}
+
+	if (n === maxBetValue)
+		console.error('bet:', n, 'amount:', amount += data.income, 'cards', data.playingCards.get())
+	else
+		console.log('bet:', n, 'amount:', amount += data.income)
+
+	let runningCount = data.playingCards.getCount()
+	let deckNum = data.playingCards.get().length / 52
+	console.log('Next:', runningCount, deckNum)
+	trueCount = runningCount / deckNum
 }
 
 
