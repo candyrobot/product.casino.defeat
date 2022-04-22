@@ -40,7 +40,12 @@ class PlayerHands {
 			return this._nextHand()
 		}
 
-		let action = this.strategyBlackjack.getAction(cards, this.dealerCard)
+		let action = ''
+		// INFO: スプリット後のAAはスプリット不可(=ヒット)。
+		if (this.hands.length >= 2 && cards[0] === 1 && cards[1] === 1)
+			action = 'H'
+		else
+			action = this.strategyBlackjack.getAction(cards, this.dealerCard)
 		console.log('Action:', action)
 
 		switch (action) {

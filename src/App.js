@@ -9,7 +9,7 @@ let betValue = 2
 let amount = 500
 
 
-for (var i = 0; i < 1000; i++) {
+for (var i = 0; i < 10000; i++) {
 	let data = new Blackjack().play(betValue)
 	console.log(data)
 
