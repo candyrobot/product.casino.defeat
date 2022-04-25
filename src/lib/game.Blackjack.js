@@ -155,17 +155,17 @@ class DealerHand {
 
 class Blackjack {
 	constructor() {
-		playingCards = new PlayingCardsForBJ(8).shuffle()
+		this.isSingleDeck = false
+		playingCards = new PlayingCardsForBJ(
+			this.isSingleDeck ? 1 : 8
+		).shuffle()
 	}
 	/**
 	 * @param {number} n - betValue
 	 * @return {object | undefined} - undefined: end of shoe
-	 *   @structure { income: {number}, results: {results}, playingCards }
+	 *   @structure { income: {number}, results: {results}, playingCards, isEndOfShoe }
 	 */
 	play(n) {
-		if (playingCards.get().length < 52 * 2)
-			return 'EndOfShoe' // end of shoe
-
 		let { playerCards, dealerCards } = this._dealInit()
 		let isInsurance = false
 		let isEvenmoney = false
@@ -256,10 +256,13 @@ class Blackjack {
 				console.warn('例外発生', v)
 		}, 0)
 
+		let isEndOfShoe = this.isSingleDeck || playingCards.get().length < 52 * 2
+
 		return {
 			playingCards,
 			results,
-			income
+			income,
+			isEndOfShoe
 		}
 	}
 	/** INFO: プレイヤーに2枚, ディーラー2枚

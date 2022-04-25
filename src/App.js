@@ -6,33 +6,37 @@ import Chibisuke from './lib/method.Chibisuke';
 let blackjack = new Blackjack()
 
 // ベッティングシステム
-let minBetValue = 1
-let maxBetValue = 10
+let MIN_BET_VALUE = 1
+let MAX_BET_VALUE = 10
 let amount = 500
-let trueCount = 0
+let playedData = null
+
+// TRY: trueCountに従ってベット額を変える -3以下なら$1, -2: $2, -1: $3, 0: $4
 
 for (var i = 0; i < 10000; i++) {
-	let n = trueCount >= 3 ? maxBetValue : minBetValue
-
-	let data = blackjack.play(n)
-
-	if (data === 'EndOfShoe') {
-		console.warn('shoe change')
-		blackjack = new Blackjack()
-		trueCount = 0
-		n = minBetValue
-		data = blackjack.play(n)
+	let trueCount = 0
+	if (playedData) {
+		let runningCount = playedData.playingCards.getCount()
+		let deckNum = playedData.playingCards.get().length / 52
+		trueCount = runningCount / deckNum
+		console.log(`trueC: ${trueCount}`, `runningC: ${runningCount}`, `deckNum: ${deckNum}`)		
 	}
 
-	if (n === maxBetValue)
-		console.error('bet:', n, 'amount:', amount += data.income, 'cards', data.playingCards.get())
-	else
-		console.log('bet:', n, 'amount:', amount += data.income)
+	let n = trueCount >= 3 ? MAX_BET_VALUE : MIN_BET_VALUE
 
-	let runningCount = data.playingCards.getCount()
-	let deckNum = data.playingCards.get().length / 52
-	console.log('Next:', runningCount, deckNum)
-	trueCount = runningCount / deckNum
+	playedData = blackjack.play(n)
+
+	if (n === MAX_BET_VALUE)
+		console.error('bet:', n, 'amount:', amount += playedData.income, 'cards', playedData.playingCards.get())
+	else
+		console.log('bet:', n, 'amount:', amount += playedData.income)
+
+	if (playedData.isEndOfShoe) {
+		console.warn('shoe change')
+		blackjack = new Blackjack()
+		playedData = null
+	}
+	console.log('====')
 }
 
 
