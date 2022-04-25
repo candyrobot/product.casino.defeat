@@ -167,7 +167,9 @@ class Blackjack {
 
 		let { playerCards, dealerCards } = this._dealInit()
 		let isInsurance = false
+		let isEvenmoney = false
 
+		// TODO: DealerHandクラスへ
 		if (dealerCards[0] === 1) {
 			isInsurance = this._isInsurance()
 			if (dealerCards[1] === 10) {
@@ -200,7 +202,7 @@ class Blackjack {
 		// Q: handがナイス21、ディーラーが10,1のbackjackなら？
 		if (dealer.hasBlackjack())
 			results = states.map((v) => {
-				v.player = v.player === 'Blackjack' ? 'Blackjack' : 'Lose'
+				v.player = v.player === 'Blackjack' ? 'Push' : 'Lose'
 				return v
 			})
 		else if(dealer.hasBust())
