@@ -127,6 +127,7 @@ class DealerHand {
 		this.cards = dealerCards
 	}
 	play() {
+		playingCards.count(this.cards[1]) // 2枚目を観測した。
 		while (
 			this.cards.reduce((p, v) => p + (v === 1 ? 11 : v), 0) <= 16 ||
 			this.cards.reduce((p, v) => p + (v === 1 ? 11 : v), 0) > 21 && this.cards.reduce((p, v) => p + v, 0) <= 16
@@ -170,16 +171,16 @@ class Blackjack {
 		let isEvenmoney = false
 
 		// TODO: DealerHandクラスへ
-		if (dealerCards[0] === 1) {
-			isInsurance = this._isInsurance()
-			if (dealerCards[1] === 10) {
-				playingCards.count(dealerCards[1])
-				return isInsurance ?
-					{ results: ['Lose'], income: 0, playingCards } :
-					{ results: ['Lose'], income: -n, playingCards }
-			} else if (isInsurance)
-				console.log('TODO: 総incomeからinsurance分をマイナスする -=n/2')
-		}
+		// if (dealerCards[0] === 1) {
+		// 	isInsurance = this._isInsurance()
+		// 	if (dealerCards[1] === 10) {
+		// 		playingCards.count(dealerCards[1])
+		// 		return isInsurance ?
+		// 			{ results: ['Lose'], income: 0, playingCards } :
+		// 			{ results: ['Lose'], income: -n, playingCards }
+		// 	} else if (isInsurance)
+		// 		console.log('TODO: 総incomeからinsurance分をマイナスする -=n/2')
+		// }
 
 
 		// INFO: ハンドをプレイ。ディーラもハンドをプレイ。
