@@ -12,6 +12,8 @@ let amount = 500
 let playedData = null
 
 // TRY: trueCountに従ってベット額を変える -3以下なら$1, -2: $2, -1: $3, 0: $4
+// TRY: 利確したらリセット let arr = [1,3,5]
+// TRY: 利確したらリセット let arr = [1,3,2,6]
 
 for (var i = 0; i < 10000; i++) {
 	let trueCount = 0

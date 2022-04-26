@@ -9,6 +9,38 @@ class PlayingCardsForBJ extends PlayingCards {
 		this.counting = 0
 	}
 	/**
+	 * INFO: ZENシステム
+	 * @param {number} n - observed number
+	 */
+	// count(n) {
+	// 	if ([4,5,6].find((v) => v === n))
+	// 		this.counting += 2
+	// 	else if ([2,3,7].find((v) => v === n))
+	// 		this.counting += 1
+	// 	else if ([1,10].find((v) => v === n))
+	// 		this.counting -= 2
+	// 	else
+	// 		this.counting += 0
+	// }
+	/**
+	 * INFO: Omega IIシステム
+	 * https://www.wikihow.com/Count-Cards-in-Blackjack
+	 * @param {number} n - observed number
+	 */
+	count(n) {
+		if ([4,5,6].find((v) => v === n))
+			this.counting += 2
+		else if ([2,3,7].find((v) => v === n))
+			this.counting += 1
+		else if ([10].find((v) => v === n))
+			this.counting -= 2
+		else if ([9].find((v) => v === n))
+			this.counting -= 1
+		else
+			this.counting += 0
+	}
+	/**
+	 * INFO: ハイローシステム
 	 * @param {number} n - observed number
 	 */
 	count(n) {
