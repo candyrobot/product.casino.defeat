@@ -40,12 +40,19 @@
 /* INFO: original */
 
 h2 {
+  position: relative;
   font-size: 40px;
   padding-top: 20px;
   font-family: serif;
 }
+h2 button {
+  position: absolute;
+  left: 20px;
+  top: 25px;
+}
 .size-tiled {
   width: 30vw;
+  padding-top: 0.6rem;
   margin: 1px;
 }
 .btn-lg {
@@ -54,4 +61,6 @@ h2 {
 .section {
   padding: 20px 10px;
 }
-
+.color-gray {
+  color: #888;
+}

@@ -129,14 +129,9 @@ class App extends Component {
 			action: 'null'
 		}
 		this.strategyBlackjack = new StrategyBlackjack()
-		this.isJustFinishedCalc = false
 	}
 
 	addNumberToPlayer(n) {
-		if (this.isJustFinishedCalc) {
-			this.reset()
-			this.isJustFinishedCalc = false
-		}
 		this.state.playerNums.push(n)
 		this.setState({ playerNums: this.state.playerNums })
 	}
@@ -147,10 +142,6 @@ class App extends Component {
 	}
 
 	addNumberToDealer(n) {
-		if (this.isJustFinishedCalc) {
-			this.reset()
-			this.isJustFinishedCalc = false
-		}
 		this.state.dealerNums.push(n)
 		this.setState({ dealerNums: this.state.dealerNums })
 	}
@@ -176,7 +167,6 @@ class App extends Component {
 				this.setState({ action: 'Double' })
 				break
 		}
-		this.isJustFinishedCalc = true
 	}
 
 	reset() {
@@ -193,25 +183,28 @@ class App extends Component {
 		return (
 			<div className="App">
 				<h2>
+					<Button variant="light" onClick={() => this.reset()}>Reset</Button>
 					<span>{this.state.action}</span>
 				</h2>
 				<div className="section">
 					<h3>
-						<span>{this.state.playerNums}</span>
-					</h3>
-					{this.numbers.map((n) => {
-						return <Button variant="success" className="size-tiled" onClick={() => this.addNumberToPlayer(n)}>{n}</Button>
-					})}
-					<Button variant="success" className="size-tiled" onClick={() => this.delNumToPlayer()}>←</Button>
-				</div>
-				<div className="section">
-					<h3>
+						<span className="color-gray">D </span>
 						<span>{this.state.dealerNums}</span>
 					</h3>
 					{this.numbers.map((n) => {
-						return <Button variant="danger" className="size-tiled" onClick={() => this.addNumberToDealer(n)}>{n}</Button>
+						return <Button variant="danger" className="size-tiled" onClick={() => this.addNumberToDealer(n)}>{n === 1 ? 'A' : n}</Button>
 					})}
 					<Button variant="danger" className="size-tiled" onClick={() => this.delNumToDealer()}>←</Button>
+				</div>
+				<div className="section">
+					<h3>
+						<span className="color-gray">P </span>
+						<span>{this.state.playerNums}</span>
+					</h3>
+					{this.numbers.map((n) => {
+						return <Button variant="success" className="size-tiled" onClick={() => this.addNumberToPlayer(n)}>{n === 1 ? 'A' : n}</Button>
+					})}
+					<Button variant="success" className="size-tiled" onClick={() => this.delNumToPlayer()}>←</Button>
 				</div>
 				<div className="section">
 					<Button variant="info" size="lg" onClick={() => this.calc()}>Calculate</Button>
