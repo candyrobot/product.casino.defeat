@@ -78,6 +78,7 @@ class PlayerHands {
 		this.strategyBlackjack = new StrategyBlackjack()
 	}
 	/**
+	 * INFO: "スプリット"で再帰処理してます
 	 * @return {status}
 	 */
 	play() {
