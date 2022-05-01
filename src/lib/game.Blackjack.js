@@ -43,12 +43,12 @@ class PlayingCardsForBJ extends PlayingCards {
 	 * INFO: ハイローシステム
 	 * @param {number} n - observed number
 	 */
-	count(n) {
-		if ([2,3,4,5,6].find((v) => v === n))
-			this.counting++
-		else if ([1,10].find((v) => v === n))
-			this.counting--
-	}
+	// count(n) {
+	// 	if ([2,3,4,5,6].find((v) => v === n))
+	// 		this.counting++
+	// 	else if ([1,10].find((v) => v === n))
+	// 		this.counting--
+	// }
 	getCount() {
 		return this.counting
 	}

@@ -6,7 +6,7 @@ import Chibisuke from './lib/method.Chibisuke';
 let blackjack = new Blackjack()
 
 // ベッティングシステム
-let MIN_BET_VALUE = 1
+let MIN_BET_VALUE = 0
 let MAX_BET_VALUE = 10
 let amount = 500
 let playedData = null
