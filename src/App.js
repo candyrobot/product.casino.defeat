@@ -1,6 +1,10 @@
+import React, { Component } from 'react';
 import logo from './logo.svg';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+import { Button } from 'react-bootstrap';
 import Blackjack from './lib/game.Blackjack';
+import StrategyBlackjack from './lib/strategy.Blackjack'
 import Chibisuke from './lib/method.Chibisuke';
 
 let blackjack = new Blackjack()
@@ -114,25 +118,122 @@ for (var i = 0; i < 10000; i++) {
 
 /////////////////////////////////////////////////////////////////
 
-function App() {
-	return (
-		<div className="App">
-			<header className="App-header">
-				<img src={logo} className="App-logo" alt="logo" />
-				<p>
-					Edit <code>src/App.js</code> and save to reload.
-				</p>
-				<a
-					className="App-link"
-					href="https://reactjs.org"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					Learn React
-				</a>
-			</header>
-		</div>
-	);
+class App extends Component {
+
+	constructor(props) {
+		super(props)
+		this.numbers = [1,2,3,4,5,6,7,8,9,10]
+		this.state = {
+			playerNums: [],
+			dealerNums: [],
+			action: 'null'
+		}
+		this.strategyBlackjack = new StrategyBlackjack()
+		this.isJustFinishedCalc = false
+	}
+
+	addNumberToPlayer(n) {
+		if (this.isJustFinishedCalc) {
+			this.reset()
+			this.isJustFinishedCalc = false
+		}
+		this.state.playerNums.push(n)
+		this.setState({ playerNums: this.state.playerNums })
+	}
+
+	delNumToPlayer() {
+		this.state.playerNums.pop()
+		this.setState({ playerNums: this.state.playerNums })
+	}
+
+	addNumberToDealer(n) {
+		if (this.isJustFinishedCalc) {
+			this.reset()
+			this.isJustFinishedCalc = false
+		}
+		this.state.dealerNums.push(n)
+		this.setState({ dealerNums: this.state.dealerNums })
+	}
+
+	delNumToDealer() {
+		this.state.dealerNums.pop()
+		this.setState({ dealerNums: this.state.dealerNums })
+	}
+
+	calc() {
+		let a = this.strategyBlackjack.getAction(this.state.playerNums, this.state.dealerNums[0])
+		switch(a) {
+			case 'H':
+				this.setState({ action: 'Hit' })
+				break
+			case 'S':
+				this.setState({ action: 'Stand' })
+				break
+			case 'P':
+				this.setState({ action: 'Split' })
+				break
+			case 'D':
+				this.setState({ action: 'Double' })
+				break
+		}
+		this.isJustFinishedCalc = true
+	}
+
+	reset() {
+		// INFO: こうしないと`[]`になってくれないんだけど??
+		this.state = {
+			playerNums: [],
+			dealerNums: [],
+		}
+		this.setState({ playerNums: this.state.playerNums })
+		this.setState({ dealerNums: this.state.dealerNums })
+	}
+
+	render() {
+		return (
+			<div className="App">
+				<h2>
+					<span>{this.state.action}</span>
+				</h2>
+				<div className="section">
+					<h3>
+						<span>{this.state.playerNums}</span>
+					</h3>
+					{this.numbers.map((n) => {
+						return <Button variant="success" className="size-tiled" onClick={() => this.addNumberToPlayer(n)}>{n}</Button>
+					})}
+					<Button variant="success" className="size-tiled" onClick={() => this.delNumToPlayer()}>←</Button>
+				</div>
+				<div className="section">
+					<h3>
+						<span>{this.state.dealerNums}</span>
+					</h3>
+					{this.numbers.map((n) => {
+						return <Button variant="danger" className="size-tiled" onClick={() => this.addNumberToDealer(n)}>{n}</Button>
+					})}
+					<Button variant="danger" className="size-tiled" onClick={() => this.delNumToDealer()}>←</Button>
+				</div>
+				<div className="section">
+					<Button variant="info" size="lg" onClick={() => this.calc()}>Calculate</Button>
+				</div>
+
+				<header className="App-header">
+					<img src={logo} className="App-logo" alt="logo" />
+					<p>
+						Edit <code>src/App.js</code> and save to reload.
+					</p>
+					<a
+						className="App-link"
+						href="https://reactjs.org"
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						Learn React
+					</a>
+				</header>
+			</div>
+		)
+	}
 }
 
 export default App;

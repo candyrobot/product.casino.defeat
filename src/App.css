@@ -36,3 +36,22 @@
     transform: rotate(360deg);
   }
 }
+
+/* INFO: original */
+
+h2 {
+  font-size: 40px;
+  padding-top: 20px;
+  font-family: serif;
+}
+.size-tiled {
+  width: 30vw;
+  margin: 1px;
+}
+.btn-lg {
+  width: 100%;
+}
+.section {
+  padding: 20px 10px;
+}
+
