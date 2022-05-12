@@ -1,67 +1,45 @@
 import PlayingCards from './PlayingCards'
 
-class Baccarat {
+class PlayingCardsForBaccarat extends PlayingCards {
+	constructor(deckNumber) {
+		super(deckNumber)
+		this.cards = this.cards.map((n) => n >= 10 ? 0 : n)
+		this.counting = 0
+	}
+	/**
+	 * INFO: ハイローシステム
+	 * @param {number} n - observed number
+	 */
+	count(n) {
+		if ([1,2,3,4].find((v) => v === n))
+			this.counting++
+		else if ([6,7,8,9].find((v) => v === n))
+			this.counting--
+	}
+	getCount() {
+		return this.counting
+	}
+	/**
+	 * @param {boolean} isCounting - falseを渡すとカウンティングしない
+	 */
+	dealCard(isCounting = true) {
+		let n = super.dealCard()
+		if (isCounting)
+			this.count(n)
+		return n
+	}
+}
+
+class Games {
 	constructor() {
-		this.playingCards = new PlayingCards(8).shuffle().get()
-		// console.log(this.playingCards)
-		this.usedCards = []
-		this.playingLimitNum = 104 // Math.random 70~130
 		this.results = []
 		// INFO: Playerがn連勝だったらtrue
 		this.results.isPlayerStreak = function(n) {
 			let arr = this.filter((v) => v != 'TIE')
 			return !arr.slice(-n).find((v) => v == 'BANKER')
 		}
-	}
-	disCard() {
-	}
-	burnCard() {
-	}
-	dealCard() {
-		let n = this.playingCards.shift()
-		n = n >= 10 ? 0 : n
-		this.usedCards.push(n)
-		return n
-	}
-	playGame() {
-		let playerNum = get1thDigit(this.dealCard() + this.dealCard())
-		let bankerNum = get1thDigit(this.dealCard() + this.dealCard())
-		// console.log(playerNum, bankerNum)
-		if (playerNum >= 8 || bankerNum >= 8)
-			return this.judge(playerNum, bankerNum)
-		else if (playerNum >= 6 && bankerNum >= 6)
-			return this.judge(playerNum, bankerNum)
-		else if (playerNum <= 5) {
-			let dealtNum = this.dealCard()
-			playerNum = get1thDigit(playerNum + dealtNum)
-			if (
-				bankerNum <= 2 ||
-				bankerNum == 3 && [1,2,3,4,5,6,7,9,0].find((n) => n == dealtNum) ||
-				bankerNum == 4 && [2,3,4,5,6,7].find((n) => n == dealtNum) ||
-				bankerNum == 5 && [4,5,6,7].find((n) => n == dealtNum) ||
-				bankerNum == 6 && [6,7].find((n) => n == dealtNum)
-			)
-				bankerNum = get1thDigit(bankerNum + this.dealCard())
-			return this.judge(playerNum, bankerNum)
-		}
-		else {
-			if (playerNum > bankerNum)
-				bankerNum = get1thDigit(bankerNum + this.dealCard())
-			return this.judge(playerNum, bankerNum)
-		}
-	}
-	testGame() {
-		this.dealCard(); this.dealCard(); this.dealCard(); this.dealCard();
-		// 勝率55%
-		return Math.random() < 55 / 100 ? 'BANKER' : 'PLAYER'
-	}
-	playGames(doWhenPlayed) {
-		do {
-			let result = this.playGame()
-			doWhenPlayed(result, this.results)
-			this.results.push(result)
-		} while (this.playingLimitNum < this.playingCards.length)
-		return this
+		// INFO: ※罫線
+		this.scoreboard = []
 	}
 	getResults() {
 		let playerWins = this.results.filter((v) => v == 'PLAYER').length
@@ -78,12 +56,89 @@ class Baccarat {
 		}, [])
 		return { results: this.results, playerWins, bankerWins, scoreboard }
 	}
-	draw(scoreboard) {
-		return scoreboard.reduce((prev, v) => {
+	draw() {
+		return this.scoreboard.reduce((prev, v) => {
 			return v.reduce((prev, v) => `<span style="color: ${v == 'PLAYER' ? 'blue' : 'red'}">◯</span>` + prev, '') + '<br>' + prev
 		}, '<hr>')
 	}
-	judge(playerNum, bankerNum) {
+}
+
+class StrategyBaccarat {
+	getAction() {
+		return 'BANKER'
+	}
+}
+
+class Baccarat {
+	constructor() {
+		this.playingCards = new PlayingCardsForBaccarat(8).shuffle()
+		// console.log(this.playingCards)
+		this.playingLimitNum = 104 // Math.random 70~130
+		this.strategyBaccarat = new StrategyBaccarat()
+	}
+	_disCard() {
+	}
+	_burnCard() {
+	}
+	/**
+	 * @param {number} n - wager
+	 * @param {string}
+	 * @return {object}
+	 *   @structure { income: {number}, results: {results}, playingCards, isEndOfShoe }
+	 */
+	play(n, action = this.strategyBaccarat.getAction()) {
+		let playerNum = get1thDigit(this.playingCards.dealCard() + this.playingCards.dealCard())
+		let bankerNum = get1thDigit(this.playingCards.dealCard() + this.playingCards.dealCard())
+		let result = ''
+		// console.log(playerNum, bankerNum)
+		if (playerNum >= 8 || bankerNum >= 8)
+			result = this._judge(playerNum, bankerNum)
+		else if (playerNum >= 6 && bankerNum >= 6)
+			result = this._judge(playerNum, bankerNum)
+		else if (playerNum <= 5) {
+			let dealtNum = this.playingCards.dealCard()
+			playerNum = get1thDigit(playerNum + dealtNum)
+			if (
+				bankerNum <= 2 ||
+				bankerNum == 3 && [1,2,3,4,5,6,7,9,0].find((n) => n == dealtNum) ||
+				bankerNum == 4 && [2,3,4,5,6,7].find((n) => n == dealtNum) ||
+				bankerNum == 5 && [4,5,6,7].find((n) => n == dealtNum) ||
+				bankerNum == 6 && [6,7].find((n) => n == dealtNum)
+			)
+				bankerNum = get1thDigit(bankerNum + this.playingCards.dealCard())
+			result = this._judge(playerNum, bankerNum)
+		}
+		else {
+			if (playerNum > bankerNum)
+				bankerNum = get1thDigit(bankerNum + this.playingCards.dealCard())
+			result = this._judge(playerNum, bankerNum)
+		}
+
+		let income = 0
+		if (result === 'BANKER' && action === 'BANKER')
+			income += n * .95
+		else if (result === 'PLAYER' && action === 'PLAYER')
+			income += n
+		else if (result === 'BANKER' && action === 'PLAYER' || result === 'PLAYER' && action === 'BANKER')
+			income -= n
+		else if (result === 'TIE')
+			console.warn('TIE')
+		else
+			debugger
+
+		let isEndOfShoe = this.playingCards.get().length < 52 * 2
+
+		return {
+			playingCards: this.playingCards,
+			result,
+			income,
+			isEndOfShoe
+		}
+	}
+	/**
+	 * @return {string} 'PLAYER' 'BANKER' 'TIE'
+	 */
+	_judge(playerNum, bankerNum) {
 		if (playerNum == bankerNum)
 			return 'TIE'
 		else
