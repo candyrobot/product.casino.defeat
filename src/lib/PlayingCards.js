@@ -1,14 +1,16 @@
 class PlayingCards {
 	constructor(deckNumber = 1) {
 		this.cards = []
+		this.usedCards = []
 		for (var i = 0; i < deckNumber; i++) {
-			this.createDeck()
+			this._createDeck()
 		}
 	}
+	// TODO: rename 'getCards'
 	get() {
 		return this.cards
 	}
-	createDeck() {
+	_createDeck() {
 		// TODO: スートを定義する { num: 1, suit: 'A' }
 		this.cards.push(1,2,3,4,5,6,7,8,9,10,11,12,13)
 		this.cards.push(1,2,3,4,5,6,7,8,9,10,11,12,13)
@@ -18,6 +20,14 @@ class PlayingCards {
 	shuffle() {
 		this.cards = shuffle(this.cards)
 		return this
+	}
+	dealCard() {
+		let n = this.cards.shift()
+		this.usedCards.push(n)
+		return n
+	}
+	getUsedCards() {
+		return this.usedCards
 	}
 }
 
