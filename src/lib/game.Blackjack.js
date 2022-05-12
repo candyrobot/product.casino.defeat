@@ -195,7 +195,7 @@ class Blackjack {
 	}
 	/**
 	 * @param {number} n - betValue
-	 * @return {object | undefined} - undefined: end of shoe
+	 * @return {object}
 	 *   @structure { income: {number}, results: {results}, playingCards, isEndOfShoe }
 	 */
 	play(n) {
