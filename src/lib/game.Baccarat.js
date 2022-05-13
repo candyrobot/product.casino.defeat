@@ -4,6 +4,7 @@ class PlayingCardsForBaccarat extends PlayingCards {
 	constructor(deckNumber) {
 		super(deckNumber)
 		this.cards = this.cards.map((n) => n >= 10 ? 0 : n)
+		// INFO: 低いほどプレイヤーに有利
 		this.counting = 0
 	}
 	/**
@@ -26,6 +27,7 @@ class PlayingCardsForBaccarat extends PlayingCards {
 		let n = super.dealCard()
 		if (isCounting)
 			this.count(n)
+		// console.log('dealt:', n, ' count:', this.getCount())
 		return n
 	}
 }
@@ -41,6 +43,8 @@ class Games {
 		// INFO: ※罫線
 		this.scoreboard = []
 	}
+	isTereco() {}
+	isTsurara() {}
 	getResults() {
 		let playerWins = this.results.filter((v) => v == 'PLAYER').length
 		let bankerWins = this.results.filter((v) => v == 'BANKER').length
@@ -64,17 +68,28 @@ class Games {
 }
 
 class StrategyBaccarat {
+	constructor(playingCards) {
+		this.playingCards = playingCards
+	}
+	/**
+	 * @return {string} - 'LOOK' 'BANKER' 'PLAYER'
+	 */
 	getAction() {
-		return 'BANKER'
+		if (this.playingCards.getCount() >= 5)
+			return 'BANKER'
+		else if (this.playingCards.getCount() <= -5)
+			return 'PLAYER'
+		else
+			return 'LOOK'
 	}
 }
 
 class Baccarat {
 	constructor() {
 		this.playingCards = new PlayingCardsForBaccarat(8).shuffle()
-		// console.log(this.playingCards)
+		console.log('playingCards:', this.playingCards)
 		this.playingLimitNum = 104 // Math.random 70~130
-		this.strategyBaccarat = new StrategyBaccarat()
+		this.strategyBaccarat = new StrategyBaccarat(this.playingCards)
 	}
 	_disCard() {
 	}
@@ -87,6 +102,10 @@ class Baccarat {
 	 *   @structure { income: {number}, results: {results}, playingCards, isEndOfShoe }
 	 */
 	play(n, action = this.strategyBaccarat.getAction()) {
+
+		if (action === 'LOOK')
+			n = 0
+
 		let playerNum = get1thDigit(this.playingCards.dealCard() + this.playingCards.dealCard())
 		let bankerNum = get1thDigit(this.playingCards.dealCard() + this.playingCards.dealCard())
 		let result = ''
@@ -122,7 +141,9 @@ class Baccarat {
 		else if (result === 'BANKER' && action === 'PLAYER' || result === 'PLAYER' && action === 'BANKER')
 			income -= n
 		else if (result === 'TIE')
-			console.warn('TIE')
+			console.info('TIE')
+		else if (action === 'LOOK')
+			console.info('LOOK')
 		else
 			debugger
 
