@@ -1,6 +1,7 @@
 import PlayingCards from './PlayingCards'
 
-class PlayingCardsForBaccarat extends PlayingCards {
+// INFO: バカラ用のトランプ
+class BaccaratPlayingCards extends PlayingCards {
 	constructor(deckNumber) {
 		super(deckNumber)
 		this.cards = this.cards.map((n) => n >= 10 ? 0 : n)
@@ -32,23 +33,51 @@ class PlayingCardsForBaccarat extends PlayingCards {
 	}
 }
 
-class Games {
+class BaccaratDrawer {
 	constructor() {
 		this.results = []
 		// INFO: Playerがn連勝だったらtrue
-		this.results.isPlayerStreak = function(n) {
-			let arr = this.filter((v) => v != 'TIE')
-			return !arr.slice(-n).find((v) => v == 'BANKER')
-		}
+		// this.results.isPlayerStreak = function(n) {
+		// 	let arr = this.filter((v) => v != 'TIE')
+		// 	return !arr.slice(-n).find((v) => v == 'BANKER')
+		// }
 		// INFO: ※罫線
 		this.scoreboard = []
+		this.csv = 'Game number,label,n'
 	}
-	isTereco() {}
-	isTsurara() {}
-	getResults() {
-		let playerWins = this.results.filter((v) => v == 'PLAYER').length
-		let bankerWins = this.results.filter((v) => v == 'BANKER').length
-		let scoreboard = this.results.reduce((prev, v) => {
+	/**
+	 * @param {playedData}
+	 * @param {number} - game number
+	 */
+	set(playedData, i) {
+		let resultNum = undefined
+		if (playedData.result === 'BANKER')
+			resultNum = 1
+		else if (playedData.result === 'PLAYER')
+			resultNum = -1
+		else if (playedData.result === 'TIE')
+			resultNum = 0
+		else
+			debugger
+		this.csv += `\n${i},shoeの残り枚数,${playedData.playingCards.get().length}`
+		this.csv += `\n${i},カウント値,${playedData.playingCards.getCount()}`
+		this.csv += `\n${i},result,${resultNum}`
+		this.setResult(playedData.result)
+	}
+	setResult(result) {
+		this.results.push(result)
+	}
+	getCsv() {
+		return this.csv
+	}
+	getWinsOfPlayer() {
+		return this.results.filter((v) => v == 'PLAYER').length
+	}
+	getWinsOfBanker() {
+		return this.results.filter((v) => v == 'BANKER').length
+	}
+	getScoreboard() {
+		return this.results.reduce((prev, v) => {
 			if (v == 'TIE')
 				return prev
 			let lastCol = prev[prev.length - 1]
@@ -58,54 +87,88 @@ class Games {
 				lastCol.push(v)
 			return prev
 		}, [])
-		return { results: this.results, playerWins, bankerWins, scoreboard }
 	}
-	draw() {
-		return this.scoreboard.reduce((prev, v) => {
+	getScoreboardAsHtml() {
+		return this.getScoreboard().reduce((prev, v) => {
 			return v.reduce((prev, v) => `<span style="color: ${v == 'PLAYER' ? 'blue' : 'red'}">◯</span>` + prev, '') + '<br>' + prev
 		}, '<hr>')
 	}
+	isTereco() {}
+	isTsurara() {}
 }
 
-class StrategyBaccarat {
+class BaccaratStrategy {
 	constructor(playingCards) {
 		this.playingCards = playingCards
+		this.MIN_BET_VALUE = 0
+		this.MAX_BET_VALUE = 10
+		this.playedData = null
+	}
+	getWager() {
+		let trueCount = this.getTrueCount()
+		if (trueCount >= 3)
+			return this.MAX_BET_VALUE
+		else if (trueCount <= -3)
+			return this.MAX_BET_VALUE
+		else
+			return this.MIN_BET_VALUE
 	}
 	/**
 	 * @return {string} - 'LOOK' 'BANKER' 'PLAYER'
 	 */
 	getAction() {
-		if (this.playingCards.getCount() >= 5)
+		let trueCount = this.getTrueCount()
+		if (trueCount >= 3)
 			return 'BANKER'
-		else if (this.playingCards.getCount() <= -5)
+		else if (trueCount <= -3)
 			return 'PLAYER'
 		else
 			return 'LOOK'
+	}
+	getTrueCount() {
+		let trueCount = 0
+		if (this.playedData) {
+			let runningCount = this.playedData.playingCards.getCount()
+			let deckNum = this.playedData.playingCards.get().length / 52
+			trueCount = runningCount / deckNum
+			console.log(`trueC: ${trueCount}`, `runningC: ${runningCount}`, `deckNum: ${deckNum}`)
+		}
+		return trueCount
+	}
+	/**
+	 * @param {playedData}
+	 * @param {number}
+	 */
+	set(playedData, amount) {
+		this.playedData = playedData
+
+		if (playedData.wager === this.MAX_BET_VALUE)
+			console.error('wager:', playedData.wager, 'amount:', amount, 'cards', playedData.playingCards.get())
+		else
+			console.log('wager:', playedData.wager, 'amount:', amount)
 	}
 }
 
 class Baccarat {
 	constructor() {
-		this.playingCards = new PlayingCardsForBaccarat(8).shuffle()
+		this.playingCards = new BaccaratPlayingCards(8).shuffle()
 		console.log('playingCards:', this.playingCards)
 		this.playingLimitNum = 104 // Math.random 70~130
-		this.strategyBaccarat = new StrategyBaccarat(this.playingCards)
+	}
+	getPlayingCards() {
+		return this.playingCards
 	}
 	_disCard() {
 	}
 	_burnCard() {
 	}
 	/**
-	 * @param {number} n - wager
+	 * @param {number}
 	 * @param {string}
-	 * @return {object}
-	 *   @structure { income: {number}, results: {results}, playingCards, isEndOfShoe }
+	 * @return {playedData}
+	 *   @structure { income: {number}, results: {results}, playingCards, wager, isEndOfShoe, }
 	 */
-	play(n, action = this.strategyBaccarat.getAction()) {
-
-		if (action === 'LOOK')
-			n = 0
-
+	play(wager, action) {
 		let playerNum = get1thDigit(this.playingCards.dealCard() + this.playingCards.dealCard())
 		let bankerNum = get1thDigit(this.playingCards.dealCard() + this.playingCards.dealCard())
 		let result = ''
@@ -133,18 +196,23 @@ class Baccarat {
 			result = this._judge(playerNum, bankerNum)
 		}
 
+
+		let count = this.playingCards.getCount()
+
 		let income = 0
+		console.log('wager:', wager, ' count:', count)
 		if (result === 'BANKER' && action === 'BANKER')
-			income += n * .95
+			income += wager * .95
 		else if (result === 'PLAYER' && action === 'PLAYER')
-			income += n
+			income += wager
 		else if (result === 'BANKER' && action === 'PLAYER' || result === 'PLAYER' && action === 'BANKER')
-			income -= n
+			income -= wager
 		else if (result === 'TIE')
 			console.info('TIE')
-		else if (action === 'LOOK')
+		else if (action === 'LOOK') {
 			console.info('LOOK')
-		else
+			wager = 0
+		} else
 			debugger
 
 		let isEndOfShoe = this.playingCards.get().length < 52 * 2
@@ -153,6 +221,7 @@ class Baccarat {
 			playingCards: this.playingCards,
 			result,
 			income,
+			wager,
 			isEndOfShoe
 		}
 	}
@@ -174,4 +243,4 @@ function get1thDigit(n) {
 	// Math.floor(n / 10) % 10 // 二桁めをとる
 }
 
-export default Baccarat;
+export { Baccarat, BaccaratDrawer, BaccaratStrategy };
