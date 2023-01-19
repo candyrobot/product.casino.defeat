@@ -103,7 +103,9 @@ class BaccaratDrawer {
 		}, [])
 	}
 	getScoreboardAsHtml() {
-		return this.getScoreboard().reduce((prev, v) => {
+		const scoreboard = this.getScoreboard()
+		console.log('this.getScoreboard():', scoreboard)
+		return scoreboard.reduce((prev, v) => {
 			return v.reduce((prev, v) => `<span style="color: ${v == 'PLAYER' ? 'blue' : 'red'}">◯</span>` + prev, '') + '<br>' + prev
 		}, '<hr>')
 	}
@@ -211,30 +213,36 @@ class Baccarat {
 			result = this._judge(playerNum, bankerNum)
 		}
 
-		let income = 0
-		if (result === 'BANKER' && action === 'BANKER')
-			income += wager * .95
-		else if (result === 'PLAYER' && action === 'PLAYER')
-			income += wager
-		else if (result === 'BANKER' && action === 'PLAYER' || result === 'PLAYER' && action === 'BANKER')
-			income -= wager
-		else if (result === 'TIE')
-			console.info('TIE')
-		else if (action === 'LOOK') {
-			console.info('LOOK')
-			wager = 0
-		} else
-			debugger
+		// INFO: 以下はベッティングシステムが介入していて責務を切り分けられていない。
+		// x: 
+		// let income = 0
+		// if (result === 'BANKER' && action === 'BANKER')
+		// 	income += wager * .95
+		// else if (result === 'PLAYER' && action === 'PLAYER')
+		// 	income += wager
+		// else if (result === 'BANKER' && action === 'PLAYER' || result === 'PLAYER' && action === 'BANKER')
+		// 	income -= wager
+		// else if (result === 'TIE')
+		// 	console.info('TIE')
+		// else if (action === 'LOOK') {
+		// 	console.info('LOOK')
+		// 	wager = 0
+		// } else
+		// 	debugger
+		// ;
 
-		let isEndOfShoe = this.playingCards.get().length < 52 * 2
-
-		return {
-			playingCards: this.playingCards,
-			result,
-			income,
-			wager,
-			isEndOfShoe
+		return result
+	}
+	/**
+	 * デックが一定数以下になるまでプレイしゲームの結果を返す
+	 * @return {Array}
+	 */
+	playDeck() {
+		let deckResult = []
+		while (this.playingCards.get().length >= 52 * 2) {
+			deckResult.push(this.play())
 		}
+		return deckResult
 	}
 	/**
 	 * @return {string} 'PLAYER' 'BANKER' 'TIE'
