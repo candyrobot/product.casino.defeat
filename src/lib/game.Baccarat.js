@@ -91,12 +91,13 @@ class BaccaratDrawer {
 	getWinsOfBanker() {
 		return this.results.filter((v) => v == 'BANKER').length
 	}
+	// INFO: 配列の形で出力
 	getScoreboard() {
 		return this.results.reduce((prev, v) => {
-			if (v == 'TIE')
-				return prev
 			let lastCol = prev[prev.length - 1]
-			if (lastCol == undefined || lastCol[lastCol.length - 1] != v)
+			if (v == 'TIE')
+				lastCol.push(v)
+			else if (lastCol == undefined || lastCol[lastCol.length - 1] != v)
 				prev.push([v])
 			else
 				lastCol.push(v)
