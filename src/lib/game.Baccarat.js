@@ -49,7 +49,8 @@ class BaccaratPlayingCards extends PlayingCards {
 }
 
 class BaccaratDrawer {
-	constructor() {
+	constructor(deckResult) {
+		this.deckResult = deckResult
 		this.results = []
 		// INFO: Playerがn連勝だったらtrue
 		// this.results.isPlayerStreak = function(n) {
@@ -93,7 +94,7 @@ class BaccaratDrawer {
 	}
 	// INFO: 配列の形で出力
 	getScoreboard() {
-		return this.results.reduce((prev, v) => {
+		return this.deckResult.reduce((prev, v) => {
 			let lastCol = prev[prev.length - 1]
 			if (lastCol == undefined || lastCol[lastCol.length - 1] != v)
 				prev.push([v])
@@ -107,7 +108,12 @@ class BaccaratDrawer {
 		console.log('this.getScoreboard():', scoreboard)
 		return scoreboard.reduce((prev, v) => {
 			return v.reduce((prev, v) => `<span style="color: ${v == 'PLAYER' ? 'blue' : 'red'}">◯</span>` + prev, '') + '<br>' + prev
-		}, '<hr>')
+		}, '<hr style="clear: both">')
+	}
+	drawHtml() {
+		setTimeout(() => {
+			document.write(this.getScoreboardAsHtml())
+		}, 100)
 	}
 	isTereco() {}
 	isTsurara() {}

@@ -21,6 +21,9 @@ for (var i = 0; i < PLAYING_DECK_NUM; i++) {
 
 console.log('deckResults:', deckResults)
 
+for (var i = 0; i < deckResults.length; i++) {
+	new BaccaratDrawer(deckResults[i]).drawHtml()
+}
 
 
 
