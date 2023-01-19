@@ -12,11 +12,26 @@ class BaccaratPlayingCards extends PlayingCards {
 	 * INFO: ハイローシステム
 	 * @param {number} n - observed number
 	 */
+	// count(n) {
+	// 	if ([1,2,3,4].find((v) => v === n))
+	// 		this.counting++
+	// 	else if ([6,7,8,9].find((v) => v === n))
+	// 		this.counting--
+	// }
+	/**
+	 * INFO: Bシステム - https://www.bestuscasinos.org/blog/how-to-beat-baccarat-with-card-counting/
+	 */
 	count(n) {
-		if ([1,2,3,4].find((v) => v === n))
-			this.counting++
-		else if ([6,7,8,9].find((v) => v === n))
-			this.counting--
+		if ([1,2,3].find((v) => v === n))
+			this.counting += 1
+		else if ([4].find((v) => v === n))
+			this.counting += 2
+		else if ([5,7,8].find((v) => v === n))
+			this.counting -= 1
+		else if ([6].find((v) => v === n))
+			this.counting -= 2
+		else
+			this.counting += 0
 	}
 	getCount() {
 		return this.counting
@@ -105,22 +120,23 @@ class BaccaratStrategy {
 		this.playedData = null
 	}
 	getWager() {
-		let trueCount = this.getTrueCount()
-		if (trueCount >= 3)
-			return this.MAX_BET_VALUE
-		else if (trueCount <= -3)
-			return this.MAX_BET_VALUE
-		else
-			return this.MIN_BET_VALUE
+		// let trueCount = this.getTrueCount()
+		// if (trueCount >= 3)
+		// 	return trueCount * 2
+		// else if (trueCount <= -3)
+		// 	return Math.abs(trueCount * 2)
+		// else
+		// 	return this.MIN_BET_VALUE
+		return 5
 	}
 	/**
 	 * @return {string} - 'LOOK' 'BANKER' 'PLAYER'
 	 */
 	getAction() {
-		let trueCount = this.getTrueCount()
-		if (trueCount >= 3)
+		// let trueCount = this.getTrueCount()
+		if (this.playingCards.getCount() <= 15)
 			return 'BANKER'
-		else if (trueCount <= -3)
+		else if (this.playingCards.getCount() >= 16)
 			return 'PLAYER'
 		else
 			return 'LOOK'
@@ -143,7 +159,7 @@ class BaccaratStrategy {
 		this.playedData = playedData
 
 		if (playedData.wager === this.MAX_BET_VALUE)
-			console.error('wager:', playedData.wager, 'amount:', amount, 'cards', playedData.playingCards.get())
+			console.error('wager:', playedData.wager, 'amount:', amount, 'cards:', playedData.playingCards.get())
 		else
 			console.log('wager:', playedData.wager, 'amount:', amount)
 	}
@@ -196,11 +212,7 @@ class Baccarat {
 			result = this._judge(playerNum, bankerNum)
 		}
 
-
-		let count = this.playingCards.getCount()
-
 		let income = 0
-		console.log('wager:', wager, ' count:', count)
 		if (result === 'BANKER' && action === 'BANKER')
 			income += wager * .95
 		else if (result === 'PLAYER' && action === 'PLAYER')
