@@ -64,3 +64,18 @@ h2 button {
 .color-gray {
   color: #bbb;
 }
+
+/* INFO: original 2023 */
+
+.cell {
+  width: 15px;
+  height: 15px;
+  line-height: 15px;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  font-size: 12px;
+  text-align: cneter;
+}
+.float {
+  float: left;
+}

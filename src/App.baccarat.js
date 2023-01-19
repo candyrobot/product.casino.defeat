@@ -21,16 +21,11 @@ for (var i = 0; i < PLAYING_DECK_NUM; i++) {
 
 console.log('deckResults:', deckResults)
 
+let html = <>hoge{222} {222} <div>hoge</div></>
 for (var i = 0; i < deckResults.length; i++) {
-	new BaccaratDrawer(deckResults[i]).drawHtml()
+	// html += new BaccaratDrawer(deckResults[i]).getScoreboardAsHtml()
 }
 
-
-
-
-// TRY: trueCountに従ってベット額を変える -3以下なら$1, -2: $2, -1: $3, 0: $4
-// TRY: 利確したらリセット let arr = [1,3,5]
-// TRY: 利確したらリセット let arr = [1,3,2,6]
 
 // for (var i = 0; i < PLAYING_NUM; i++) {
 // 	let playedData = baccarat.play(baccaratStrategy.getWager(), baccaratStrategy.getAction())
@@ -65,6 +60,7 @@ class App extends Component {
 			<div className="App">
 				<header className="App-header">
 					<img src={logo} className="App-logo" alt="logo" />
+					<div>{html}</div>
 					<p>
 						Edit <code>src/App.js</code> and save to reload.
 					</p>

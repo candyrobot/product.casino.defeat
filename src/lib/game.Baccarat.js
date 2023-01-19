@@ -107,8 +107,10 @@ class BaccaratDrawer {
 		const scoreboard = this.getScoreboard()
 		console.log('this.getScoreboard():', scoreboard)
 		return scoreboard.reduce((prev, v) => {
-			return v.reduce((prev, v) => `<span style="color: ${v == 'PLAYER' ? 'blue' : 'red'}">◯</span>` + prev, '') + '<br>' + prev
-		}, '<hr style="clear: both">')
+			return '<div class="float">'
+			  + v.reduce((prev, v) => `<div style="color: ${v == 'PLAYER' ? 'blue' : 'red'}" class="cell">◯</div>` + prev, '')
+			  + '</div>' + prev
+			}, '<hr style="clear: both">')
 	}
 	drawHtml() {
 		setTimeout(() => {
