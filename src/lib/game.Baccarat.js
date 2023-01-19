@@ -95,9 +95,7 @@ class BaccaratDrawer {
 	getScoreboard() {
 		return this.results.reduce((prev, v) => {
 			let lastCol = prev[prev.length - 1]
-			if (v == 'TIE')
-				lastCol.push(v)
-			else if (lastCol == undefined || lastCol[lastCol.length - 1] != v)
+			if (lastCol == undefined || lastCol[lastCol.length - 1] != v)
 				prev.push([v])
 			else
 				lastCol.push(v)
