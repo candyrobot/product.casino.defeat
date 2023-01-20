@@ -260,6 +260,17 @@ class Baccarat {
 		return deckResult
 	}
 	/**
+	 * 比較用にダイスの結果を出力
+	 * @return {Array}
+	 */
+	playDice() {
+		let results = []
+		for (let i = 0; i < 65; i++) {
+			results.push(Math.random() < .5 ? 'PLAYER' : 'BANKER')
+		}
+		return results
+	}
+	/**
 	 * @return {string} 'PLAYER' 'BANKER' 'TIE'
 	 */
 	_judge(playerNum, bankerNum) {

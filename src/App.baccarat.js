@@ -16,7 +16,7 @@ const PLAYING_DECK_NUM = 10
 
 const deckResults = []
 for (var i = 0; i < PLAYING_DECK_NUM; i++) {
-	deckResults.push(new Baccarat().playDeck())
+	deckResults.push(new Baccarat().playDice())
 }
 
 console.log('deckResults:', deckResults)
@@ -66,8 +66,8 @@ class App extends Component {
 		return (
 			<div className="App">
 				<header className="App-header">
-					<img src={logo} className="App-logo" alt="logo" />
 					<div>{html}</div>
+					<img src={logo} className="App-logo" alt="logo" />
 					<p>
 						Edit <code>src/App.js</code> and save to reload.
 					</p>
