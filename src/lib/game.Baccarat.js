@@ -96,7 +96,7 @@ class BaccaratDrawer {
 	getScoreboard() {
 		return this.deckResult.reduce((prev, v) => {
 			let lastCol = prev[prev.length - 1]
-			if (lastCol == undefined || lastCol[lastCol.length - 1] != v)
+			if (lastCol == undefined || lastCol[lastCol.length - 1].result != v.result)
 				prev.push([v])
 			else
 				lastCol.push(v)
@@ -111,12 +111,34 @@ class BaccaratDrawer {
 			<div className="float">
 				{v.map((v) => {
 					n++
-					return v === 'TIE'
-					? <div style={{ color: 'green' }} className={`cell cell-${n}`}>／</div>
-					: <div style={{ color: v == 'PLAYER' ? 'blue' : 'red' }} className={`cell cell-${n}`}>◯</div>
+					return this.createHtmlCell(v, n)
+					// x:
+					// let isNatural = ''
+					// if (this.isNatural(v.player.cards) || this.isNatural(v.banker.cards))
+					// 	isNatural = 'isNatural'
+					// n++
+					// return v.result === 'TIE'
+					// ? <div style={{ color: 'green' }} className={`cell cell-${n} ${isNatural}`}>／</div>
+					// : <div style={{ color: v.result == 'PLAYER' ? 'blue' : 'red' }} className={`cell cell-${n} ${isNatural}`}>◯</div>
 				})}
 			</div>
 		)
+	}
+	createHtmlCell(v, n) {
+		let color = 'green'
+		if (v.result === 'PLAYER') color = 'blue'
+		if (v.result === 'BANKER') color = 'red'
+
+		let isNatural = this.isNatural(v.player.cards)
+		             || this.isNatural(v.banker.cards) ? 'isNatural' : ''
+
+		return <div
+			style={{ color }}
+			className={`cell cell-${n} ${isNatural}`}
+			data={JSON.stringify(v)}
+		>
+			{v.result === 'TIE' ? '／' : '◯'}
+		</div>
 	}
 	// x:
 	// drawHtml() {
@@ -124,6 +146,9 @@ class BaccaratDrawer {
 	// 		document.write(this.getScoreboardAsHtml())
 	// 	}, 100)
 	// }
+	isNatural(cards) {
+		return get1thDigit(cards[0] + cards[1]) >= 8
+	}
 	isTereco() {}
 	isTsurara() {}
 }
@@ -195,41 +220,51 @@ class Baccarat {
 	_burnCard() {
 	}
 	/**
-	 * @param {number}
-	 * @param {string}
-	 * @return {playedData}
-	 *   @structure { income: {number}, results: {results}, playingCards, wager, isEndOfShoe, }
+	 * @return {object}
+	 *   @structure { result, player, banker }
 	 */
-	play(wager, action) {
-		let playerNum = get1thDigit(this.playingCards.dealCard() + this.playingCards.dealCard())
-		let bankerNum = get1thDigit(this.playingCards.dealCard() + this.playingCards.dealCard())
+	play() {
+		let player = { cards: [] }
+		let banker = { cards: [] }
+		player.cards.push(this.playingCards.dealCard())
+		banker.cards.push(this.playingCards.dealCard())
+		player.cards.push(this.playingCards.dealCard())
+		banker.cards.push(this.playingCards.dealCard())
+
+		let playerNum = get1thDigit(player.cards[0] + player.cards[1])
+		let bankerNum = get1thDigit(banker.cards[0] + banker.cards[1])
 		let result = ''
+
 		// console.log(playerNum, bankerNum)
 		if (playerNum >= 8 || bankerNum >= 8)
 			result = this._judge(playerNum, bankerNum)
 		else if (playerNum >= 6 && bankerNum >= 6)
 			result = this._judge(playerNum, bankerNum)
 		else if (playerNum <= 5) {
-			let dealtNum = this.playingCards.dealCard()
-			playerNum = get1thDigit(playerNum + dealtNum)
+			player.cards.push(this.playingCards.dealCard())
+			playerNum = get1thDigit(playerNum + player.cards[2])
 			if (
 				bankerNum <= 2 ||
-				bankerNum == 3 && [1,2,3,4,5,6,7,9,0].find((n) => n == dealtNum) ||
-				bankerNum == 4 && [2,3,4,5,6,7].find((n) => n == dealtNum) ||
-				bankerNum == 5 && [4,5,6,7].find((n) => n == dealtNum) ||
-				bankerNum == 6 && [6,7].find((n) => n == dealtNum)
-			)
-				bankerNum = get1thDigit(bankerNum + this.playingCards.dealCard())
+				bankerNum == 3 && [1,2,3,4,5,6,7,9,0].find((n) => n == player.cards[2]) ||
+				bankerNum == 4 && [2,3,4,5,6,7].find((n) => n == player.cards[2]) ||
+				bankerNum == 5 && [4,5,6,7].find((n) => n == player.cards[2]) ||
+				bankerNum == 6 && [6,7].find((n) => n == player.cards[2])
+			) {
+				banker.cards.push(this.playingCards.dealCard())
+				bankerNum = get1thDigit(bankerNum + banker.cards[2])
+			}
 			result = this._judge(playerNum, bankerNum)
 		}
 		else {
-			if (playerNum > bankerNum)
-				bankerNum = get1thDigit(bankerNum + this.playingCards.dealCard())
+			if (playerNum > bankerNum) {
+				banker.cards.push(this.playingCards.dealCard())
+				bankerNum = get1thDigit(bankerNum + banker.cards[2])
+			}
 			result = this._judge(playerNum, bankerNum)
 		}
 
 		// INFO: 以下はベッティングシステムが介入していて責務を切り分けられていない。
-		// x: 
+		// x: play(wager, action)
 		// let income = 0
 		// if (result === 'BANKER' && action === 'BANKER')
 		// 	income += wager * .95
@@ -246,7 +281,11 @@ class Baccarat {
 		// 	debugger
 		// ;
 
-		return result
+		return {
+			result,
+			player,
+			banker
+		}
 	}
 	/**
 	 * デックが一定数以下になるまでプレイしゲームの結果を返す

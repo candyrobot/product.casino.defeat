@@ -9,27 +9,19 @@ import Chibisuke from './lib/method.Chibisuke';
 const GLOBAL_DATA = []
 const PLAYING_DECK_NUM = 10
 // let baccaratStrategy = new BaccaratStrategy(baccarat.getPlayingCards())
-// let baccaratDrawer = new BaccaratDrawer()
 
 // ベッティングシステム
 // let amount = 500
 
 const deckResults = []
 for (var i = 0; i < PLAYING_DECK_NUM; i++) {
-	deckResults.push(new Baccarat().playDice())
+	deckResults.push(new Baccarat().playDeck())
 }
 
-console.log('deckResults:', deckResults)
-
-// x: 
-// let html = <>hoge{222} {222} <div>hoge</div></>
-// for (var i = 0; i < deckResults.length; i++) {
-// 	// html += new BaccaratDrawer(deckResults[i]).getScoreboardAsHtml()
-// 	new BaccaratDrawer(deckResults[i]).drawHtml()
-// }
+// console.log('deckResults:', deckResults)
 
 let html = deckResults.map((v, i) => [
-	new BaccaratDrawer(deckResults[i]).getScoreboardAsHtml(),
+	new BaccaratDrawer(v).getScoreboardAsHtml(),
 	<hr />
 ])
 
@@ -48,11 +40,6 @@ let html = deckResults.map((v, i) => [
 // 	}
 // 	console.log('====')
 // }
-
-// console.log(baccaratDrawer.getCsv())
-// setTimeout(function() {
-// 	document.write(baccaratDrawer.getScoreboardAsHtml())
-// }, 100)
 
 /////////////////////////////////////////////////////////////////
 
