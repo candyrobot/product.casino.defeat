@@ -79,3 +79,6 @@ h2 button {
 .float {
   float: left;
 }
+hr {
+  clear: both;
+}

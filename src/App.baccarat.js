@@ -21,12 +21,19 @@ for (var i = 0; i < PLAYING_DECK_NUM; i++) {
 
 console.log('deckResults:', deckResults)
 
-let html = <>hoge{222} {222} <div>hoge</div></>
-for (var i = 0; i < deckResults.length; i++) {
-	// html += new BaccaratDrawer(deckResults[i]).getScoreboardAsHtml()
-}
+// x: 
+// let html = <>hoge{222} {222} <div>hoge</div></>
+// for (var i = 0; i < deckResults.length; i++) {
+// 	// html += new BaccaratDrawer(deckResults[i]).getScoreboardAsHtml()
+// 	new BaccaratDrawer(deckResults[i]).drawHtml()
+// }
 
+let html = deckResults.map((v, i) => [
+	new BaccaratDrawer(deckResults[i]).getScoreboardAsHtml(),
+	<hr />
+])
 
+// x:
 // for (var i = 0; i < PLAYING_NUM; i++) {
 // 	let playedData = baccarat.play(baccaratStrategy.getWager(), baccaratStrategy.getAction())
 // 	amount += playedData.income

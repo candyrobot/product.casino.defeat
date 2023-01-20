@@ -106,17 +106,18 @@ class BaccaratDrawer {
 	getScoreboardAsHtml() {
 		const scoreboard = this.getScoreboard()
 		console.log('this.getScoreboard():', scoreboard)
-		return scoreboard.reduce((prev, v) => {
-			return '<div class="float">'
-			  + v.reduce((prev, v) => `<div style="color: ${v == 'PLAYER' ? 'blue' : 'red'}" class="cell">◯</div>` + prev, '')
-			  + '</div>' + prev
-			}, '<hr style="clear: both">')
+		return scoreboard.map((v) =>
+			<div className="float">
+				{v.map((v) => <div style={{ color: v == 'PLAYER' ? 'blue' : 'red' }} className="cell">◯</div>)}
+			</div>
+		)
 	}
-	drawHtml() {
-		setTimeout(() => {
-			document.write(this.getScoreboardAsHtml())
-		}, 100)
-	}
+	// x:
+	// drawHtml() {
+	// 	setTimeout(() => {
+	// 		document.write(this.getScoreboardAsHtml())
+	// 	}, 100)
+	// }
 	isTereco() {}
 	isTsurara() {}
 }
