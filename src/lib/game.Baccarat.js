@@ -106,9 +106,15 @@ class BaccaratDrawer {
 	getScoreboardAsHtml() {
 		const scoreboard = this.getScoreboard()
 		console.log('this.getScoreboard():', scoreboard)
-		return scoreboard.map((v) =>
+		let n = 0
+		return scoreboard.map((v, i) =>
 			<div className="float">
-				{v.map((v) => <div style={{ color: v == 'PLAYER' ? 'blue' : 'red' }} className="cell">◯</div>)}
+				{v.map((v) => {
+					n++
+					return v === 'TIE'
+					? <div style={{ color: 'green' }} className={`cell cell-${n}`}>／</div>
+					: <div style={{ color: v == 'PLAYER' ? 'blue' : 'red' }} className={`cell cell-${n}`}>◯</div>
+				})}
 			</div>
 		)
 	}
