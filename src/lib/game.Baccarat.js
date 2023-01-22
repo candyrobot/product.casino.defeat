@@ -49,8 +49,9 @@ class BaccaratPlayingCards extends PlayingCards {
 }
 
 class BaccaratDrawer {
-	constructor(deckResult) {
-		this.deckResult = deckResult
+	constructor(shoeResult) {
+		this.shoeResult = shoeResult
+		this.isDisplayTIE = false
 		this.results = []
 		// INFO: Playerがn連勝だったらtrue
 		// this.results.isPlayerStreak = function(n) {
@@ -94,7 +95,9 @@ class BaccaratDrawer {
 	}
 	// INFO: 配列の形で出力
 	getScoreboard() {
-		return this.deckResult.reduce((prev, v) => {
+		return this.shoeResult.reduce((prev, v) => {
+			if (!this.isDisplayTIE && v.result === 'TIE')
+				return prev
 			let lastCol = prev[prev.length - 1]
 			if (lastCol == undefined || lastCol[lastCol.length - 1].result != v.result)
 				prev.push([v])
@@ -109,18 +112,7 @@ class BaccaratDrawer {
 		let n = 0
 		return scoreboard.map((v, i) =>
 			<div className="float">
-				{v.map((v) => {
-					n++
-					return this.createHtmlCell(v, n)
-					// x:
-					// let isNatural = ''
-					// if (this.isNatural(v.player.cards) || this.isNatural(v.banker.cards))
-					// 	isNatural = 'isNatural'
-					// n++
-					// return v.result === 'TIE'
-					// ? <div style={{ color: 'green' }} className={`cell cell-${n} ${isNatural}`}>／</div>
-					// : <div style={{ color: v.result == 'PLAYER' ? 'blue' : 'red' }} className={`cell cell-${n} ${isNatural}`}>◯</div>
-				})}
+				{v.map((v) => this.createHtmlCell(v, n++) )}
 			</div>
 		)
 	}
@@ -288,15 +280,15 @@ class Baccarat {
 		}
 	}
 	/**
-	 * デックが一定数以下になるまでプレイしゲームの結果を返す
+	 * シューが一定数以下になるまでプレイしゲームの結果を返す
 	 * @return {Array}
 	 */
-	playDeck() {
-		let deckResult = []
+	playShoe() {
+		let shoeResult = []
 		while (this.playingCards.get().length >= 52 * 2) {
-			deckResult.push(this.play())
+			shoeResult.push(this.play())
 		}
-		return deckResult
+		return shoeResult
 	}
 	/**
 	 * 比較用にダイスの結果を出力

@@ -15,7 +15,7 @@ const PLAYING_DECK_NUM = 10
 
 const deckResults = []
 for (var i = 0; i < PLAYING_DECK_NUM; i++) {
-	deckResults.push(new Baccarat().playDeck())
+	deckResults.push(new Baccarat().playShoe())
 }
 
 // console.log('deckResults:', deckResults)
