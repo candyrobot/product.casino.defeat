@@ -5,6 +5,10 @@ class BaccaratPlayingCards extends PlayingCards {
 	constructor(deckNumber) {
 		super(deckNumber)
 		this.cards = this.cards.map((n) => n >= 10 ? 0 : n)
+		// INFO: 除外したいカードを以下に指定する
+		// .filter((n) => n != 6 && n != 7 && n != 5)
+		// .filter((n) => n != 0 && n != 1 && n != 5 && n != 6 && n != 7)
+		// console.log('cards:', this.cards)
 		// INFO: 低いほどプレイヤーに有利
 		this.counting = 0
 	}
@@ -108,7 +112,7 @@ class BaccaratDrawer {
 	}
 	getScoreboardAsHtml() {
 		const scoreboard = this.getScoreboard()
-		console.log('this.getScoreboard():', scoreboard)
+		// console.log('this.getScoreboard():', scoreboard)
 		let n = 0
 		return scoreboard.map((v, i) =>
 			<div className="float">
@@ -132,12 +136,6 @@ class BaccaratDrawer {
 			{v.result === 'TIE' ? '／' : '◯'}
 		</div>
 	}
-	// x:
-	// drawHtml() {
-	// 	setTimeout(() => {
-	// 		document.write(this.getScoreboardAsHtml())
-	// 	}, 100)
-	// }
 	isNatural(cards) {
 		return get1thDigit(cards[0] + cards[1]) >= 8
 	}
@@ -145,6 +143,55 @@ class BaccaratDrawer {
 	isTsurara() {}
 }
 
+class BaccaratBettingSystem {
+	constructor() {
+		this.amount = 500
+		this.amountOfNewRecordUpper = this.amount
+		this.UNIT_INITIAL = 1
+		this.unit = this.UNIT_INITIAL
+		// .bet(1).on('BANKER')
+	}
+	setGameDetail(gameDetail) {
+		let isWin = this.betBanker(this.unit, gameDetail)
+		
+		if (isWin && this.amountOfNewRecordUpper < this.amount) {
+			this.amountOfNewRecordUpper = this.amount
+			this.unit = this.UNIT_INITIAL
+		}
+		else
+			this.unit++
+	}
+	/**
+	 * @return {boolean} - 勝てばtrue
+	 */
+	betBanker(unit, gameDetail) {
+		if (gameDetail.result === 'BANKER') {
+			this.amount += unit * .95
+			return true
+		}
+		if (gameDetail.result === 'PLAYER') {
+			this.amount -= unit
+			return false
+		}
+	}
+	/**
+	 * @return {boolean} - 勝てばtrue
+	 */
+	betPlayer(unit, gameDetail) {
+		if (gameDetail.result === 'BANKER') {
+			this.amount -= unit
+			return false
+		}
+		if (gameDetail.result === 'PLAYER') {
+			this.amount += unit
+			return true
+		}
+	}
+	getCsv() {
+		console.log('amount:', this.amount)
+	}
+	// streakDetection
+}
 class BaccaratStrategy {
 	constructor(playingCards) {
 		this.playingCards = playingCards
@@ -213,7 +260,7 @@ class Baccarat {
 	}
 	/**
 	 * @return {object}
-	 *   @structure { result, player, banker }
+	 *   @structure {gameDetail} - { result, player, banker }
 	 */
 	play() {
 		let player = { cards: [] }
@@ -254,24 +301,6 @@ class Baccarat {
 			}
 			result = this._judge(playerNum, bankerNum)
 		}
-
-		// INFO: 以下はベッティングシステムが介入していて責務を切り分けられていない。
-		// x: play(wager, action)
-		// let income = 0
-		// if (result === 'BANKER' && action === 'BANKER')
-		// 	income += wager * .95
-		// else if (result === 'PLAYER' && action === 'PLAYER')
-		// 	income += wager
-		// else if (result === 'BANKER' && action === 'PLAYER' || result === 'PLAYER' && action === 'BANKER')
-		// 	income -= wager
-		// else if (result === 'TIE')
-		// 	console.info('TIE')
-		// else if (action === 'LOOK') {
-		// 	console.info('LOOK')
-		// 	wager = 0
-		// } else
-		// 	debugger
-		// ;
 
 		return {
 			result,
@@ -319,4 +348,4 @@ function get1thDigit(n) {
 	// Math.floor(n / 10) % 10 // 二桁めをとる
 }
 
-export { Baccarat, BaccaratDrawer, BaccaratStrategy };
+export { Baccarat, BaccaratDrawer, BaccaratBettingSystem };

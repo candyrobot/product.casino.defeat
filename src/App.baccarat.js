@@ -3,43 +3,37 @@ import logo from './logo.svg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { Button } from 'react-bootstrap';
-import { Baccarat, BaccaratDrawer, BaccaratStrategy } from './lib/game.Baccarat';
+import { Baccarat, BaccaratDrawer, BaccaratBettingSystem } from './lib/game.Baccarat';
 import Chibisuke from './lib/method.Chibisuke';
 
-const GLOBAL_DATA = []
+
+// INFO: ゲームデータの生成
 const PLAYING_DECK_NUM = 10
-// let baccaratStrategy = new BaccaratStrategy(baccarat.getPlayingCards())
-
-// ベッティングシステム
-// let amount = 500
-
-const deckResults = []
+const shoeResults = []
 for (var i = 0; i < PLAYING_DECK_NUM; i++) {
-	deckResults.push(new Baccarat().playShoe())
+	shoeResults.push(new Baccarat().playShoe())
 }
+// console.log('shoeResults:', shoeResults)
 
-// console.log('deckResults:', deckResults)
 
-let html = deckResults.map((v, i) => [
+
+// INFO: ベッティングシステム
+let baccaratBettingSystem = new BaccaratBettingSystem()
+shoeResults.reduce((amount, shoeResult) =>
+	shoeResult.reduce((amount, gameDetail) =>
+		baccaratBettingSystem.setGameDetail(gameDetail)
+	, undefined)
+, undefined)
+baccaratBettingSystem.getCsv()
+
+
+
+// INFO: 罫線の描画
+let html = shoeResults.map((v, i) => [
 	new BaccaratDrawer(v).getScoreboardAsHtml(),
 	<hr />
 ])
 
-// x:
-// for (var i = 0; i < PLAYING_NUM; i++) {
-// 	let playedData = baccarat.play(baccaratStrategy.getWager(), baccaratStrategy.getAction())
-// 	amount += playedData.income
-
-// 	baccaratStrategy.set(playedData, amount)
-// 	baccaratDrawer.set(playedData, i)
-
-// 	if (playedData.isEndOfShoe) {
-// 		console.warn('shoe change')
-// 		baccarat = new Baccarat()
-// 		baccaratStrategy = new BaccaratStrategy(baccarat.getPlayingCards())
-// 	}
-// 	console.log('====')
-// }
 
 /////////////////////////////////////////////////////////////////
 
