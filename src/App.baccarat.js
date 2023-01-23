@@ -3,7 +3,8 @@ import logo from './logo.svg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { Button } from 'react-bootstrap';
-import { Baccarat, BaccaratDrawer, BaccaratBettingSystem } from './lib/game.Baccarat';
+import { Baccarat, BaccaratDrawer } from './lib/game.Baccarat';
+import { BaccaratBettingSystem } from './lib/game.BaccaratBettingSystem';
 import Chibisuke from './lib/method.Chibisuke';
 
 
