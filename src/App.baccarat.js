@@ -3,10 +3,19 @@ import logo from './logo.svg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { Button } from 'react-bootstrap';
+
+import {
+	Chart, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend
+} from 'chart.js'; 
+import { Line } from 'react-chartjs-2';
+
 import { Baccarat, BaccaratDrawer } from './lib/game.Baccarat';
 import { BaccaratBettingSystem } from './lib/game.BaccaratBettingSystem';
 import Chibisuke from './lib/method.Chibisuke';
 
+Chart.register(
+	CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend
+)
 
 // INFO: ゲームデータの生成
 const PLAYING_DECK_NUM = 10
@@ -45,10 +54,24 @@ class App extends Component {
 	}
 
 	render() {
+		const labels = baccaratBettingSystem.getAmountHistory().map((v, i) => i)
+		const data = {
+		  labels: labels,
+		  datasets: [{
+		    label: 'My First Dataset',
+		    data: baccaratBettingSystem.getAmountHistory(),
+		    fill: false,
+		    borderColor: 'rgb(75, 192, 192)',
+		    tension: 0.1
+		  }]
+		};
 		return (
 			<div className="App">
 				<header className="App-header">
 					<div>{html}</div>
+					<Line
+						data={data}
+					/>
 					<img src={logo} className="App-logo" alt="logo" />
 					<p>
 						Edit <code>src/App.js</code> and save to reload.
