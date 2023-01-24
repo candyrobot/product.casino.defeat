@@ -18,9 +18,9 @@ Chart.register(
 )
 
 // INFO: ゲームデータの生成
-const PLAYING_DECK_NUM = 10
+const PLAYING_SHOE_NUM = 10
 const shoeResults = []
-for (var i = 0; i < PLAYING_DECK_NUM; i++) {
+for (var i = 0; i < PLAYING_SHOE_NUM; i++) {
 	shoeResults.push(new Baccarat().playShoe())
 }
 // console.log('shoeResults:', shoeResults)
@@ -70,6 +70,7 @@ class App extends Component {
 				<header className="App-header">
 					<div>{html}</div>
 					<Line
+						height={80}
 						data={data}
 					/>
 					<img src={logo} className="App-logo" alt="logo" />

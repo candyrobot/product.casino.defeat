@@ -9,13 +9,14 @@ class BaccaratBettingSystem {
 	setGameDetail(gameDetail) {
 		let isWin = this.betBanker(this.unit, gameDetail)
 		console.log('amount:', this.amount)
-		this.amountHistory.push(this.amount)
 
 		// INFO: Chibisuke法
-		// if (isWin && Math.max(...this.amountHistory) < this.amount)
-		// 	this.unit = this.UNIT_INITIAL
-		// else
-		// 	this.unit++
+		if (isWin && Math.max(...this.amountHistory) <= this.amount)
+			this.unit = this.UNIT_INITIAL
+		else
+			this.unit++
+
+		this.amountHistory.push(this.amount)
 	}
 	/**
 	 * @return {boolean} - 勝てばtrue
