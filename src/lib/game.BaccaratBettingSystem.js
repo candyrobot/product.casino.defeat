@@ -19,7 +19,7 @@ class BaccaratBettingSystem {
 		this.amountHistory.push(this.amount)
 	}
 	/**
-	 * @return {boolean} - 勝てばtrue
+	 * @return {boolean} - true when win or tie.
 	 */
 	betBanker(unit, gameDetail) {
 		if (gameDetail.result === 'BANKER') {
@@ -30,9 +30,11 @@ class BaccaratBettingSystem {
 			this.amount -= unit
 			return false
 		}
+		if (gameDetail.result === 'TIE')
+			return true
 	}
 	/**
-	 * @return {boolean} - 勝てばtrue
+	 * @return {boolean} - true when win or tie.
 	 */
 	betPlayer(unit, gameDetail) {
 		if (gameDetail.result === 'BANKER') {
@@ -43,12 +45,27 @@ class BaccaratBettingSystem {
 			this.amount += unit
 			return true
 		}
+		if (gameDetail.result === 'TIE')
+			return true
 	}
 	getAmountHistory() {
 		return this.amountHistory
 	}
 	getCsv() {
 		console.log('amount:', this.amountHistory)
+	}
+	/**
+	 * INFO: アクションアルゴリズム - PB交互にアクションさせたい時に
+	 * 例）BBPPBBPPBBPP
+	 * 使い方）
+		let isWin = 
+			this.getActionPatternAlternatively() === 'BANKER' ?
+			this.betBanker(this.unit, gameDetail) :
+			this.betPlayer(this.unit, gameDetail)
+	 */
+	getActionPatternAlternatively() {
+		return this.amountHistory.length % 4 === 0 || this.amountHistory.length % 4 === 1 ?
+		'BANKER' : 'PLAYER'
 	}
 	// streakDetection
 }

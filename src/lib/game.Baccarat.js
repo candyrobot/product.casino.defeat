@@ -104,6 +104,7 @@ class BaccaratDrawer {
 				return prev
 			let lastCol = prev[prev.length - 1]
 			if (lastCol == undefined || lastCol[lastCol.length - 1].result != v.result)
+				// INFO: 新規列を生成
 				prev.push([v])
 			else
 				lastCol.push(v)
@@ -130,7 +131,7 @@ class BaccaratDrawer {
 
 		return <div
 			style={{ color }}
-			className={`cell cell-${n} ${isNatural}`}
+			className={`cell cell-${n} ${isNatural} ${v.result === 'TIE' ? 'isTIE' : ''}`}
 			data={JSON.stringify(v)}
 		>
 			{v.result === 'TIE' ? '／' : '◯'}
