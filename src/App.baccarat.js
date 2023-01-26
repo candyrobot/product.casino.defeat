@@ -9,7 +9,8 @@ import {
 } from 'chart.js'; 
 import { Line } from 'react-chartjs-2';
 
-import { Baccarat, BaccaratDrawer } from './lib/game.Baccarat';
+import { Baccarat } from './lib/game.Baccarat';
+import { BaccaratDrawer } from './lib/game.BaccaratDrawer';
 import { BaccaratBettingSystem } from './lib/game.BaccaratBettingSystem';
 import Chibisuke from './lib/method.Chibisuke';
 
@@ -17,17 +18,23 @@ Chart.register(
 	CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend
 )
 
-// INFO: ゲームデータの生成
-const PLAYING_SHOE_NUM = 10
-const shoeResults = []
-for (var i = 0; i < PLAYING_SHOE_NUM; i++) {
-	shoeResults.push(new Baccarat().playShoe())
-}
-// console.log('shoeResults:', shoeResults)
+// INFO: Create Game data
+// const PLAYING_SHOE_NUM = 100
+// const shoeResults = []
+// for (var i = 0; i < PLAYING_SHOE_NUM; i++) {
+// 	shoeResults.push(new Baccarat().playShoe())
+// }
+// localStorage.setItem('shoeResults_1', JSON.stringify(shoeResults))
 
 
 
-// INFO: ベッティングシステム
+// INFO: Load Game data
+const shoeResults = JSON.parse(localStorage.getItem('shoeResults_1'))
+console.log('shoeResults:', shoeResults)
+
+
+
+// INFO: Betting System
 let baccaratBettingSystem = new BaccaratBettingSystem()
 shoeResults.reduce((amount, shoeResult) =>
 	shoeResult.reduce((amount, gameDetail) =>
@@ -38,11 +45,18 @@ baccaratBettingSystem.getCsv()
 
 
 
-// INFO: 罫線の描画
-let html = shoeResults.map((v, i) => [
-	new BaccaratDrawer(v).getScoreboardAsHtml(),
+// INFO: drawing html
+let html = shoeResults.map((v, i) => {
+	let baccaratDrawer = new BaccaratDrawer(v)
+	return [
+	<div className="shoe-group">
+		{baccaratDrawer.getScoreboardAsHtml()}
+		<div className="graph-counting">
+			{/*{baccaratDrawer.getCountingGraphAsHtml()}*/}
+		</div>
+	</div>,
 	<hr />
-])
+]})
 
 
 /////////////////////////////////////////////////////////////////

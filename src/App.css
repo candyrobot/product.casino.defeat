@@ -88,16 +88,28 @@ h2 button {
 .cell-30 {
   background-color: #cfcfcf;
 }
-.isNatural {
+.is-natural {
   position: relative;
 /*  background-color: #ffe6ba;*/
 }
-.isNatural:after {
+.is-natural:after {
   content: 'N';
   position: absolute;
   top: 0;
   right: 0;
   font-size: 10px;
+}
+.shoe-group {
+  position: relative;
+  overflow: hidden;
+}
+.graph-counting {
+  position: absolute;
+  left: 650px;
+  min-width: 100px;
+  top: 0;
+  height: 100%;
+  background-color: #eaeaea;
 }
 .float {
   float: left;
