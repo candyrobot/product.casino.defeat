@@ -92,10 +92,10 @@ class BaccaratDrawer {
 		</div>
 	}
 	getCountingGraphAsHtml() {
-		let cardNumbers = [0,1,2,3,4,5,6,7,8,9]
+		let cardNumbers = [1,2,3,4,5,6,7,8,9,0]
 		return <Line
 			width={700}
-			height={200}
+			height={600}
 			data={{
 				labels: this.shoeResult.map((v, i) => i),
 				datasets: cardNumbers.map((number) => {
@@ -105,10 +105,13 @@ class BaccaratDrawer {
 						label: number,
 						data: this.shoeResult.map((v) =>
 							count -= v.banker.cards.reduce((prev, v) =>
-								prev + v === number ? 1 : 0
+								prev + (v === number ? 1 : 0)
+							, 0)
+							+ v.player.cards.reduce((prev, v) =>
+								prev + (v === number ? 1 : 0)
 							, 0)
 						),
-						borderColor: `hsl(${number * 35}deg 50% 58%)`, // rgb(75, 192, 192)
+						borderColor: `hsl(${number * 30}deg 50% 58%)`
 					}
 				})
 			}}
