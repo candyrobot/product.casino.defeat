@@ -92,21 +92,26 @@ class BaccaratDrawer {
 		</div>
 	}
 	getCountingGraphAsHtml() {
-		const labels = this.shoeResult.map((v, i) => i)
-		const data = {
-			labels: labels,
-			datasets: [{
-				label: 'My First Dataset',
-				data: this.shoeResult.map((v, i) => i),
-				fill: false,
-				borderColor: 'rgb(75, 192, 192)',
-				tension: 0.1
-			}]
-		};
+		let cardNumbers = [0,1,2,3,4,5,6,7,8,9]
 		return <Line
 			width={700}
 			height={200}
-			data={data}
+			data={{
+				labels: this.shoeResult.map((v, i) => i),
+				datasets: cardNumbers.map((number) => {
+					// INFO: 8デック分に含まれるそのカードの最大枚数
+					let count = (number === 0 ? 4 * 4 : 4) * 8
+					return {
+						label: number,
+						data: this.shoeResult.map((v) =>
+							count -= v.banker.cards.reduce((prev, v) =>
+								prev + v === number ? 1 : 0
+							, 0)
+						),
+						borderColor: `hsl(${number * 35}deg 50% 58%)`, // rgb(75, 192, 192)
+					}
+				})
+			}}
 		/>
 	}
 	isNatural(cards) {
@@ -115,5 +120,19 @@ class BaccaratDrawer {
 	isTereco() {}
 	isTsurara() {}
 }
+
+// function getCountingDataFor(number) {
+// 	const labels = this.shoeResult.map((v, i) => i)
+// 	const data = {
+// 		labels: labels,
+// 		datasets: [{
+// 			label: 'My First Dataset',
+// 			data: this.shoeResult.map((v, i) => i),
+// 			borderColor: 'rgb(75, 192, 192)',
+// 		}]
+// 	};
+// 	return data
+// }
+
 
 export { BaccaratDrawer };
