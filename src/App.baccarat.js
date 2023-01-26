@@ -52,7 +52,7 @@ let html = shoeResults.map((v, i) => {
 	<div className="shoe-group">
 		{baccaratDrawer.getScoreboardAsHtml()}
 		<div className="graph-counting">
-			{/*{baccaratDrawer.getCountingGraphAsHtml()}*/}
+			{baccaratDrawer.getCountingGraphAsHtml()}
 		</div>
 	</div>,
 	<hr />
@@ -70,14 +70,14 @@ class App extends Component {
 	render() {
 		const labels = baccaratBettingSystem.getAmountHistory().map((v, i) => i)
 		const data = {
-		  labels: labels,
-		  datasets: [{
-		    label: 'My First Dataset',
-		    data: baccaratBettingSystem.getAmountHistory(),
-		    fill: false,
-		    borderColor: 'rgb(75, 192, 192)',
-		    tension: 0.1
-		  }]
+			labels: labels,
+			datasets: [{
+				label: 'My First Dataset',
+				data: baccaratBettingSystem.getAmountHistory(),
+				fill: false,
+				borderColor: 'rgb(75, 192, 192)',
+				tension: 0.1
+			}]
 		};
 		return (
 			<div className="App">

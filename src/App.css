@@ -102,13 +102,13 @@ h2 button {
 .shoe-group {
   position: relative;
   overflow: hidden;
+  height: 200px;
 }
 .graph-counting {
   position: absolute;
   left: 650px;
   min-width: 100px;
   top: 0;
-  height: 100%;
   background-color: #eaeaea;
 }
 .float {
