@@ -49,7 +49,7 @@ baccaratBettingSystem.getCsv()
 let html = shoeResults.map((v, i) => {
 	let baccaratDrawer = new BaccaratDrawer(v)
 	return [
-	<div className="shoe-group">
+	<div className={`shoe-group shoe-number${i}`}>
 		{baccaratDrawer.getScoreboardAsHtml()}
 		<div className="graph-counting">
 			{baccaratDrawer.getCountingGraphAsHtml()}
