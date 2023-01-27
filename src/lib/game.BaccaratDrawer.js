@@ -51,7 +51,9 @@ class BaccaratDrawer {
 	// getWinsOfBanker() {
 	// 	return this.results.filter((v) => v == 'BANKER').length
 	// }
-	// INFO: 配列の形で出力
+	/**
+	 * INFO: 配列を罫線の形で出力
+	 */
 	getScoreboard() {
 		return this.shoeResult.reduce((prev, v) => {
 			if (!this.isDisplayTIE && v.result === 'TIE')
@@ -85,10 +87,10 @@ class BaccaratDrawer {
 
 		return <div
 			style={{ color }}
-			className={`cell cell-${n} ${isNatural} ${v.result === 'TIE' ? 'isTIE' : ''}`}
+			className={`cell cell-${n} ${isNatural} ${v.result === 'TIE' ? 'is-TIE' : ''}`}
 			data={JSON.stringify(v)}
 		>
-			{v.result === 'TIE' ? '／' : '◯'}
+			{v.result === 'TIE' ? '／' : '◎'}
 		</div>
 	}
 	getCountingGraphAsHtml() {
@@ -111,7 +113,8 @@ class BaccaratDrawer {
 								prev + (v === number ? 1 : 0)
 							, 0)
 						),
-						borderColor: `hsl(${number * 30}deg 50% 58%)`
+						borderColor: getColor(number)
+						// borderColor: `hsl(${number * 30}deg 50% 58%)`
 					}
 				})
 			}}
@@ -122,6 +125,12 @@ class BaccaratDrawer {
 	}
 	isTereco() {}
 	isTsurara() {}
+}
+
+function getColor(number) {
+	if ([1,8,9].find((n) => n === number)) return 'orange'
+	if ([2,3,4].find((n) => n === number)) return 'blue'
+	if ([5,6,7].find((n) => n === number)) return 'green'
 }
 
 // function getCountingDataFor(number) {
