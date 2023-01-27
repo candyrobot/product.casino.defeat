@@ -1,3 +1,14 @@
+
+let streakDetection = {
+	loseCount: 0,
+	setGameResult: function(isWin) {
+		isWin ? (this.loseCount = 0) : this.loseCount++
+	},
+	isStopThisGame: function() {
+		return this.loseCount >= 3 ? true : false
+	}
+}
+
 class BaccaratBettingSystem {
 	constructor() {
 		this.amount = 500
@@ -6,9 +17,20 @@ class BaccaratBettingSystem {
 		this.unit = this.UNIT_INITIAL
 		// .bet(1).on('BANKER')
 	}
+	/**
+	 * INFO: 1ゲームごとの処理
+	 */
 	setGameDetail(gameDetail) {
+		if (streakDetection.isStopThisGame()) {
+			streakDetection.setGameResult(gameDetail.result === 'BANKER')
+			this.amountHistory.push(this.amount)
+			return
+		}
+
 		let isWin = this.betBanker(this.unit, gameDetail)
 		// console.log('amount:', this.amount)
+
+		streakDetection.setGameResult(isWin)
 
 		// INFO: Chibisuke法
 		if (isWin && Math.max(...this.amountHistory) <= this.amount)
@@ -67,7 +89,6 @@ class BaccaratBettingSystem {
 		return this.amountHistory.length % 4 === 0 || this.amountHistory.length % 4 === 1 ?
 		'BANKER' : 'PLAYER'
 	}
-	// streakDetection
 }
 
 
