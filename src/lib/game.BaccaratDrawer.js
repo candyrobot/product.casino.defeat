@@ -70,42 +70,50 @@ class BaccaratDrawer {
 	getScoreboardAsHtml() {
 		const scoreboard = this.getScoreboard()
 		// console.log('this.getScoreboard():', scoreboard)
-		let n = 0
-		return scoreboard.map((v, i) =>
+		return scoreboard.map((col) =>
 			<div className="float">
-				{v.map((v) => this.createHtmlCell(v, n++) )}
+				{col.map((game) => this.createHtmlCell(game) )}
 			</div>
 		)
 	}
-	createHtmlCell(v, n) {
+	createHtmlCell(game) {
 		let color = 'green'
-		if (v.result === 'PLAYER') color = 'blue'
-		if (v.result === 'BANKER') color = 'red'
+		if (game.result === 'PLAYER') color = 'blue'
+		if (game.result === 'BANKER') color = 'red'
 
-		let isNatural = this.isNatural(v.player.cards)
-		             || this.isNatural(v.banker.cards) ? 'is-natural' : ''
+		let isNatural = this.isNatural(game.player.cards)
+		             || this.isNatural(game.banker.cards) ? 'is-natural' : ''
 
 		return <div
 			style={{ color }}
-			className={`cell cell-${n} ${isNatural} ${v.result === 'TIE' ? 'is-TIE' : ''}`}
-			data={JSON.stringify(v)}
+			title={JSON.stringify(game)}
+			className={`cell game-number${game.gameNumber} ${isNatural} ${game.result === 'TIE' ? 'is-TIE' : ''}`}
 		>
-			{v.result === 'TIE' ? '／' : '◎'}
+			{game.result === 'TIE' ? '／' : '◎'}
 		</div>
 	}
 	getCountingGraphAsHtml() {
-		let cardNumbers = [1,2,3,4,5,6,7,8,9,0]
+		// INFO: 基準がほしかったので-1をいれて、中央線を描く
+		let cardNumbers = [-1, 1,2,3,4,5,6,7,8,9,0]
 		return <Line
 			width={700}
 			height={600}
 			data={{
-				labels: this.shoeResult.map((v, i) => i),
+				labels: this.shoeResult.map((v, i) => i + 1),
 				datasets: cardNumbers.map((number) => {
 					// INFO: 8デック分に含まれるそのカードの最大枚数
 					let count = (number === 0 ? 4 * 4 : 4) * 8
 					return {
 						label: number,
-						data: this.shoeResult.map((v) =>
+						data: this.shoeResult.map((v, i) =>
+							number === -1 ?
+								// INFO: 中央線の描画
+								// 1.  4 * 8デック: 合計32枚
+								// 2.  6デック終了が平均64ゲーム目
+								// 3.  n回目で0になるとき 32 / n が 1回あたりの消費率
+								//     ` 6 -> 8デック は 64 -> 85.3333333333ゲーム目で終了`
+								// 4.  n = 85.33 は 1回あたり0.375014649枚ずつ減る
+								(count -= 0.375014649) :
 							count -= v.banker.cards.reduce((prev, v) =>
 								prev + (v === number ? 1 : 0)
 							, 0)
@@ -113,8 +121,9 @@ class BaccaratDrawer {
 								prev + (v === number ? 1 : 0)
 							, 0)
 						),
-						borderColor: getColor(number)
-						// borderColor: `hsl(${number * 30}deg 50% 58%)`
+						hidden: number === 0,
+						// borderColor: getColor(number)
+						borderColor: number === -1 ? 'red' : `hsl(${number * 30}deg 50% 58%)`
 					}
 				})
 			}}

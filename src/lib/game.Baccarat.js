@@ -122,8 +122,10 @@ class Baccarat {
 	 */
 	playShoe() {
 		let shoeResult = []
+		let gameNumber = 0
 		while (this.playingCards.get().length >= 52 * 2) {
-			shoeResult.push(this.play())
+			gameNumber++
+			shoeResult.push({ ...this.play(), gameNumber })
 		}
 		return shoeResult
 	}
