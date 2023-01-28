@@ -75,17 +75,18 @@ h2 button {
   border-bottom: 1px solid #ccc;
   font-size: 12px;
   text-align: cneter;
+  cursor: pointer;
 }
-.cell-10,
-.cell-20,
-.cell-30,
-.cell-40,
-.cell-50,
-.cell-60 {
+.game-number10,
+.game-number20,
+.game-number30,
+.game-number40,
+.game-number50,
+.game-number60 {
   background-color: #ececec
 /*  background-color: #ffebff;*/
 }
-.cell-30 {
+.game-number30 {
   background-color: #cfcfcf;
 }
 .is-natural {
