@@ -92,10 +92,10 @@ class Baccarat {
 			playerNum = Math.get1thDigit(playerNum + player.cards[2])
 			if (
 				bankerNum <= 2 ||
-				bankerNum == 3 && [1,2,3,4,5,6,7,9,0].find((n) => n == player.cards[2]) ||
-				bankerNum == 4 && [2,3,4,5,6,7].find((n) => n == player.cards[2]) ||
-				bankerNum == 5 && [4,5,6,7].find((n) => n == player.cards[2]) ||
-				bankerNum == 6 && [6,7].find((n) => n == player.cards[2])
+				bankerNum == 3 && [1,2,3,4,5,6,7,9,0].includes(player.cards[2]) ||
+				bankerNum == 4 && [2,3,4,5,6,7].includes(player.cards[2]) ||
+				bankerNum == 5 && [4,5,6,7].includes(player.cards[2]) ||
+				bankerNum == 6 && [6,7].includes(player.cards[2])
 			) {
 				banker.cards.push(this.playingCards.dealCard())
 				bankerNum = Math.get1thDigit(bankerNum + banker.cards[2])

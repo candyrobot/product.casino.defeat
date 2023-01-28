@@ -137,9 +137,9 @@ class BaccaratDrawer {
 }
 
 function getColor(number) {
-	if ([1,8,9].find((n) => n === number)) return 'orange'
-	if ([2,3,4].find((n) => n === number)) return 'blue'
-	if ([5,6,7].find((n) => n === number)) return 'green'
+	if ([8,9].includes(number)) return 'orange' // banker有利になるカード
+	if ([0,1].includes(number)) return 'blue' // player有利になるカード
+	// if ([2,3,7].includes(number)) return 'green'
 }
 
 // function getCountingDataFor(number) {
