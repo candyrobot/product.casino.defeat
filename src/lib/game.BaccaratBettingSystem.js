@@ -16,6 +16,9 @@ class Prediction {
 		this.hits[this.hits.length - 3] === false ?
 			'LOOK' : 'BANKER'
 	}
+	getForecast() {
+		return this.forecast
+	}
 }
 let streakDetection = {
 	loseCount: 0,
@@ -175,4 +178,4 @@ class BaccaratStrategy {
 }
 
 
-export { Baccarat, BaccaratBettingSystem };
+export { Baccarat, BaccaratBettingSystem, Prediction };

@@ -1,3 +1,5 @@
+import { Prediction, Baccarat } from './game.BaccaratBettingSystem';
+
 /**
  * ベッティングシステム:
  * - 負債をおったらChibisuke法をもとに1~2連の負けならリカバリーできる
@@ -8,11 +10,26 @@
  */
 class MethodGoldbach {
 	constructor() {
+		this.amount = 500
+		this.amountHistory = [this.amount]
 		this.unitLevel = [1, 6, 42, 294, 2058]
-
+		this.prediction = new Prediction()
+		this.baccarat = new Baccarat()
 	}
-	getWager() {
-
+	getAmount(gameDetail) {
+		let forecast = this.prediction.getForecast()
+		if (forecast === gameDetail.result) {
+			this.prediction.hits.push(true)
+			this.amount += this.baccarat.payout(this._getWager(), forecast)
+		}
+		else {
+			this.prediction.hits.push(false)
+			this.amount -= this._getWager()
+		}
+		return this.amount
+	}
+	_getWager() {
+		return this.unitLevel[0] * 1
 	}
 }
 

@@ -12,6 +12,7 @@ import { Line } from 'react-chartjs-2';
 import { Baccarat } from './lib/game.Baccarat';
 import { BaccaratDrawer } from './lib/game.BaccaratDrawer';
 import { BaccaratBettingSystem } from './lib/game.BaccaratBettingSystem';
+import { MethodGoldbach } from './lib/method.Goldbach';
 import Chibisuke from './lib/method.Chibisuke';
 
 Chart.register(
@@ -36,14 +37,16 @@ console.log('shoeResults:', shoeResults)
 
 // INFO: Betting System
 let baccaratBettingSystem = new BaccaratBettingSystem()
-shoeResults = shoeResults.map((shoeResult) =>
-	shoeResult.map((gameDetail) => {
+shoeResults = shoeResults.map((shoeResult) => {
+	let methodGoldbach = new MethodGoldbach()
+	return shoeResult.map((gameDetail) => {
 		baccaratBettingSystem.setGameDetail(gameDetail)
 		return {
-			...gameDetail
+			...gameDetail,
+			amountFromGoldbach: methodGoldbach.getAmount(gameDetail)
 		}
 	})
-)
+})
 
 
 
