@@ -74,35 +74,49 @@ h2 button {
   border-right: 1px solid #ccc;
   border-bottom: 1px solid #ccc;
   font-size: 12px;
-  text-align: cneter;
-  cursor: pointer;
+  cursor: default;
 }
-.game-number10,
-.game-number20,
-.game-number30,
-.game-number40,
-.game-number50,
-.game-number60 {
-  background-color: #ececec
-/*  background-color: #ffebff;*/
+/*.cell:before {
+  content: attr(data-number);
+}*/
+.cell.game-number10,
+.cell.game-number20,
+.cell.game-number30,
+.cell.game-number40,
+.cell.game-number50,
+.cell.game-number60 {
+/*  background-color: #ececec*/
+/*  background-color: #ffebff; ちょいピンク*/
 }
-.game-number30 {
-  background-color: #cfcfcf;
+.cell.game-number30 {
+/*  background-color: #cfcfcf;*/
 }
-.is-natural {
+.cell.is-natural {
   position: relative;
 /*  background-color: #ffe6ba;*/
 }
-.is-natural:after {
-  content: 'N';
+.cell.is-natural:after {
+/*  content: 'N';*/
+  content: '';
   position: absolute;
   top: 0;
   right: 0;
   font-size: 10px;
+  width: 100%;
+  height: 100%;
+/*  background-color: rgb(255 161 0 / 23%);*/
+  background-color: rgb(126 126 126 / 20%);
+}
+.cell.is-TIE {
+/*  display: none;*/
 }
 .shoe-group {
   position: relative;
   overflow: hidden;
+}
+.scoreboard {
+  float: left;
+  width: 600px;
 }
 .graph-counting {
   float: left;

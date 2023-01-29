@@ -24,12 +24,12 @@ Chart.register(
 // for (var i = 0; i < PLAYING_SHOE_NUM; i++) {
 // 	shoeResults.push(new Baccarat().playShoe())
 // }
-// localStorage.setItem('shoeResults_2', JSON.stringify(shoeResults))
+// localStorage.setItem('shoeResults_4', JSON.stringify(shoeResults))
 
 
 
 // INFO: Load Game data
-const shoeResults = JSON.parse(localStorage.getItem('shoeResults_2'))
+const shoeResults = JSON.parse(localStorage.getItem('shoeResults_3'))
 console.log('shoeResults:', shoeResults)
 
 
@@ -50,7 +50,9 @@ let html = shoeResults.map((v, i) => {
 	let baccaratDrawer = new BaccaratDrawer(v)
 	return [
 	<div className={`shoe-group shoe-number${i + 1}`}>
-		{baccaratDrawer.getScoreboardAsHtml()}
+		<div className="scoreboard">
+			{baccaratDrawer.getScoreboardAsHtml()}
+		</div>
 		<div className="graph-counting">
 			{baccaratDrawer.getCountingGraphAsHtml()}
 		</div>

@@ -7,6 +7,8 @@ class BaccaratPlayingCards extends PlayingCards {
 		super(deckNumber)
 		this.cards = this.cards.map((n) => n >= 10 ? 0 : n)
 		// INFO: 除外したいカードを以下に指定する
+		// .filter((n) => n != 2 && n != 7 && n != 0 && n != 4 && n != 8)
+		// .filter((n) => n != 1 && n != 5 && n != 9 && n != 3 && n != 6)
 		// .filter((n) => n != 6 && n != 7 && n != 5)
 		// .filter((n) => n != 0 && n != 1 && n != 5 && n != 6 && n != 7)
 		// console.log('cards:', this.cards)

@@ -89,8 +89,9 @@ class BaccaratDrawer {
 			title={JSON.stringify(game)}
 			className={`cell game-number${game.gameNumber} ${isNatural} ${game.result === 'TIE' ? 'is-TIE' : ''}`}
 		>
-			{game.result === 'TIE' ? '／' : '◎'}
+			{game.result === 'TIE' ? '／' : game.gameNumber}
 		</div>
+		// '◎'
 	}
 	getCountingGraphAsHtml() {
 		// INFO: 基準がほしかったので-1をいれて、中央線を描く
@@ -121,9 +122,9 @@ class BaccaratDrawer {
 								prev + (v === number ? 1 : 0)
 							, 0)
 						),
-						hidden: number === 0,
-						// borderColor: getColor(number)
-						borderColor: number === -1 ? 'red' : `hsl(${number * 30}deg 50% 58%)`
+						// hidden: number === 0,
+						borderColor: number === -1 ? 'red' : getColor(number)
+						// x: borderColor: number === -1 ? 'red' : `hsl(${number * 30}deg 50% 58%)`
 					}
 				})
 			}}

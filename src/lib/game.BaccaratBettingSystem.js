@@ -2,7 +2,12 @@
 let streakDetection = {
 	loseCount: 0,
 	setGameResult: function(isWin) {
-		isWin ? (this.loseCount = 0) : this.loseCount++
+		// isWin ? (this.loseCount = 0) : this.loseCount++
+		if (isWin) {
+			this.loseCount <= 0 ? (this.loseCount = 0) : this.loseCount--
+		}
+		else
+			this.loseCount++
 	},
 	isStopThisGame: function() {
 		return this.loseCount >= 3 ? true : false
@@ -21,11 +26,11 @@ class BaccaratBettingSystem {
 	 * INFO: 1ゲームごとの処理
 	 */
 	setGameDetail(gameDetail) {
-		if (streakDetection.isStopThisGame()) {
-			streakDetection.setGameResult(gameDetail.result === 'BANKER')
-			this.amountHistory.push(this.amount)
-			return
-		}
+		// if (streakDetection.isStopThisGame()) {
+		// 	streakDetection.setGameResult(gameDetail.result === 'BANKER')
+		// 	this.amountHistory.push(this.amount)
+		// 	return
+		// }
 
 		let isWin = this.betBanker(this.unit, gameDetail)
 		// console.log('amount:', this.amount)
