@@ -122,13 +122,16 @@ class BaccaratDrawer {
 								prev + (v === number ? 1 : 0)
 							, 0)
 						),
-						// hidden: number === 0,
-						borderColor: number === -1 ? 'red' : getColor(number)
+						hidden: number === 0,
+						borderColor: number === -1 ? 'purple' : getColor(number)
 						// x: borderColor: number === -1 ? 'red' : `hsl(${number * 30}deg 50% 58%)`
 					}
 				})
 			}}
 		/>
+	}
+	getAmountGraphAsHtml() {
+		return <></>
 	}
 	isNatural(cards) {
 		return Math.get1thDigit(cards[0] + cards[1]) >= 8
@@ -138,8 +141,8 @@ class BaccaratDrawer {
 }
 
 function getColor(number) {
-	if ([8,9].includes(number)) return 'orange' // banker有利になるカード
-	if ([0,1].includes(number)) return 'blue' // player有利になるカード
+	if ([1].includes(number)) return 'red' // banker有利になるカード
+	if ([2,7].includes(number)) return 'blue' // player有利になるカード
 	// if ([2,3,7].includes(number)) return 'green'
 }
 

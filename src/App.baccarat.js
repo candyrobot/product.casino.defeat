@@ -20,7 +20,7 @@ Chart.register(
 
 // INFO: Create Game data
 // const PLAYING_SHOE_NUM = 100
-// const shoeResults = []
+// let shoeResults = []
 // for (var i = 0; i < PLAYING_SHOE_NUM; i++) {
 // 	shoeResults.push(new Baccarat().playShoe())
 // }
@@ -29,19 +29,21 @@ Chart.register(
 
 
 // INFO: Load Game data
-const shoeResults = JSON.parse(localStorage.getItem('shoeResults_3'))
+let shoeResults = JSON.parse(localStorage.getItem('shoeResults_3'))
 console.log('shoeResults:', shoeResults)
 
 
 
 // INFO: Betting System
 let baccaratBettingSystem = new BaccaratBettingSystem()
-shoeResults.reduce((amount, shoeResult) =>
-	shoeResult.reduce((amount, gameDetail) =>
+shoeResults = shoeResults.map((shoeResult) =>
+	shoeResult.map((gameDetail) => {
 		baccaratBettingSystem.setGameDetail(gameDetail)
-	, undefined)
-, undefined)
-baccaratBettingSystem.getCsv()
+		return {
+			...gameDetail
+		}
+	})
+)
 
 
 
@@ -55,6 +57,9 @@ let html = shoeResults.map((v, i) => {
 		</div>
 		<div className="graph-counting">
 			{baccaratDrawer.getCountingGraphAsHtml()}
+		</div>
+		<div className="graph-amount">
+			{baccaratDrawer.getAmountGraphAsHtml()}
 		</div>
 	</div>,
 	<hr />

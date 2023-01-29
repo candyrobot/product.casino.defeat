@@ -1,4 +1,22 @@
-
+// 出目を予測しアクションを返すクラス
+class Prediction {
+	constructor() {
+		// INFO: 次のゲームの予測
+		this.forecast = 'BANKER'
+		this.hits = []
+	}
+	/**
+	 * アクションコントロール:
+	 * - 3連敗するとルックに入る。1回勝つとルック解除。
+	 */
+	getAction() {
+		return this.hits.length >= 3 &&
+		this.hits[this.hits.length - 1] === false &&
+		this.hits[this.hits.length - 2] === false &&
+		this.hits[this.hits.length - 3] === false ?
+			'LOOK' : 'BANKER'
+	}
+}
 let streakDetection = {
 	loseCount: 0,
 	setGameResult: function(isWin) {
@@ -11,6 +29,15 @@ let streakDetection = {
 	},
 	isStopThisGame: function() {
 		return this.loseCount >= 3 ? true : false
+	}
+}
+
+class Baccarat {
+	payout(wager, as) {
+		if (as === 'BANKER')
+			return wager * .95
+		if (as === 'PLAYER')
+			return wager
 	}
 }
 
@@ -35,7 +62,7 @@ class BaccaratBettingSystem {
 		let isWin = this.betBanker(this.unit, gameDetail)
 		// console.log('amount:', this.amount)
 
-		streakDetection.setGameResult(isWin)
+		// streakDetection.setGameResult(isWin)
 
 		// INFO: Chibisuke法
 		if (isWin && Math.max(...this.amountHistory) <= this.amount)
@@ -77,9 +104,6 @@ class BaccaratBettingSystem {
 	}
 	getAmountHistory() {
 		return this.amountHistory
-	}
-	getCsv() {
-		console.log('amount:', this.amountHistory)
 	}
 	/**
 	 * INFO: アクションアルゴリズム - PB交互にアクションさせたい時に
@@ -151,4 +175,4 @@ class BaccaratStrategy {
 }
 
 
-export { BaccaratBettingSystem };
+export { Baccarat, BaccaratBettingSystem };
