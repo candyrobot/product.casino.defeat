@@ -1,4 +1,4 @@
-// 出目を予測しアクションを返すクラス
+// INFO: 出目を予測しアクションを返すクラス
 class Prediction {
 	constructor() {
 		// INFO: 次のゲームの予測
@@ -20,6 +20,17 @@ class Prediction {
 		return this.forecast
 	}
 }
+
+
+// INFO: 実際の賭け金の変動を監視し、連敗数を保持する
+class Wager {
+	constructor() {
+		this.wagerHistory = []
+	}
+	_getLoseStreakCount() {
+		return this.wagerHistory.reduce((prev, v) => v === true ? 0 : prev++ , 0)
+	}
+}
 let streakDetection = {
 	loseCount: 0,
 	setGameResult: function(isWin) {
@@ -35,8 +46,9 @@ let streakDetection = {
 	}
 }
 
+
 class Baccarat {
-	payout(wager, as) {
+	static payout(wager, as) {
 		if (as === 'BANKER')
 			return wager * .95
 		if (as === 'PLAYER')
@@ -44,7 +56,7 @@ class Baccarat {
 	}
 }
 
-class BaccaratBettingSystem {
+class MethodChibisuke {
 	constructor() {
 		this.amount = 500
 		this.amountHistory = [this.amount]
@@ -124,58 +136,77 @@ class BaccaratBettingSystem {
 }
 
 
-class BaccaratStrategy {
-	constructor(playingCards) {
-		this.playingCards = playingCards
-		this.MIN_BET_VALUE = 0
-		this.MAX_BET_VALUE = 10
-		this.playedData = null
-	}
-	getWager() {
-		// let trueCount = this.getTrueCount()
-		// if (trueCount >= 3)
-		// 	return trueCount * 2
-		// else if (trueCount <= -3)
-		// 	return Math.abs(trueCount * 2)
-		// else
-		// 	return this.MIN_BET_VALUE
-		return 5
-	}
-	/**
-	 * @return {string} - 'LOOK' 'BANKER' 'PLAYER'
-	 */
-	getAction() {
-		// let trueCount = this.getTrueCount()
-		if (this.playingCards.getCount() <= 15)
-			return 'BANKER'
-		else if (this.playingCards.getCount() >= 16)
-			return 'PLAYER'
-		else
-			return 'LOOK'
-	}
-	getTrueCount() {
-		let trueCount = 0
-		if (this.playedData) {
-			let runningCount = this.playedData.playingCards.getCount()
-			let deckNum = this.playedData.playingCards.get().length / 52
-			trueCount = runningCount / deckNum
-			console.log(`trueC: ${trueCount}`, `runningC: ${runningCount}`, `deckNum: ${deckNum}`)
-		}
-		return trueCount
-	}
-	/**
-	 * @param {playedData}
-	 * @param {number}
-	 */
-	set(playedData, amount) {
-		this.playedData = playedData
+/**
+ * ベッティングシステム:
+ * - 負債をおったらChibisuke法をもとに1~2連の負けならリカバリーできる
+ * - テレコでは+1ずつ収益がでる
+ * - 3連敗以降は3の倍数以外で勝てば一気に負債0となる
+ * - 3の倍数で勝つとひとつ前のunitLevelにもどる
+ * 賭け方はコチラ: 1,2,3, 6,12,18, 42,84,126, 294,588,882, 2058
+ */
+class MethodGoldbach {
+	constructor() {
+		this.amount = 500
+		this.amountHistory = [this.amount]
+		this.unitLevel = [1, 6, 42, 294, 2058]
+		this.prediction = new Prediction()
 
-		if (playedData.wager === this.MAX_BET_VALUE)
-			console.error('wager:', playedData.wager, 'amount:', amount, 'cards:', playedData.playingCards.get())
+		// this.wagerHistory: boolean[] = []
+		this.wagerHistory = []
+	}
+	getAmount(gameDetail) {
+		let forecast = this.prediction.getForecast()
+		if (forecast === gameDetail.result)
+			this.prediction.hits.push(true)
 		else
-			console.log('wager:', playedData.wager, 'amount:', amount)
+			this.prediction.hits.push(false)
+
+		let action = this.prediction.getAction()
+
+		if (action === 'LOOK');
+		else {
+			if (action === gameDetail.result) {
+				this.amount += Baccarat.payout(this._getWager(), action)
+				this.wagerHistory.push(true)
+			}
+			else {
+				this.amount -= this._getWager()
+				this.wagerHistory.push(false)
+			}	
+		}
+
+		return this.amount
+	}
+	// addAsWinWager() {
+	// 	this.wagerHistory.push(true)
+	// }
+	// addAsLoseWager() {
+	// 	this.wagerHistory.push(false)
+	// }
+	_getWager() {
+		let loseStreakCount = this._getLoseStreakCount()
+		
+		// INFO: losestreak, coefficient(=係数)
+		//       1: 2
+		//       2: 3
+		//       3: 1
+		let coefficient = loseStreakCount % 3 + 1
+
+		// INFO: losestreak, index
+		//       0, 0
+		//       1, 0
+		//       2, 0
+		//       3, 1
+		//       4, 1
+		let i = Math.floor(loseStreakCount / 3)
+
+		return this.unitLevel[i] * coefficient
+	}
+	// INFO: 1回負けは1, 2回負けは2を返す（1回負けは0ではないことに注意）
+	_getLoseStreakCount() {
+		return this.wagerHistory.reduce((prev, v) => v === true ? 0 : ++prev , 0)
 	}
 }
 
 
-export { Baccarat, BaccaratBettingSystem, Prediction };
+export { Baccarat, MethodChibisuke, MethodGoldbach, Prediction };

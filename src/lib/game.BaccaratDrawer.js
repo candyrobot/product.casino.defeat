@@ -131,7 +131,6 @@ class BaccaratDrawer {
 		/>
 	}
 	getAmountGraphAsHtml() {
-		console.log('graph-amount:', this.shoeResult.map((v, i) => i + 1))
 		return <Line
 			width={700}
 			height={600}

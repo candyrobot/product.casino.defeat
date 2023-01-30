@@ -11,8 +11,7 @@ import { Line } from 'react-chartjs-2';
 
 import { Baccarat } from './lib/game.Baccarat';
 import { BaccaratDrawer } from './lib/game.BaccaratDrawer';
-import { BaccaratBettingSystem } from './lib/game.BaccaratBettingSystem';
-import { MethodGoldbach } from './lib/method.Goldbach';
+import { MethodChibisuke, MethodGoldbach, Prediction } from './lib/game.BaccaratBettingSystem';
 import Chibisuke from './lib/method.Chibisuke';
 
 Chart.register(
@@ -21,26 +20,27 @@ Chart.register(
 
 // INFO: Create Game data
 // const PLAYING_SHOE_NUM = 100
-// let shoeResults = []
+// let shoes = []
 // for (var i = 0; i < PLAYING_SHOE_NUM; i++) {
-// 	shoeResults.push(new Baccarat().playShoe())
+// 	shoes.push(new Baccarat().playShoe())
 // }
-// localStorage.setItem('shoeResults_4', JSON.stringify(shoeResults))
+// localStorage.setItem('shoes_ver4', JSON.stringify(shoes))
 
 
 
 // INFO: Load Game data
-let shoeResults = JSON.parse(localStorage.getItem('shoeResults_3'))
-console.log('shoeResults:', shoeResults)
+let shoes = JSON.parse(localStorage.getItem('shoeResults_3'))
+console.log('shoes:', shoes)
 
 
 
 // INFO: Betting System
-let baccaratBettingSystem = new BaccaratBettingSystem()
-shoeResults = shoeResults.map((shoeResult) => {
+let methodChibisuke = new MethodChibisuke()
+shoes = shoes.map((shoeResult) => {
+	let prediction = new Prediction()
 	let methodGoldbach = new MethodGoldbach()
 	return shoeResult.map((gameDetail) => {
-		baccaratBettingSystem.setGameDetail(gameDetail)
+		methodChibisuke.setGameDetail(gameDetail)
 		return {
 			...gameDetail,
 			amountFromGoldbach: methodGoldbach.getAmount(gameDetail)
@@ -51,7 +51,7 @@ shoeResults = shoeResults.map((shoeResult) => {
 
 
 // INFO: drawing html
-let html = shoeResults.map((v, i) => {
+let html = shoes.map((v, i) => {
 	let baccaratDrawer = new BaccaratDrawer(v)
 	return [
 	<div className={`shoe-group shoe-number${i + 1}`}>
@@ -78,12 +78,12 @@ class App extends Component {
 	}
 
 	render() {
-		const labels = baccaratBettingSystem.getAmountHistory().map((v, i) => i)
+		const labels = methodChibisuke.getAmountHistory().map((v, i) => i)
 		const data = {
 			labels: labels,
 			datasets: [{
 				label: '資産推移',
-				data: baccaratBettingSystem.getAmountHistory(),
+				data: methodChibisuke.getAmountHistory(),
 				fill: false,
 				borderColor: 'rgb(75, 192, 192)',
 				tension: 0.1
