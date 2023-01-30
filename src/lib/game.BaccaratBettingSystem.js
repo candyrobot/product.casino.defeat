@@ -156,14 +156,10 @@ class MethodGoldbach {
 	}
 	getAmount(gameDetail) {
 		let forecast = this.prediction.getForecast()
-		if (forecast === gameDetail.result)
-			this.prediction.hits.push(true)
-		else
-			this.prediction.hits.push(false)
-
 		let action = this.prediction.getAction()
 
-		if (action === 'LOOK');
+		if (action === 'LOOK')
+			console.log('action: LOOK')
 		else {
 			if (action === gameDetail.result) {
 				this.amount += Baccarat.payout(this._getWager(), action)
@@ -174,6 +170,11 @@ class MethodGoldbach {
 				this.wagerHistory.push(false)
 			}	
 		}
+
+		if (forecast === gameDetail.result)
+			this.prediction.hits.push(true)
+		else
+			this.prediction.hits.push(false)
 
 		return this.amount
 	}
