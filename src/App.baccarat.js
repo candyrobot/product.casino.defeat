@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { Button } from 'react-bootstrap';
 
+// INFO: v3: https://www.chartjs.org/docs/3.9.1/getting-started/v3-migration.html#_3-x-migration-guide
 import {
 	Chart, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend
 } from 'chart.js'; 
@@ -55,6 +56,7 @@ let html = shoes.map((v, i) => {
 	let baccaratDrawer = new BaccaratDrawer(v)
 	return [
 	<div className={`shoe-group shoe-number${i + 1}`}>
+		<h5>{`shoe-number${i + 1}`}</h5>
 		<div className="scoreboard">
 			{baccaratDrawer.getScoreboardAsHtml()}
 		</div>

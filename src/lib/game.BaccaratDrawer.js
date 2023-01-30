@@ -81,13 +81,18 @@ class BaccaratDrawer {
 		if (game.result === 'PLAYER') color = 'blue'
 		if (game.result === 'BANKER') color = 'red'
 
-		let isNatural = this.isNatural(game.player.cards)
-		             || this.isNatural(game.banker.cards) ? 'is-natural' : ''
+		let isBankerPair = game.banker.cards[0] === game.banker.cards[1]
+		let isPlayerPair = game.player.cards[0] === game.player.cards[1]
+		let isNatural = this.isNatural(game.player.cards) || this.isNatural(game.banker.cards)
 
 		return <div
 			style={{ color }}
 			title={JSON.stringify(game)}
-			className={`cell game-number${game.gameNumber} ${isNatural} ${game.result === 'TIE' ? 'is-TIE' : ''}`}
+			data-is-banker-pair={isBankerPair}
+			data-is-player-pair={isPlayerPair}
+			data-is-natural={isNatural}
+			data-is-tie={game.result === 'TIE'}
+			className={`cell game-number${game.gameNumber}`}
 		>
 			{game.result === 'TIE' ? '／' : game.gameNumber}
 		</div>
@@ -131,13 +136,22 @@ class BaccaratDrawer {
 		/>
 	}
 	getAmountGraphAsHtml() {
+		// const options = {
+		// 	scales: {
+		// 		y: {
+		// 			max: 600,
+		// 			min: 0
+		// 		}
+		// 	}
+		// }
+		// 	options={options}
 		return <Line
 			width={700}
 			height={600}
 			data={{
 				labels: this.shoeResult.map((v, i) => i + 1),
 				datasets: [ {
-					label: 1,
+					label: '資産推移',
 					data: this.shoeResult.map((v) => 
 						v.amountFromGoldbach
 					)

@@ -68,6 +68,7 @@ h2 button {
 /* INFO: original 2023 */
 
 .cell {
+  position: relative;
   width: 15px;
   height: 15px;
   line-height: 15px;
@@ -91,32 +92,46 @@ h2 button {
 .cell.game-number30 {
 /*  background-color: #cfcfcf;*/
 }
-.cell.is-natural {
-  position: relative;
-/*  background-color: #ffe6ba;*/
-}
-.cell.is-natural:after {
-/*  content: 'N';*/
-  content: '';
+.cell[data-is-banker-pair="true"]:before {
+  content: '・';
   position: absolute;
-  top: 0;
-  right: 0;
-  font-size: 10px;
-  width: 100%;
-  height: 100%;
-/*  background-color: rgb(255 161 0 / 23%);*/
-  background-color: rgb(126 126 126 / 20%);
+  top: -5px;
+  right: 0px;
+  color: red;
+  font-size: 24px;
 }
-.cell.is-TIE {
-/*  display: none;*/
+.cell[data-is-player-pair="true"]:after {
+  content: '・';
+  position: absolute;
+  bottom: -6px;
+  right: -10px;
+  color: blue;
+  font-size: 24px;
 }
+/* x: */
+        .cell[data-is-natural="true"] {
+/*          background-color: #ffe6ba; 金色*/
+          background-color: rgb(126 126 126 / 20%);
+        }
+        .cell.is-natural:after {
+        /*  content: 'N';*/
+          content: '';
+          position: absolute;
+          top: 0;
+          right: 0;
+          font-size: 10px;
+          width: 100%;
+          height: 100%;
+        /*  background-color: rgb(255 161 0 / 23%);*/
+          background-color: rgb(126 126 126 / 20%);
+        }
 .shoe-group {
   position: relative;
   overflow: hidden;
 }
 .scoreboard {
   float: left;
-  width: 600px;
+  width: 650px;
 }
 .graph-counting {
   float: left;
