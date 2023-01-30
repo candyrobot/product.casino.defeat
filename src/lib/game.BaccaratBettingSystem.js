@@ -161,7 +161,8 @@ class MethodGoldbach {
 		if (action === 'LOOK')
 			console.log('action: LOOK')
 		else {
-			if (action === gameDetail.result) {
+			if (gameDetail.result === 'TIE');
+			else if (action === gameDetail.result) {
 				this.amount += Baccarat.payout(this._getWager(), action)
 				this.wagerHistory.push(true)
 			}
@@ -171,7 +172,8 @@ class MethodGoldbach {
 			}	
 		}
 
-		if (forecast === gameDetail.result)
+		if (gameDetail.result === 'TIE');
+		else if (forecast === gameDetail.result)
 			this.prediction.hits.push(true)
 		else
 			this.prediction.hits.push(false)
