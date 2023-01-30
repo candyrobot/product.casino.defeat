@@ -131,7 +131,20 @@ class BaccaratDrawer {
 		/>
 	}
 	getAmountGraphAsHtml() {
-		return <></>
+		console.log('graph-amount:', this.shoeResult.map((v, i) => i + 1))
+		return <Line
+			width={700}
+			height={600}
+			data={{
+				labels: this.shoeResult.map((v, i) => i + 1),
+				datasets: [ {
+					label: 1,
+					data: this.shoeResult.map((v) => 
+						v.amountFromGoldbach
+					)
+				}],
+			}}
+		/>
 	}
 	isNatural(cards) {
 		return Math.get1thDigit(cards[0] + cards[1]) >= 8

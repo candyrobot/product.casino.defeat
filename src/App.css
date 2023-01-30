@@ -123,6 +123,11 @@ h2 button {
   margin-left: 20px;
   background-color: #fafafa;
 }
+.graph-amount {
+  float: left;
+  margin-left: 20px;
+  background-color: #fafafa;
+}
 .float {
   float: left;
 }
