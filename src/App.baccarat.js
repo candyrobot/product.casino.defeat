@@ -18,6 +18,8 @@ import Chibisuke from './lib/method.Chibisuke';
 Chart.register(
 	CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend
 )
+let totalAmount = 0
+
 
 // INFO: Create Game data
 // const PLAYING_SHOE_NUM = 100
@@ -40,13 +42,15 @@ let methodChibisuke = new MethodChibisuke()
 shoes = shoes.map((shoeResult) => {
 	let prediction = new Prediction()
 	let methodGoldbach = new MethodGoldbach()
-	return shoeResult.map((gameDetail) => {
+	shoeResult = shoeResult.map((gameDetail) => {
 		methodChibisuke.setGameDetail(gameDetail)
 		return {
 			...gameDetail,
 			amountFromGoldbach: methodGoldbach.getAmount(gameDetail)
 		}
 	})
+	totalAmount += shoeResult[shoeResult.length - 1].amountFromGoldbach
+	return shoeResult
 })
 
 
@@ -56,7 +60,7 @@ let html = shoes.map((v, i) => {
 	let baccaratDrawer = new BaccaratDrawer(v)
 	return [
 	<div className={`shoe-group shoe-number${i + 1}`}>
-		<h5>{`shoe-number${i + 1}`}</h5>
+		<h5>{`shoe${i + 1}`}</h5>
 		<div className="scoreboard">
 			{baccaratDrawer.getScoreboardAsHtml()}
 		</div>
@@ -101,7 +105,9 @@ class App extends Component {
 					/>
 					<img src={logo} className="App-logo" alt="logo" />
 					<p>
-						Edit <code>src/App.js</code> and save to reload.
+						totalAmount: {totalAmount - 50000}
+						<br />
+						<code>src/App.js</code> and save to reload.
 					</p>
 					<a
 						className="App-link"

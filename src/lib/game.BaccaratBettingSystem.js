@@ -4,17 +4,22 @@ class Prediction {
 		// INFO: 次のゲームの予測
 		this.forecast = 'BANKER'
 		this.hits = []
+		this.isStopBet = false
 	}
 	/**
 	 * アクションコントロール:
 	 * - 3連敗するとルックに入る。1回勝つとルック解除。
 	 */
 	getAction() {
-		return this.hits.length >= 3 &&
-		this.hits[this.hits.length - 1] === false &&
-		this.hits[this.hits.length - 2] === false &&
-		this.hits[this.hits.length - 3] === false ?
-			'LOOK' : 'BANKER'
+		let loseStreak = this.hits.reduce((prev, v) => v === true ? 0 : ++prev , 0)
+		let winStreak = this.hits.reduce((prev, v) => v === true ? ++prev : 0 , 0)
+
+		if (loseStreak >= 3)
+			this.isStopBet = true
+		if (winStreak >= 3)
+			this.isStopBet = false
+
+		return this.isStopBet ? 'LOOK' : 'BANKER'
 	}
 	getForecast() {
 		return this.forecast
