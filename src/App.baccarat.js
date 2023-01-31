@@ -25,18 +25,18 @@ let total = {
 
 
 // INFO: Create Game data
-// const PLAYING_SHOE_NUM = 100
-// let shoes = []
-// for (var i = 0; i < PLAYING_SHOE_NUM; i++) {
-// 	shoes.push(new Baccarat().playShoe())
-// }
+const PLAYING_SHOE_NUM = 100
+let shoes = []
+for (var i = 0; i < PLAYING_SHOE_NUM; i++) {
+	shoes.push(new Baccarat().playShoe())
+}
 // localStorage.setItem('shoes_ver6', JSON.stringify(shoes))
 
 
 
 // INFO: Load Game data
-let shoes = JSON.parse(localStorage.getItem('shoes_ver6'))
-console.log('shoes:', shoes)
+// let shoes = JSON.parse(localStorage.getItem('shoes_ver6'))
+// console.log('shoes:', shoes)
 
 
 

@@ -18,7 +18,7 @@ class Prediction {
 
 		if (loseStreak >= 3)
 			this.isStopBet = true
-		if (winStreak >= 3)
+		if (winStreak >= 1)
 			this.isStopBet = false
 
 		return this.isStopBet ? 'LOOK' : 'BANKER'
@@ -60,7 +60,17 @@ class Method {
 	}
 	getAmount(gameDetail) {
 		let forecast = this.prediction.getForecast()
+
+		if (gameDetail.result === 'TIE');
+		else if (forecast === gameDetail.result)
+			this.prediction.hits.push(true)
+		else
+			this.prediction.hits.push(false)
+
 		let action = this.prediction.getAction()
+
+
+
 
 		if (action === 'LOOK');
 			// console.log('action: LOOK')
@@ -77,15 +87,7 @@ class Method {
 		}
 
 
-		if (gameDetail.result === 'TIE');
-		else if (forecast === gameDetail.result)
-			this.prediction.hits.push(true)
-		else
-			this.prediction.hits.push(false)
-
-
 		if (this.amount < 0) {
-			alert('破産')
 			console.error('破産', gameDetail, this.amountHistory)
 		}
 		this.amountHistory.push(this.amount)

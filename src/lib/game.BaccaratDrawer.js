@@ -110,7 +110,7 @@ class BaccaratDrawer {
 					// INFO: 8デック分に含まれるそのカードの最大枚数
 					let count = (number === 0 ? 4 * 4 : 4) * 8
 					return {
-						label: number,
+						label: number === -1 ? '基準線' : number,
 						data: this.shoeResult.map((v, i) =>
 							number === -1 ?
 								// INFO: 中央線の描画
@@ -128,8 +128,8 @@ class BaccaratDrawer {
 							, 0)
 						),
 						hidden: number === 0,
-						borderColor: number === -1 ? 'purple' : getColor(number)
-						// x: borderColor: number === -1 ? 'red' : `hsl(${number * 30}deg 50% 58%)`
+						// borderColor: number === -1 ? 'purple' : getColor(number)
+						borderColor: number === -1 ? 'purple' : `hsl(${number * 30}deg 50% 58%)`
 					}
 				})
 			}}
