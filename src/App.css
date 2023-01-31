@@ -108,11 +108,11 @@ h2 button {
   color: blue;
   font-size: 24px;
 }
+.cell[data-is-natural="true"] {
+/*  background-color: #ffe6ba; 金色*/
+  background-color: rgb(126 126 126 / 20%);
+}
 /* x: */
-        .cell[data-is-natural="true"] {
-/*          background-color: #ffe6ba; 金色*/
-          background-color: rgb(126 126 126 / 20%);
-        }
         .cell.is-natural:after {
         /*  content: 'N';*/
           content: '';

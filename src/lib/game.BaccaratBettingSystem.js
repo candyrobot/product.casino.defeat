@@ -22,14 +22,20 @@ class Prediction {
 }
 
 
-// INFO: 実際の賭け金の変動を監視し、連敗数を保持する
+// INFO: 実際の賭け金の変動を監視し、増減回数を保持する
+// - betしている && hitしている: true
+// - betしている && hitしていない: false
 class Wager {
 	constructor() {
+		// this.wagerHistory: boolean[] = []
 		this.wagerHistory = []
 	}
-	_getLoseStreakCount() {
-		return this.wagerHistory.reduce((prev, v) => v === true ? 0 : prev++ , 0)
-	}
+	// addAsWinWager() {
+	// 	this.wagerHistory.push(true)
+	// }
+	// addAsLoseWager() {
+	// 	this.wagerHistory.push(false)
+	// }
 }
 let streakDetection = {
 	loseCount: 0,
@@ -153,6 +159,8 @@ class MethodGoldbach {
 
 		// this.wagerHistory: boolean[] = []
 		this.wagerHistory = []
+		this.coefficient = 1
+		this.lv = 0
 	}
 	getAmount(gameDetail) {
 		let forecast = this.prediction.getForecast()
@@ -180,30 +188,76 @@ class MethodGoldbach {
 
 		return this.amount
 	}
-	// addAsWinWager() {
-	// 	this.wagerHistory.push(true)
-	// }
-	// addAsLoseWager() {
-	// 	this.wagerHistory.push(false)
-	// }
 	_getWager() {
+		let lastCoefficient = this.coefficient
+		let lastLv = this.lv
+		let isLastWon = this.wagerHistory[this.wagerHistory.length - 1]
 		let loseStreakCount = this._getLoseStreakCount()
 		
 		// INFO: losestreak, coefficient(=係数)
 		//       1: 2
 		//       2: 3
 		//       3: 1
-		let coefficient = loseStreakCount % 3 + 1
+		this.coefficient = loseStreakCount % 3 + 1
 
-		// INFO: losestreak, index
+		// INFO: losestreak, lv
 		//       0, 0
 		//       1, 0
 		//       2, 0
 		//       3, 1
 		//       4, 1
-		let i = Math.floor(loseStreakCount / 3)
+		// let lv = Math.floor(loseStreakCount / 3)
 
-		return this.unitLevel[i] * coefficient
+		// INFO: lv, coefficient
+		//
+		// 1 -1    : 0, 1
+		// 2 -3    : 0, 2
+		// 3 -6    : 0, 3
+		//
+		// 6 -12   : 1, 1 -> 0
+		// 12 -24  : 1, 2 -> 0
+		// 18 -42  : 1, 3 -> 1つ下がる
+		//
+		// 42 -84  : 2, 1 -> 0
+		// 84 -168 : 2, 2 -> 0
+		// 126     : 2, 3 -> 1つ下がる
+		//
+		// xxx o: 3 -> 0
+		// xxx xo: 4 -> 0
+		// xxx xxo: 5 -> 1つ下がる
+		// xxx xxx o: 6 -> 0
+		// xxx xxx xo: 7 -> 0
+		// xxx xxx xxo: 8 -> 1つ下がる
+		//
+		// [lv] * coe, 
+		//  [0] * 1 = 1, x
+		//  [0] * 2, x
+		//  [0] * 3, x
+
+		//  [1] * 1, x
+		//  [1] * 2, x
+		//  [1] * 3, x
+
+		//  [2] * 1, x
+		//  [2] * 2, x
+		//  [2] * 3, o
+
+		//  [1] * 1, x
+		//  [1] * 2, x
+		//  [1] * 3, x
+
+		//  [2] * 1, x
+		//  [2] * 2, o
+		//  [0] * 1
+		if (lastCoefficient === 3) {
+			isLastWon ? this.lv-- : this.lv++
+			this.lv = Math.max(0, this.lv) // 0未満になったら0にする
+		}
+		else
+			this.lv = isLastWon ? 0 : this.lv
+
+
+		return this.unitLevel[this.lv] * this.coefficient
 	}
 	// INFO: 1回負けは1, 2回負けは2を返す（1回負けは0ではないことに注意）
 	_getLoseStreakCount() {
