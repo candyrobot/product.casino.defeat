@@ -8,7 +8,7 @@ class Prediction {
 	}
 	/**
 	 * アクションコントロール:
-	 * - 3連敗するとルックに入る。1回勝つとルック解除。
+	 * - n連敗するとルックに入る。n連勝するとルック解除。
 	 */
 	getAction() {
 		let loseStreak = this.hits.reduce((prev, v) => v === true ? 0 : ++prev , 0)
@@ -23,6 +23,19 @@ class Prediction {
 	}
 	getForecast() {
 		return this.forecast
+	}
+	/**
+	 * INFO: アクションアルゴリズム - PB交互にアクションさせたい時に
+	 * 例）BBPPBBPPBBPP
+	 * 使い方）
+		let isWin = 
+			this.getActionPatternAlternatively() === 'BANKER' ?
+			this.betBanker(this.unit, gameDetail) :
+			this.betPlayer(this.unit, gameDetail)
+	 */
+	getActionPatternAlternatively() {
+		return this.amountHistory.length % 4 === 0 || this.amountHistory.length % 4 === 1 ?
+		'BANKER' : 'PLAYER'
 	}
 }
 
@@ -67,105 +80,13 @@ class Baccarat {
 	}
 }
 
-class MethodChibisuke {
+class Method {
 	constructor() {
 		this.amount = 500
 		this.amountHistory = [this.amount]
-		this.UNIT_INITIAL = 1
-		this.unit = this.UNIT_INITIAL
-		// .bet(1).on('BANKER')
-	}
-	/**
-	 * INFO: 1ゲームごとの処理
-	 */
-	getAmount(gameDetail) {
-		// if (streakDetection.isStopThisGame()) {
-		// 	streakDetection.setGameResult(gameDetail.result === 'BANKER')
-		// 	this.amountHistory.push(this.amount)
-		// 	return
-		// }
-
-		let isWin = this.betBanker(this.unit, gameDetail)
-		// console.log('amount:', this.amount)
-
-		// streakDetection.setGameResult(isWin)
-
-		// INFO: Chibisuke法
-		if (isWin && Math.max(...this.amountHistory) <= this.amount)
-			this.unit = this.UNIT_INITIAL
-		else
-			this.unit++
-
-		return this.amount
-	}
-	getAmountHistory() {
-		return this.amountHistory
-	}
-	/**
-	 * @return {boolean} - true when win or tie.
-	 */
-	betBanker(unit, gameDetail) {
-		if (gameDetail.result === 'BANKER') {
-			this.amount += unit * .95
-			return true
-		}
-		if (gameDetail.result === 'PLAYER') {
-			this.amount -= unit
-			return false
-		}
-		if (gameDetail.result === 'TIE')
-			return true
-	}
-	/**
-	 * @return {boolean} - true when win or tie.
-	 */
-	betPlayer(unit, gameDetail) {
-		if (gameDetail.result === 'BANKER') {
-			this.amount -= unit
-			return false
-		}
-		if (gameDetail.result === 'PLAYER') {
-			this.amount += unit
-			return true
-		}
-		if (gameDetail.result === 'TIE')
-			return true
-	}
-	/**
-	 * INFO: アクションアルゴリズム - PB交互にアクションさせたい時に
-	 * 例）BBPPBBPPBBPP
-	 * 使い方）
-		let isWin = 
-			this.getActionPatternAlternatively() === 'BANKER' ?
-			this.betBanker(this.unit, gameDetail) :
-			this.betPlayer(this.unit, gameDetail)
-	 */
-	getActionPatternAlternatively() {
-		return this.amountHistory.length % 4 === 0 || this.amountHistory.length % 4 === 1 ?
-		'BANKER' : 'PLAYER'
-	}
-}
-
-
-/**
- * ベッティングシステム:
- * - 負債をおったらChibisuke法をもとに1~2連の負けならリカバリーできる
- * - テレコでは+1ずつ収益がでる
- * - 3連敗以降は3の倍数以外で勝てば一気に負債0となる
- * - 3の倍数で勝つとひとつ前のunitLevelにもどる
- * 賭け方はコチラ: 1,2,3, 6,12,18, 42,84,126, 294,588,882, 2058
- */
-class MethodGoldbach {
-	constructor() {
-		this.amount = 500
-		this.amountHistory = [this.amount]
-		this.unitLevel = [1, 6, 42, 294, 2058]
 		this.prediction = new Prediction()
-
 		// this.wagerHistory: boolean[] = []
 		this.wagerHistory = []
-		this.coefficient = 1
-		this.lv = 0
 	}
 	getAmount(gameDetail) {
 		let forecast = this.prediction.getForecast()
@@ -182,7 +103,7 @@ class MethodGoldbach {
 			else {
 				this.amount -= this._getWager()
 				this.wagerHistory.push(false)
-			}	
+			}
 		}
 
 		if (gameDetail.result === 'TIE');
@@ -191,7 +112,69 @@ class MethodGoldbach {
 		else
 			this.prediction.hits.push(false)
 
+		this.amountHistory.push(this.amount)
 		return this.amount
+	}
+	getAmountHistory() {
+		return this.amountHistory
+	}
+	// INFO: 1回負けは1, 2回負けは2を返す（1回負けは0ではないことに注意）
+	_getLoseStreakCount() {
+		return this.wagerHistory.reduce((prev, v) => v === true ? 0 : ++prev , 0)
+	}
+}
+
+class MethodChibisuke extends Method {
+	constructor() {
+		super()
+		this.UNIT_INITIAL = 1
+		this.unit = this.UNIT_INITIAL
+		// .bet(1).on('BANKER')
+	}
+	/**
+	 * INFO: 1ゲームごとの処理
+	 */
+	// getAmount(gameDetail) {
+	// 	let isWin = this.betBanker(this.unit, gameDetail)
+	// 	// console.log('amount:', this.amount)
+
+	// 	// INFO: Chibisuke法
+	// 	// NOTE: これでは勝っても更新できてなければunit++されるのでは？
+	// 	if (isWin && Math.max(...this.amountHistory) <= this.amount)
+	// 		this.unit = this.UNIT_INITIAL
+	// 	else
+	// 		this.unit++
+
+	// 	return this.amount
+	// }
+	_getWager() {
+		let isLastWon = this.wagerHistory[this.wagerHistory.length - 1]
+		let lastAmount = this.amountHistory[this.amountHistory.length - 1]
+		if (isLastWon) {
+			if (Math.max(...this.amountHistory) <= lastAmount)
+				return this.unit = this.UNIT_INITIAL
+			else
+				return this.unit
+		}
+		else
+			return ++this.unit
+	}
+}
+
+/**
+ * ベッティングシステム:
+ * - 負債をおったらChibisuke法をもとに1~2連の負けならリカバリーできる
+ * - テレコでは+1ずつ収益がでる
+ * - 3連敗以降は3の倍数以外で勝てば一気に負債0となる
+ * - 3の倍数で勝つとひとつ前のunitLevelにもどる
+ * 賭け方はコチラ: 1,2,3, 6,12,18, 42,84,126, 294,588,882, 2058
+ */
+class MethodGoldbach extends Method {
+	constructor() {
+		super()
+		this.unitLevel = [1, 6, 42, 294, 2058]
+		this.coefficient = 1
+		this.lv = 0
 	}
 	_getWager() {
 		let lastCoefficient = this.coefficient
@@ -211,7 +194,7 @@ class MethodGoldbach {
 		//       2, 0
 		//       3, 1
 		//       4, 1
-		// let lv = Math.floor(loseStreakCount / 3)
+		// this.lv = Math.floor(loseStreakCount / 3)
 
 		// INFO: lv, coefficient
 		//
@@ -263,10 +246,6 @@ class MethodGoldbach {
 
 
 		return this.unitLevel[this.lv] * this.coefficient
-	}
-	// INFO: 1回負けは1, 2回負けは2を返す（1回負けは0ではないことに注意）
-	_getLoseStreakCount() {
-		return this.wagerHistory.reduce((prev, v) => v === true ? 0 : ++prev , 0)
 	}
 }
 

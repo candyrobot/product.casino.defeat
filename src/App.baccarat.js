@@ -40,16 +40,13 @@ console.log('shoes:', shoes)
 // INFO: Betting System
 // let methodChibisuke = new MethodChibisuke()
 shoes = shoes.map((shoeResult) => {
-	let methodChibisuke = new MethodChibisuke()
 	let methodGoldbach = new MethodGoldbach()
+	let methodChibisuke = new MethodChibisuke()
 	shoeResult = shoeResult.map((gameDetail) => {
-		let amountFromChibisuke = methodChibisuke.getAmount(gameDetail)
-		methodChibisuke.getAmountHistory().push(amountFromChibisuke)
-
 		return {
 			...gameDetail,
 			amountFromGoldbach: methodGoldbach.getAmount(gameDetail),
-			amountFromChibisuke
+			amountFromChibisuke: methodChibisuke.getAmount(gameDetail)
 		}
 	})
 	totalAmount += shoeResult[shoeResult.length - 1].amountFromChibisuke
