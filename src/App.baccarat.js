@@ -32,7 +32,7 @@ let totalAmount = 0
 
 
 // INFO: Load Game data
-let shoes = JSON.parse(localStorage.getItem('shoeResults_3'))
+let shoes = JSON.parse(localStorage.getItem('shoes_ver4'))
 console.log('shoes:', shoes)
 
 

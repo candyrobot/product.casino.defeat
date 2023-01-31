@@ -11,6 +11,8 @@ class Prediction {
 	 * - n連敗するとルックに入る。n連勝するとルック解除。
 	 */
 	getAction() {
+		// return 'BANKER'
+
 		let loseStreak = this.hits.reduce((prev, v) => v === true ? 0 : ++prev , 0)
 		let winStreak = this.hits.reduce((prev, v) => v === true ? ++prev : 0 , 0)
 
@@ -38,38 +40,6 @@ class Prediction {
 		'BANKER' : 'PLAYER'
 	}
 }
-
-
-// INFO: 実際の賭け金の変動を監視し、増減回数を保持する
-// - betしている && hitしている: true
-// - betしている && hitしていない: false
-class Wager {
-	constructor() {
-		// this.wagerHistory: boolean[] = []
-		this.wagerHistory = []
-	}
-	// addAsWinWager() {
-	// 	this.wagerHistory.push(true)
-	// }
-	// addAsLoseWager() {
-	// 	this.wagerHistory.push(false)
-	// }
-}
-let streakDetection = {
-	loseCount: 0,
-	setGameResult: function(isWin) {
-		// isWin ? (this.loseCount = 0) : this.loseCount++
-		if (isWin) {
-			this.loseCount <= 0 ? (this.loseCount = 0) : this.loseCount--
-		}
-		else
-			this.loseCount++
-	},
-	isStopThisGame: function() {
-		return this.loseCount >= 3 ? true : false
-	}
-}
-
 
 class Baccarat {
 	static payout(wager, as) {
@@ -106,12 +76,18 @@ class Method {
 			}
 		}
 
+
 		if (gameDetail.result === 'TIE');
 		else if (forecast === gameDetail.result)
 			this.prediction.hits.push(true)
 		else
 			this.prediction.hits.push(false)
 
+
+		if (this.amount < 0) {
+			alert('破産')
+			console.error('破産', gameDetail, this.amountHistory)
+		}
 		this.amountHistory.push(this.amount)
 		return this.amount
 	}

@@ -1,3 +1,39 @@
+// 良い名前ダナー
+let streakDetection = {
+	loseCount: 0,
+	setGameResult: function(isWin) {
+		// isWin ? (this.loseCount = 0) : this.loseCount++
+		if (isWin) {
+			this.loseCount <= 0 ? (this.loseCount = 0) : this.loseCount--
+		}
+		else
+			this.loseCount++
+	},
+	isStopThisGame: function() {
+		return this.loseCount >= 3 ? true : false
+	}
+}
+
+
+// INFO: 実際の賭け金の変動を監視し、増減回数を保持する
+// - betしている && hitしている: true
+// - betしている && hitしていない: false
+class Wager {
+	constructor() {
+		// this.wagerHistory: boolean[] = []
+		this.wagerHistory = []
+	}
+	// addAsWinWager() {
+	// 	this.wagerHistory.push(true)
+	// }
+	// addAsLoseWager() {
+	// 	this.wagerHistory.push(false)
+	// }
+}
+
+
+
+
 class Chibisuke {
 	constructor() {
 		// 資金管理をするのだからこの情報はあって当たり前:
