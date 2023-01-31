@@ -62,8 +62,8 @@ class Method {
 		let forecast = this.prediction.getForecast()
 		let action = this.prediction.getAction()
 
-		if (action === 'LOOK')
-			console.log('action: LOOK')
+		if (action === 'LOOK');
+			// console.log('action: LOOK')
 		else {
 			if (gameDetail.result === 'TIE');
 			else if (action === gameDetail.result) {

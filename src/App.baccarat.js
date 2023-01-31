@@ -18,7 +18,10 @@ import Chibisuke from './lib/method.Chibisuke';
 Chart.register(
 	CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend
 )
-let totalAmount = 0
+let total = {
+	amountFromGoldbach: 0,
+	amountFromChibisuke: 0
+}
 
 
 // INFO: Create Game data
@@ -27,12 +30,12 @@ let totalAmount = 0
 // for (var i = 0; i < PLAYING_SHOE_NUM; i++) {
 // 	shoes.push(new Baccarat().playShoe())
 // }
-// localStorage.setItem('shoes_ver4', JSON.stringify(shoes))
+// localStorage.setItem('shoes_ver6', JSON.stringify(shoes))
 
 
 
 // INFO: Load Game data
-let shoes = JSON.parse(localStorage.getItem('shoes_ver4'))
+let shoes = JSON.parse(localStorage.getItem('shoes_ver6'))
 console.log('shoes:', shoes)
 
 
@@ -49,7 +52,8 @@ shoes = shoes.map((shoeResult) => {
 			amountFromChibisuke: methodChibisuke.getAmount(gameDetail)
 		}
 	})
-	totalAmount += shoeResult[shoeResult.length - 1].amountFromChibisuke
+	total.amountFromGoldbach += shoeResult[shoeResult.length - 1].amountFromGoldbach
+	total.amountFromChibisuke += shoeResult[shoeResult.length - 1].amountFromChibisuke
 	return shoeResult
 })
 
@@ -105,7 +109,9 @@ class App extends Component {
 					/>*/}
 					<img src={logo} className="App-logo" alt="logo" />
 					<p>
-						totalAmount: {totalAmount - 50000}
+						total.amountFromGoldbach: {total.amountFromGoldbach - 50000}
+						<br />
+						total.amountFromChibisuke: {total.amountFromChibisuke - 50000}
 						<br />
 						<code>src/App.js</code> and save to reload.
 					</p>
