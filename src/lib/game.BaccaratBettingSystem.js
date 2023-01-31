@@ -78,7 +78,7 @@ class MethodChibisuke {
 	/**
 	 * INFO: 1ゲームごとの処理
 	 */
-	setGameDetail(gameDetail) {
+	getAmount(gameDetail) {
 		// if (streakDetection.isStopThisGame()) {
 		// 	streakDetection.setGameResult(gameDetail.result === 'BANKER')
 		// 	this.amountHistory.push(this.amount)
@@ -96,7 +96,10 @@ class MethodChibisuke {
 		else
 			this.unit++
 
-		this.amountHistory.push(this.amount)
+		return this.amount
+	}
+	getAmountHistory() {
+		return this.amountHistory
 	}
 	/**
 	 * @return {boolean} - true when win or tie.
@@ -127,9 +130,6 @@ class MethodChibisuke {
 		}
 		if (gameDetail.result === 'TIE')
 			return true
-	}
-	getAmountHistory() {
-		return this.amountHistory
 	}
 	/**
 	 * INFO: アクションアルゴリズム - PB交互にアクションさせたい時に

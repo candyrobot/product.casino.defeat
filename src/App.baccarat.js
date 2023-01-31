@@ -12,7 +12,7 @@ import { Line } from 'react-chartjs-2';
 
 import { Baccarat } from './lib/game.Baccarat';
 import { BaccaratDrawer } from './lib/game.BaccaratDrawer';
-import { MethodChibisuke, MethodGoldbach, Prediction } from './lib/game.BaccaratBettingSystem';
+import { MethodChibisuke, MethodGoldbach } from './lib/game.BaccaratBettingSystem';
 import Chibisuke from './lib/method.Chibisuke';
 
 Chart.register(
@@ -38,18 +38,21 @@ console.log('shoes:', shoes)
 
 
 // INFO: Betting System
-let methodChibisuke = new MethodChibisuke()
+// let methodChibisuke = new MethodChibisuke()
 shoes = shoes.map((shoeResult) => {
-	let prediction = new Prediction()
+	let methodChibisuke = new MethodChibisuke()
 	let methodGoldbach = new MethodGoldbach()
 	shoeResult = shoeResult.map((gameDetail) => {
-		methodChibisuke.setGameDetail(gameDetail)
+		let amountFromChibisuke = methodChibisuke.getAmount(gameDetail)
+		methodChibisuke.getAmountHistory().push(amountFromChibisuke)
+
 		return {
 			...gameDetail,
-			amountFromGoldbach: methodGoldbach.getAmount(gameDetail)
+			amountFromGoldbach: methodGoldbach.getAmount(gameDetail),
+			amountFromChibisuke
 		}
 	})
-	totalAmount += shoeResult[shoeResult.length - 1].amountFromGoldbach
+	totalAmount += shoeResult[shoeResult.length - 1].amountFromChibisuke
 	return shoeResult
 })
 
@@ -84,25 +87,25 @@ class App extends Component {
 	}
 
 	render() {
-		const labels = methodChibisuke.getAmountHistory().map((v, i) => i)
-		const data = {
-			labels: labels,
-			datasets: [{
-				label: '資産推移',
-				data: methodChibisuke.getAmountHistory(),
-				fill: false,
-				borderColor: 'rgb(75, 192, 192)',
-				tension: 0.1
-			}]
-		};
+		// const labels = methodChibisuke.getAmountHistory().map((v, i) => i)
+		// const data = {
+		// 	labels: labels,
+		// 	datasets: [{
+		// 		label: '資産推移',
+		// 		data: methodChibisuke.getAmountHistory(),
+		// 		fill: false,
+		// 		borderColor: 'rgb(75, 192, 192)',
+		// 		tension: 0.1
+		// 	}]
+		// };
 		return (
 			<div className="App">
 				<header className="App-header">
 					<div>{html}</div>
-					<Line
+					{/*<Line
 						height={80}
 						data={data}
-					/>
+					/>*/}
 					<img src={logo} className="App-logo" alt="logo" />
 					<p>
 						totalAmount: {totalAmount - 50000}

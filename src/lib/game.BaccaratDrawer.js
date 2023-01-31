@@ -150,10 +150,16 @@ class BaccaratDrawer {
 			height={600}
 			data={{
 				labels: this.shoeResult.map((v, i) => i + 1),
-				datasets: [ {
-					label: '資産推移',
+				datasets: [{
+					label: '資産推移Goldbach',
 					data: this.shoeResult.map((v) => 
 						v.amountFromGoldbach
+					),
+					borderColor: 'yellow'
+				}, {
+					label: '資産推移CB',
+					data: this.shoeResult.map((v) => 
+						v.amountFromChibisuke
 					)
 				}],
 			}}
