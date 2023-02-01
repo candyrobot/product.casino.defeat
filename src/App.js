@@ -1,3 +1,5 @@
+// Githubへのdeploy: package.jsonの以下を書き換えてdeployを
+//   "homepage": "https://candyrobot.github.io/product.casino.defeat",
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import 'bootstrap/dist/css/bootstrap.min.css';
