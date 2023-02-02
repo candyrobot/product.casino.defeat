@@ -102,15 +102,15 @@ class BaccaratDrawer {
 		// INFO: 基準がほしかったので-1をいれて、中央線を描く
 		let cardNumbers = [-1, 1,2,3,4,5,6,7,8,9,0]
 		return <Line
-			width={700}
-			height={600}
+			width={1000}
+			height={1000}
 			data={{
 				labels: this.shoeResult.map((v, i) => i + 1),
 				datasets: cardNumbers.map((number) => {
 					// INFO: 8デック分に含まれるそのカードの最大枚数
 					let count = (number === 0 ? 4 * 4 : 4) * 8
 					return {
-						label: number,
+						label: number === -1 ? '基準線' : number,
 						data: this.shoeResult.map((v, i) =>
 							number === -1 ?
 								// INFO: 中央線の描画
@@ -146,8 +146,8 @@ class BaccaratDrawer {
 		// }
 		// 	options={options}
 		return <Line
-			width={700}
-			height={600}
+			width={1000}
+			height={1000}
 			data={{
 				labels: this.shoeResult.map((v, i) => i + 1),
 				datasets: [{

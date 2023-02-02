@@ -85,7 +85,7 @@ class Method {
 
 
 		if (this.amount < 0) {
-			alert('破産')
+			// alert('破産')
 			console.error('破産', gameDetail, this.amountHistory)
 		}
 		this.amountHistory.push(this.amount)
