@@ -129,7 +129,6 @@ class BaccaratDrawer {
 						),
 						hidden: number === 0,
 						borderColor: number === -1 ? 'purple' : getColor(number)
-						// x: borderColor: number === -1 ? 'red' : `hsl(${number * 30}deg 50% 58%)`
 					}
 				})
 			}}
@@ -172,10 +171,21 @@ class BaccaratDrawer {
 	isTsurara() {}
 }
 
+/**
+ * エクセルにまとめた100shoeから抽出したカードの偏り:
+ * - B有利: 1, P有利: 2,7
+ * 6はBANKERは3枚目を引けて逆転できるチャンスがある:
+ * - B有利: 0,1,2,3,4,5,6, P有利: 7,8,9
+ */
 function getColor(number) {
-	if ([1].includes(number)) return 'red' // banker有利になるカード
-	if ([2,7].includes(number)) return 'blue' // player有利になるカード
-	// if ([2,3,7].includes(number)) return 'green'
+	// return `hsl(${number * 30}deg 50% 58%)`
+
+	if ([3].includes(number)) return 'red'
+	if ([6].includes(number)) return 'red'
+	// if ([0,6].includes(number)) return `hsl(${-30}deg 50% 58%)`
+	if ([1,5].includes(number)) return `hsl(${30}deg 50% 58%)`
+	if ([2,4].includes(number)) return `hsl(${60}deg 50% 58%)`
+	if ([7,8,9].includes(number)) return 'blue'
 }
 
 // function getCountingDataFor(number) {
